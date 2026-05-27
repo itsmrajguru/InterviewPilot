@@ -173,27 +173,6 @@ InterviewPilot has **three distinct auth flows** by design:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
----
-
-## 🗺 Pages & Routes
-
-| Route | Page | Auth |
-|---|---|---|
-| `/` | Landing page | Public |
-| `/login` | Student login | Public |
-| `/register` | Student register | Public |
-| `/dashboard` | Student dashboard | 🔒 Student |
-| `/interview/join/:token` | Join via invite link | ⚡ Token only |
-| `/interview/:sessionId` | Active interview room | ⚡ Token |
-| `/interview/:sessionId/report` | Interview report | 🔒 Auth |
-| `/practice` | Start practice session | 🔒 Student |
-| `/practice/:sessionId` | Practice room | 🔒 Student |
-| `/practice/:sessionId/report` | Practice report | 🔒 Student |
-| `/recruiter/dashboard` | Live recruiter dashboard | 🔒 Recruiter |
-| `/recruiter/interview/:sessionId` | Candidate detail view | 🔒 Recruiter |
-| `/recruiter/compare` | Side-by-side comparison | 🔒 Recruiter |
-
----
 
 ## 🚀 Getting Started
 
@@ -245,19 +224,7 @@ CAREERSYNC_BACKEND_URL=https://careersync-backend.onrender.com
 CLIENT_URL=http://localhost:5173
 ```
 
----
 
-## 📡 API Overview
-
-```
-/api/v1/auth/          → register, login, me
-/api/v1/interviews/    → create, join, start, answer, code/submit, complete, report
-/api/v1/recruiter/     → dashboard, detail, compare, pdf report
-/api/v1/practice/      → start + all interview sub-routes
-/api/v1/careersync/    → incoming + outgoing CareerSync bridge
-```
-
----
 
 ## 🤝 Related Projects
 
