@@ -1,20 +1,9 @@
 What is services used for ?
 
-services is the folder , that acts as the bridge between frontend and backend
-because the backend api's are called through the axios and and we write the functions
-
-
 This services is the bridge between the frontend and backend
 because the the whole story of the development is to take data from the user(frontend)
 , then store it in the database via backend
-and then make http requests to retrieve data from the database via backedn
+and then make http requests to retrieve data from the database via backend to the user
+so in this process the actaul flow is
 
-// Signup --> sends OTP to email and returns requiresOtp: true
-export async function signupUser({ username, email, password, role }) {
-  return api.post('auth/signup', { username, email, password, role });
-}
-
-// Verify Signup OTP-->marks user as verified on success
-export async function verifySignupOtp(email, otp) {
-  return api.post('auth/verify-otp', { email, otp });
-}
+user(Frontend) <--> Axios <--> Backend(REST API) <--> Database
