@@ -1,4 +1,4 @@
-require('dotenv').config()
+/* require('dotenv').config()
 const mongoose = require('mongoose')
 
 //creating a database
@@ -13,4 +13,8 @@ async function connectToDB(){
     }
 }
 
-module.exports={connectToDB}
+module.exports={connectToDB} */
+
+
+require
+()
