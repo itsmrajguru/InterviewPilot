@@ -1,20 +1,16 @@
-/* require('dotenv').config()
+//creating database
+
+require('dotenv').config()
 const mongoose = require('mongoose')
 
-//creating a database
-async function connectToDB(){
+async function connectToDB() {
     try {
-        //connect to blank datasheet provided by this url
+        /* link to blank database provided by unique URL */
         await mongoose.connect(process.env.MONGO_URI)
-        console.log("MongoDB connected Successfully");
+        console.log("MongoDB connected Succesfully");
     } catch (e) {
         console.log("Database Error:", e.message);
-        process.exit(1);  //always keep it as 1
+        process.exit(1);
     }
 }
-
-module.exports={connectToDB} */
-
-
-require
-()
+module.exports = { connectToDB }
