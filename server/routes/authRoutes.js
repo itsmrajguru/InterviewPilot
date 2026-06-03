@@ -1,10 +1,11 @@
-const express=requir(express)
+//creating routes 
+
+const express=require('express')
 const authRouter=express.Router()
 
-//importing controller
-const {authController}=require('../controllers/authController')
+//importing the controllers 
+const{authController}=require('../controllers/authController')
 
-//authRoutes
-authRouter.post('/signup',authController)
-
+/* authRouter.post('/signup,)
+ */
 module.exports={authRouter}

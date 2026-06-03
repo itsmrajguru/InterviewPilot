@@ -1,22 +1,28 @@
+//creating the server
 require('dotenv').config()
 const express=require('express')
+
+//creating an app that listens to the server
 const app=express()
-const cors=require('cors')
 
-//import database
+//lets connect the mondodb with the server
 const {connectToDB}=require('./database/db')
-connectToDB();
+connectToDB()
 
-//import routes
-const{authRouter}=require('./routes/authRoutes')
+
+//lets connect the router to the server
+const {authRouter}=require('./routes/authRoutes')
 app.use('/api/v1/auth',authRouter)
 
-//welcome route
+
+//creating a welcome route
 app.get('/',(req,res)=>{
-    res,send("<h1><i>Hey User,server is started</h1></i>")
+    res.send("<h1><i>InterviewPilot's Server is Started</i></h1>");
 })
-//listen to the server
+
+
+//listening to the server
 const PORT=process.env.PORT
 app.listen(PORT,()=>{
-    console.log(`server started at http://localhost:${PORT}`)
+    console.log(`server started at http://localhost:${PORT}`);
 })
