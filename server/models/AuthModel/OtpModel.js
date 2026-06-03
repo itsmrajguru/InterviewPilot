@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-//OTP Schema — stores a temporary 6-digit code tied to a user email
+/* This model is a temporary model, 
+that is deleted , once user's email is verified
+ */
 const otpSchema = new mongoose.Schema({
     email: {
         type: String,

@@ -4,6 +4,7 @@ const userModel = require('../models/AuthModel/UserModel');
 
 require('dotenv').config()
 
+
 /* we created these joi schemas , to validate the user credrentials or meet the
 neccssary requirements */
 const signupSchema = joi.object({
@@ -17,7 +18,17 @@ const loginSchema = joi.object({
     password: joi.string().min(6).required()
 });
 
+/* creating access and refresh token generators
+we are also adding the role with the id , becuase we have created authMiddlware
+that checks the type of user,to allow it to visit only the pages , he should */
 
+const generateAccessToken = (id, role) => {
+    return jwt.sign({ id, role }, process.env.JWT_SECRETSECRET, { expiresIn: '15m' });
+}
+
+const generateRefreshToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: 'Id' })
+}
 //signup controller
 const signup = async (req, res) => {
     /* step 1 :Extract the user credentials coming from the frontend via axios*/
@@ -34,7 +45,7 @@ const signup = async (req, res) => {
         })
     }
     else {
-        try{
+        try {
             /* step 3 :Check whether the emailID is already registered or not ? */
             const existingUser = await userModel.findOne({ email })
 
@@ -108,20 +119,171 @@ const signup = async (req, res) => {
             }, 0);
 
             return res.status(401).json({
-                success :true,
-                message :"OTP sent to your email. Please verify to complete registration.",
-                requiresOtp:true,
+                success: true,
+                message: "OTP sent to your email. Please verify to complete registration.",
+                requiresOtp: true,
                 email,
                 role
             })
         }
-        catch(e){
+        catch (e) {
             console.log(e);
             res.status(500).json({
-                success :false,
-                message : 'Something went wrong ! Please try again'
+                success: false,
+                message: 'Something went wrong ! Please try again'
             })
         }
     }
 }
-module.exports = { signup }
+
+/* logIn comntroller*/
+
+const login = async (req, res) => {
+    /* step 1: extract the user credentials from re.body coming from the frontend */
+    const { email, password } = req.body
+    /* step 2: Validate the user credetials using joi loginschema */
+    const { error } = loginSchema.validate({ email, password })
+
+    if (error) {
+        /* inform to the developer */
+        console.log("Login Error :", error.body[0].message);
+        /* inform to the user */
+        return res.status(400).json({
+            success: false,
+            message: error.body[0].message
+        })
+    }
+    else {
+        try {
+            /* step 3 :Verification of the email,password and otp
+
+                step 3.1 :Verify whether the emailId is registered or not ?
+                step 3.2 :If the emailID is registred , then check whether the pass
+                            word entered by the user mathches with the password stored in the db
+                step 3.3 :Check whether the email verification is done via otp?    
+            */
+
+            /* step 3.1 :Verify whether the emailId is registered or not ?*/
+            const getUser = await userModel.findOne({ email: email.trim().toLowerCase() })
+            if (!getUser) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Email not registered !"
+                })
+            }
+            /* step 3.2 :If the emailID is registred , then check whether the pass
+            word entered by the user mathches with the password stored in the db */
+
+            const isPasswordCorrect = await getUser.matchPassword(password)
+            if (!isPasswordCorrect) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Incorrect Password"
+                })
+            }
+
+            /* step 3.3 :Check whether the email verification is done via otp?*/
+            if (!getUser.isVerified) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Please verify your email before logging in."
+                })
+            }
+
+            /* step 4 :Generate Access token and Refresh Token along with setting cookie */
+            const accessToken = generateAccessToken(getUser?._id, getUser?.role)
+            const refreshToken = generateRefreshToken(getUser?._id)
+
+            /* step 5 :sending the accessToken to frontend 
+            so that it is stored in the localstorage
+            and refreshToken to cookie
+            so that it is stored in the cookie permentantly*/
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', maxAge: 24 * 60 * 60 * 1000
+            })
+
+            return res.status(200).json({
+                success: true,
+                message: "LogIn successful",
+                accessToken,
+                user: {
+                    _id: getUser?._id,
+                    email: getUser.email,
+                    role: getUser.role
+                }
+            })
+        } catch (e) {
+            console.log(e);
+            res.status(500).json({
+                success: false,
+                message: 'Something went wrong ! Please try again'
+            })
+        }
+    }
+}
+
+/* verify-otp controller */
+
+const verifySignupOtp = async (req, res) => {
+    /* step 1 :Extract email and entered otp from req.body */
+    const { email, otp } = req.body
+
+    /* condition :If we did not get any of them,simply return a json reply*/
+    if (!email || !otp) {
+        return res.status(400).json({
+            success: false,
+            messgage: "Both Email and OTP are required"
+        })
+    }
+    try {
+        /* step 2: verify the otp
+            step 2.1 :Extract from the db
+            step 2.2 :Compare the saved one and this one from user 
+            step 2.3 :And if the otp is valid, so that it can no be reused*/
+
+        /* step 2.1 :Extract from the db */
+        const record = await otpModel.findOne({ email });
+        if (!record) {
+            return res.status(400).json({
+                success: false,
+                message: "OTP expired or not found. Please sign up again."
+            })
+        }
+        /* step 2.2 :Compare the saved one and this one from user */
+        if (record.otp !== otp.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "Incorrect OTP. Please try again."
+            })
+        }
+        /* step 2.2:If the otp is valid ,delete the whole model*/
+        await otpModel.deleteMany({ email })
+
+        /* step 3 :mark the user as Verified in the database */
+        const user = await userModel.findOneAndUpdate({ email }, { isVerified: true }, { new: true });
+
+        /* step 4 :create blank profiles for the student and company */
+
+        /* if (user.role === 'student') {
+            await profileModel.create({ user: user._id });
+        }
+        else if (user.role === 'company') {
+            await companyModel.create({ user: user._id });
+        } */
+
+        return res.status(200).json({
+            success: true,
+            message: "Email verified successfully. You can now log in.",
+            role: user.role
+        })
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong. Please try again."
+        })
+    }
+}
+
+module.exports = { signup, login, verifySignupOtp }

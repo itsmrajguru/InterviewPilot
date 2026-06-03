@@ -1,39 +1,29 @@
-import api from "../api";
+/* calling RESTAPI's using axios to connect with the server */
+import api from '../api'
 
-// Authentication routes
+/* here the  return is actually returning the json responses
+sent by the controller to the frontend */
 
-// Login — validates credentials and stores token on success directly
+export async function signup(email, password) {
+  return api.post('auth/signup', { email, password })
+}
+
 export async function loginUser(email, password) {
-  const data = await api.post('auth/login', { email, password });
+  /* we are not directly returning here, 
+  even though , we are cretaing a variable and returning it , 
+  because we dont want to send the access token to the frontend
+  instaed , extact it from the RESTAPI and save in the localstorage */
+
+  const data = api.post('auth/login', { email, password })
   if (data.accessToken) {
-    localStorage.setItem("token", data.accessToken);
-    if (data.user) { localStorage.setItem("user", JSON.stringify(data.user)); }
+    localStorage.setItem("token", accessToken)
+    if (data.user) {
+      localStorage.setItem("user", JSON.stringify(data.user))
+    }
   }
   return data;
 }
 
-// Signup --> sends OTP to email and returns requiresOtp: true
-export async function signupUser({ username, email, password, role }) {
-  return api.post('auth/signup', { username, email, password, role });
-}
-
-// Verify Signup OTP-->marks user as verified on success
-export async function verifySignupOtp(email, otp) {
-  return api.post('auth/verify-otp', { email, otp });
-}
-
-export async function forgotPassword(email) {
-  return api.post('auth/forgot-password', { email });
-}
-export async function resetPassword(token, password) {
-  return api.post('auth/reset-password', { token, newPassword: password });
-}
-export async function changePassword(currentPassword, newPassword) {
-  return api.post('auth/change-password', { currentPassword, newPassword });
-}
-export async function deleteAccount() {
-  return api.delete('auth/delete-me');
-}
-export async function logoutUser() {
-  return api.post('auth/logout');
+export async function verifySignupOtp({email,otp}) {
+  return api.post('auth/verify-otp',{email,otp})
 }
