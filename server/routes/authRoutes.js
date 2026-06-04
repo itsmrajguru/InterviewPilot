@@ -14,6 +14,4 @@ authRouter.post('/forgot-password', authRateLimiter, authController.forgotPasswo
 authRouter.post('/reset-password', authRateLimiter, authController.resetPassword);
 authRouter.post('/logout', (req, res) => res.json({ success: true, message: 'Logged out' }));
 
-
-
 module.exports={authRouter}
