@@ -286,4 +286,43 @@ const verifySignupOtp = async (req, res) => {
     }
 }
 
-module.exports = { signup, login, verifySignupOtp }
+/* refreshToken controller */
+
+const refreshToken = async (req, res) => {
+    /* step 1 :Extract the refresh token from cookies...due 
+    to withCredentials:true, the cookies data is automatically sent by the axios*/
+    const token = req.cookies.refreshToken;
+
+    if (token) {
+        return res.status(401).json({
+            success: false,
+            message: "No refresh token found. Please login again."
+        })
+    }
+    try {
+        /* step 2:verify the (_id) from token coming from the cookie 
+        with the mongoDB _id */
+        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+
+        /* step 3:Generate new access token, 
+        but note :RefreshToken dont carry the user role, to put it into the access token
+        so fetch user for it */
+        const refreshUser = await userModel.findById(decoded?._id).select('role');
+        const newAccessToken = generateAccessToken(decoded?._id, refreshUser?.role)
+    
+        return res.status(200).json({
+            success:true,
+            message:"New Access Token generated Successfully",
+            newAccessToken //This token has been sent to response interceptor
+        })
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+            success: false,
+            message: 'Refresh token invalid or expired. Please login again.'
+        });
+    }
+}
+
+
+module.exports = { signup, login, verifySignupOtp, refreshToken }

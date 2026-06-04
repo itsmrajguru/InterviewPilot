@@ -9,6 +9,6 @@ const{authController}=require('../controllers/authController')
 authRouter.post('/signup',authController.signup)
 authRouter.post('/login',authController.login)
 authRouter.post('/verify-otp',authController.verifySignupOtp)
-
+authRouter.post('/token/refresh', authController.refreshToken);
 
 module.exports={authRouter}
