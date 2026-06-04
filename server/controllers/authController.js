@@ -309,10 +309,10 @@ const refreshToken = async (req, res) => {
         so fetch user for it */
         const refreshUser = await userModel.findById(decoded?._id).select('role');
         const newAccessToken = generateAccessToken(decoded?._id, refreshUser?.role)
-    
+
         return res.status(200).json({
-            success:true,
-            message:"New Access Token generated Successfully",
+            success: true,
+            message: "New Access Token generated Successfully",
             newAccessToken //This token has been sent to response interceptor
         })
     } catch (e) {
@@ -324,5 +324,161 @@ const refreshToken = async (req, res) => {
     }
 }
 
+// Forgot Password Controller
+/* This controller is just to create a reset link , that will be mailed to the user
+so then user will click the link and will be taken to resetPassword
+and this reset link is a rest token that is shared with the RESTAPI /reset-password
+so that it can extract the token and verify
 
-module.exports = { signup, login, verifySignupOtp, refreshToken }
+*/
+const forgotPassword = async (req, res) => {
+    /* step 1:Extract the email from req.body */
+    const { email } = req.body
+
+    /* step2 :validate the email using emailSchema */
+
+    //define emailSchema using joi
+    const emailSchema = joi.object({
+        email: joi.string().email().required()
+    })
+
+    //validate the emailSchema
+    const { error } = emailSchema.validate({ email })
+
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.details[0].message
+        });
+    }
+    else {
+        try {
+            /* step 3:Validate whether the email is registred or not ? */
+            const normalizedEmail = email.trim().toLowerCase();
+            const getUser = await userModel.findOne({ email: normalizedEmail })
+
+            /* condition :If user is not registered , take him back */
+            if (!getUser) {
+                return res.status(200).json({
+                    success: true,
+                    message: 'If this email is registered, a reset link has been sent.'
+                });
+            }
+
+            /* step 4:generate a resetToken and send it to user via email */
+            /* step 4.1 :Generate a normal string token  */
+            const resetToken = crypto.randomBytes(32).toString('hex')
+
+            /* step 4.2 :hash the reset token */
+            const hashedResetToken = crypto
+                .createHash('sha256')
+                .update(resetToken)
+                .digest('hex')
+
+            /* step 4.3 :Update db with hashed reset token */
+            getUser.resetPasswordToken = hashedResetToken;
+            getUser.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+            await getUser.save()
+
+            /* step 4.4 :send resetToken to the user inbox via email
+            
+            This will automatically take the user to the reset-password page*/
+            const resetURL = `${process.env.CLIENT_URL || 'CLIENT_URL=http://localhost:5173'}/reset-password?token=${resetToken}`
+
+            const msg = `You requested a password reset.\n\nReset your password here (valid 15 mins):\n\n${resetURL}\n\nIgnore this email if you didn't request it.`
+
+            setTimeout(async () => {
+                try {
+                    const emailSent = await sendEmail({
+                        to: getUser.email,
+                        subject: 'CareerSync - Password Reset Request',
+                        text: msg
+                    })
+                    if (!emailSent) {
+                        console.log('Email Reset Link send failed')
+                    }
+                } catch (e) {
+                    console.log('Reset Email Send Error:', e);
+                }
+            }, 0);
+            return res.status(200).json({
+                success: true,
+                message: 'If this email is registered, a reset link has been sent.'
+            });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).json({
+                success: false,
+                message: 'Something went wrong! Please try again'
+            });
+        }
+    }
+}
+
+/* resetPassword Controller */
+
+const resetPassword = async (req, res) => {
+    /* step 1 : extract the newpassword , as well as
+    the reset-token exctracted by the frontend, through Dyanmic URL
+    and sent by the forgotPassword to verify the user */
+
+    const { token, newPassword } = req.body
+
+    /* step 2 :Validate the password */
+    const newPasswordSchema = joi.object({
+        newPassword: joi.string().min(6).required()
+    })
+    const { error } = newPasswordSchema.validate({ newPassword })
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.details[0].message
+        });
+    }
+    else {
+        try {
+            /* step 3 Verify the token: */
+            if (!token) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Token is required.'
+                });
+            }
+
+            /* step 3.1 :Hash the token to compare with the one saved in mongoDB */
+            // Added .trim() to handle potential whitespace from copy-paste
+            const hashedToken = crypto.createHash('sha256').update(token.trim()).digest('hex');
+
+            /* step 3.2 :Verify the hashed-token with the db */
+            const getUser = await userModel.findOne({
+                resetPassword: hashedToken,
+                resetPasswordExpire: { $gt: Date.now() }
+            })
+            if (!getUser) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid or expired reset token. Please try again !'
+                });
+            }
+
+            /* step 4 :Update db with newPassword */
+            getUser.password = newPassword
+            getUser.resetPasswordToken = undefined
+            getUser.resetPasswordExpire = undefined
+            await getUser.save()
+
+            return res.status(200).json({
+                succes:true,
+                message:"Password reset successfully. Please login."
+            })
+        } catch (e) {
+            console.log(e);
+            return res.status(500).json({
+                success:false,
+                message:"Something went wrong! Please try again"
+            })
+        }
+    }
+}
+
+module.exports = { signup, login, verifySignupOtp, refreshToken, forgotPassword, resetPassword }
