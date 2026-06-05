@@ -1,6 +1,11 @@
 //creating authControllers
 
 const userModel = require('../models/AuthModel/UserModel');
+const otpModel = require('../models/AuthModel/OtpModel');
+const jwt = require('jsonwebtoken');
+const joi = require('joi');
+const crypto = require('crypto');
+const { sendEmail } = require('../services/emailService');
 
 require('dotenv').config()
 
@@ -23,11 +28,11 @@ we are also adding the role with the id , becuase we have created authMiddlware
 that checks the type of user,to allow it to visit only the pages , he should */
 
 const generateAccessToken = (id, role) => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRETSECRET, { expiresIn: '15m' });
+    return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '15m' });
 }
 
 const generateRefreshToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: 'Id' })
+    return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' })
 }
 //signup controller
 const signup = async (req, res) => {
@@ -146,11 +151,11 @@ const login = async (req, res) => {
 
     if (error) {
         /* inform to the developer */
-        console.log("Login Error :", error.body[0].message);
+        console.log("Login Error :", error.details[0].message);
         /* inform to the user */
         return res.status(400).json({
             success: false,
-            message: error.body[0].message
+            message: error.details[0].message
         })
     }
     else {
@@ -293,7 +298,7 @@ const refreshToken = async (req, res) => {
     to withCredentials:true, the cookies data is automatically sent by the axios*/
     const token = req.cookies.refreshToken;
 
-    if (token) {
+    if (!token) {
         return res.status(401).json({
             success: false,
             message: "No refresh token found. Please login again."
@@ -451,7 +456,7 @@ const resetPassword = async (req, res) => {
 
             /* step 3.2 :Verify the hashed-token with the db */
             const getUser = await userModel.findOne({
-                resetPassword: hashedToken,
+                resetPasswordToken: hashedToken,
                 resetPasswordExpire: { $gt: Date.now() }
             })
             if (!getUser) {

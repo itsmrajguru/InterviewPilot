@@ -5,6 +5,8 @@ const authRouter=express.Router()
 
 //importing the controllers 
 const{authController}=require('../controllers/authController')
+const{authRateLimiter}=require('../middleware/authRateLimiter')
+
 
 authRouter.post('/signup',authController.signup)
 authRouter.post('/login',authController.login)

@@ -4,12 +4,6 @@ const bcrypt = require('bcryptjs');
 //creating a schema
 
 
-//creating a model
-const userModel=mongoose.model('User','userSchema')
-module.exports={userModel}
-
-
-
 const userSchema = new mongoose.Schema({
     email: {
         type: String,

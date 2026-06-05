@@ -5,6 +5,11 @@ const express=require('express')
 //creating an app that listens to the server
 const app=express()
 
+const cookieParser = require('cookie-parser')
+app.use(express.json())
+app.use(cookieParser())
+
+
 //lets connect the mondodb with the server
 const {connectToDB}=require('./database/db')
 connectToDB()
