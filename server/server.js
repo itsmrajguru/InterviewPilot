@@ -6,6 +6,19 @@ const express = require('express')
 const app = express()
 
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || /^http:\/\/localhost:\d+$/.test(origin) || origin === process.env.CLIENT_URL) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true
+}))
+
 app.use(express.json())
 app.use(cookieParser())
 

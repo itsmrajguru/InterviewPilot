@@ -14,7 +14,7 @@ const envUrl = import.meta.env.VITE_API_BASE_URL || "";
  otherwise if the base url is not present then use the local backend base url */
 const API_URL = envUrl
   ? (envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl)
-  : "http://localhost:8000/api/v1";
+  : "http://localhost:7878/api/v1";
 
 
 /*this only confirms that if render forgets to add any extra RESTAPI like /api/v1 
