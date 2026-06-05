@@ -33,3 +33,7 @@ export async function completeSession(sessionId) {
 export async function getReport(sessionId) {
     return api.get(`interviews/${sessionId}/report`)
 }
+
+export async function getStudentDashboard() {
+    return api.get('interviews/student/dashboard')
+}
