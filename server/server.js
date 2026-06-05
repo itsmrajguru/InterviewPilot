@@ -32,6 +32,11 @@ connectToDB()
 const { authRouter } = require('./routes/authRoutes')
 app.use('/api/v1/auth', authRouter)
 
+/* interview router — handles session creation, joining, answering, code
+   submission and final report generation */
+const { interviewRouter } = require('./routes/interviewRoutes')
+app.use('/api/v1/interviews', interviewRouter)
+
 
 //creating a welcome route
 app.get('/', (req, res) => {
