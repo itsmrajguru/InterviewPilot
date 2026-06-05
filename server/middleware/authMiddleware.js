@@ -5,7 +5,7 @@ by checking his identity card (access token)*/
 require('dotenv').config()
 const jwt = require('jsonwebtoken');
 
-const protect = async (req, res) => {
+const protect = async (req, res, next) => {
     /* step 1 :Extract the authHeader to extract the token  */
     const authHeader = req.headers.authorization;
     /* condition */
