@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { getStudentDashboard } from "../../services/interviewService";
 
-/* ─── Icons ─────────────────────────────── */
+/* icons */
 const IconPlay = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="5 3 19 12 5 21 5 3"/>
@@ -41,7 +41,7 @@ const IconStar = () => (
   </svg>
 );
 
-/* ─── Stat Card ─────────────────────────── */
+/* stat card component */
 function StatCard({ label, value, sub, accent }) {
   return (
     <div className="ip-card p-5">
@@ -57,7 +57,7 @@ function StatCard({ label, value, sub, accent }) {
   );
 }
 
-/* ─── Interview Row ─────────────────────── */
+/* interview row component */
 function InterviewRow({ interview, onJoin }) {
   const statusMap = {
     pending:   { cls: "ip-badge ip-badge-warning", label: "Pending",   dot: "#f57f17" },
@@ -124,7 +124,7 @@ function InterviewRow({ interview, onJoin }) {
   );
 }
 
-/* ─── Empty State ───────────────────────── */
+/* empty state component */
 function EmptyState({ icon, title, sub, action }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
@@ -141,14 +141,14 @@ function EmptyState({ icon, title, sub, action }) {
   );
 }
 
-/* ─── Main Dashboard ────────────────────── */
+/* main dashboard page */
 export default function StudentDashboard() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Get user from localStorage
+  //get user from localstorage
   const user = (() => {
     try { return JSON.parse(localStorage.getItem("user") || "{}"); }
     catch { return {}; }
@@ -176,10 +176,10 @@ export default function StudentDashboard() {
     <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="student" />
 
-      {/* Main content */}
+        {/* main content */}
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* Top bar */}
+        {/* top bar */}
         <header
           className="flex items-center justify-between px-8 py-0 flex-shrink-0"
           style={{
@@ -202,10 +202,10 @@ export default function StudentDashboard() {
           </button>
         </header>
 
-        {/* Page body */}
+        {/* page body */}
         <main className="flex-1 p-8">
 
-          {/* Welcome */}
+          {/* welcome banner */}
           <div className="mb-7">
             <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
               Welcome back, {firstName} 👋
@@ -215,7 +215,7 @@ export default function StudentDashboard() {
             </p>
           </div>
 
-          {/* Error */}
+          {/* error banner */}
           {error && (
             <div
               className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded"
@@ -225,7 +225,7 @@ export default function StudentDashboard() {
             </div>
           )}
 
-          {/* Stat cards */}
+          {/* stat cards */}
           <div className="grid grid-cols-3 gap-4 mb-8">
             <StatCard
               label="PENDING INTERVIEWS"
@@ -245,13 +245,13 @@ export default function StudentDashboard() {
             />
           </div>
 
-          {/* Two column layout */}
+          {/* two column layout */}
           <div className="grid grid-cols-5 gap-6">
 
-            {/* Left — interviews (3/5 width) */}
+            {/* left: interviews list */}
             <div className="col-span-3 flex flex-col gap-5">
 
-              {/* Pending interviews */}
+              {/* pending interviews list */}
               <div className="ip-card">
                 <div className="ip-card-header">
                   <span className="ip-card-title">Pending Interviews</span>
@@ -282,7 +282,7 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* Interview history */}
+              {/* interview history list */}
               <div className="ip-card">
                 <div className="ip-card-header">
                   <span className="ip-card-title">Interview History</span>
@@ -330,10 +330,10 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* Right — quick actions + tips (2/5 width) */}
+            {/* right: quick actions and tips */}
             <div className="col-span-2 flex flex-col gap-5">
 
-              {/* Quick actions */}
+              {/* quick actions card */}
               <div className="ip-card">
                 <div className="ip-card-header">
                   <span className="ip-card-title">Quick Actions</span>
@@ -360,7 +360,7 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* How to prepare */}
+              {/* how to prepare card */}
               <div className="ip-card">
                 <div className="ip-card-header">
                   <span className="ip-card-title">How it works</span>
@@ -388,7 +388,7 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* Practice CTA banner */}
+              {/* practice cta banner */}
               <div
                 className="rounded-md p-5"
                 style={{
@@ -420,7 +420,7 @@ export default function StudentDashboard() {
   );
 }
 
-/* Inline icon component for buttons */
+/* inline icon component for buttons */
 function IconInterviews() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
