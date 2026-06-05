@@ -12,6 +12,11 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 /* Company / Recruiter pages */
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 
+/* Interview flow pages — join link → room → report */
+import JoinInterviewPage from "./pages/interview/JoinInterviewPage";
+import InterviewRoomPage from "./pages/interview/InterviewRoomPage";
+import InterviewReportPage from "./pages/interview/InterviewReportPage";
+
 //Page Not Found Page
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -33,6 +38,11 @@ function App() {
 
         {/* Company / Recruiter routes */}
         <Route path="/company/dashboard" element={<CompanyDashboard />} />
+
+        {/* Interview flow — public join link, protected room and report */}
+        <Route path="/interview/join/:token" element={<JoinInterviewPage />} />
+        <Route path="/interview/:id" element={<InterviewRoomPage />} />
+        <Route path="/interview/:id/report" element={<InterviewReportPage />} />
 
         {/* Catch-all route to display the premium 404 page... */}
         <Route path="*" element={<NotFoundPage />} />
