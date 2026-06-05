@@ -437,6 +437,43 @@ const getCompanySessions = async (req, res) => {
     }
 }
 
+/* getStudentDashboard controller */
+const getStudentDashboard = async (req, res) => {
+    try {
+        const studentEmail = req.user.email
+
+        /* step 1 :fetch all sessions for this student */
+        const sessions = await InterviewSession.find({ studentEmail }).sort({ createdAt: -1 })
+
+        /* step 2 :split into pending and completed */
+        const pendingInterviews = sessions.filter(s => s.status === 'pending')
+        const completedInterviews = sessions.filter(s => s.status === 'completed')
+
+        /* step 3 :calculate average score from completed interviews */
+        let avgScore = null
+        if (completedInterviews.length > 0) {
+            const totalScore = completedInterviews.reduce((sum, s) => {
+                return sum + (s.report?.overallScore || 0)
+            }, 0)
+            avgScore = Math.round(totalScore / completedInterviews.length)
+        }
+
+        return res.status(200).json({
+            success: true,
+            pendingInterviews,
+            completedInterviews,
+            avgScore
+        })
+
+    } catch (error) {
+        console.log('getStudentDashboard Error :', error)
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to fetch student dashboard data.'
+        })
+    }
+}
+
 module.exports = {
     createSession,
     joinSession,
@@ -445,5 +482,6 @@ module.exports = {
     submitCode,
     completeSession,
     getReport,
-    getCompanySessions
+    getCompanySessions,
+    getStudentDashboard
 }

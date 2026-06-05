@@ -12,7 +12,8 @@ const {
     submitCode,
     completeSession,
     getReport,
-    getCompanySessions
+    getCompanySessions,
+    getStudentDashboard
 } = require('../controllers/interviewController')
 
 /* importing the auth middleware */
@@ -26,6 +27,7 @@ interviewRouter.get('/company/sessions', protect, getCompanySessions)
 
 
 /* Student / Public routes */
+interviewRouter.get('/student/dashboard', protect, getStudentDashboard)
 interviewRouter.get('/join/:token', joinSession)
 interviewRouter.post('/:id/start', startSession)
 interviewRouter.post('/:id/answer', submitAnswer)
