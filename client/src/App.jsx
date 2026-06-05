@@ -6,8 +6,11 @@ import VerifySignupOtpPage from "./pages/VerifySignupOtpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 
-/* Student pages */
+/* student pages */
 import StudentDashboard from "./pages/student/StudentDashboard";
+import StudentInterviews from "./pages/student/StudentInterviews";
+import StudentPractice from "./pages/student/StudentPractice";
+import StudentReports from "./pages/student/StudentReports";
 
 /* Company / Recruiter pages */
 import CompanyDashboard from "./pages/company/CompanyDashboard";
@@ -33,8 +36,11 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-        {/* Student routes */}
+        {/* student routes */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/interviews" element={<StudentInterviews />} />
+        <Route path="/student/practice" element={<StudentPractice />} />
+        <Route path="/student/reports" element={<StudentReports />} />
 
         {/* Company / Recruiter routes */}
         <Route path="/company/dashboard" element={<CompanyDashboard />} />
