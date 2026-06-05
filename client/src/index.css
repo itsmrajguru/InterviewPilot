@@ -1,14 +1,9 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
-/* ─────────────────────────────────────────
-   INTERVIEWPILOT — DESIGN TOKENS
-   Adapted from CareerSync: Plus Jakarta Sans,
-   rounded 10px buttons, 12px cards, 8px inputs.
-   Colors unchanged.
-───────────────────────────────────────── */
+
+
 @theme {
-  /* ── Primary — Netlify Teal (UNCHANGED) ── */
+  /* Primary — Netlify Teal*/
   --color-primary-50:  #effdfa;
   --color-primary-100: #d6faf4;
   --color-primary-200: #acf4e8;
@@ -20,7 +15,7 @@
   --color-primary-800: #00665d;
   --color-primary-900: #00453f;
 
-  /* ── Neutral palette (UNCHANGED) ── */
+  /* Neutral palette*/
   --color-neutral-50:  #f6f7f9;
   --color-neutral-100: #f1f3f5;
   --color-neutral-200: #e5e7eb;
@@ -32,7 +27,7 @@
   --color-neutral-800: #1f2937;
   --color-neutral-900: #111827;
 
-  /* ── Semantic colors (UNCHANGED) ── */
+  /* emantic colors*/
   --color-success-bg:     #ecfdf5;
   --color-success-text:   #047857;
   --color-success-border: #a7f3d0;
@@ -49,12 +44,12 @@
   --color-info-text:      #1d4ed8;
   --color-info-border:    #bfdbfe;
 
-  /* ── Fonts — updated to Plus Jakarta Sans ── */
+  /*Fonts — updated to Plus Jakarta Sans  */
   --font-sans:    'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
   --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 
-  /* ── Font sizes — updated to CareerSync scale ── */
+
   --font-size-display-xl: 3rem;
   --font-size-display-lg: 1.75rem;
   --font-size-display-md: 1.375rem;
@@ -65,7 +60,7 @@
   --font-size-label:      0.6875rem;
   --font-size-caption:    0.6875rem;
 
-  /* ── Radius — updated to CareerSync values ── */
+ 
   --radius-xs:   4px;
   --radius-sm:   8px;     /* inputs */
   --radius-md:   10px;    /* buttons */
@@ -73,13 +68,12 @@
   --radius-xl:   16px;
   --radius-pill: 9999px;
 
-  /* ── Shadows — updated to CareerSync values ── */
   --shadow-card:       0 1px 3px rgba(13, 17, 23, 0.06), 0 1px 2px rgba(13, 17, 23, 0.04);
   --shadow-card-hover: 0 8px 24px rgba(12, 26, 46, 0.14);
   --shadow-dropdown:   0 10px 25px rgba(13, 17, 23, 0.08), 0 4px 10px rgba(13, 17, 23, 0.04);
   --shadow-btn:        0 1px 3px rgba(0, 199, 183, 0.25);
 
-  /* ── Animations (UNCHANGED) ── */
+
   --animate-fade-up:      fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both;
   --animate-fade-up-late: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.1s both;
   --animate-spinner:      spin 0.7s linear infinite;
@@ -96,7 +90,6 @@
   }
 }
 
-/* ─── ROOT (COLORS UNCHANGED — only font/size/radius values updated) ── */
 :root {
   --bg:            #f6f7f9;
   --bg-card:       #ffffff;
@@ -146,7 +139,6 @@
   }
 }
 
-/* ─── BASE ──────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -221,7 +213,6 @@ input, textarea, button, select {
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 
-/* ─── BUTTONS — radius/padding/size updated to CareerSync ── */
 
 .btn-primary {
   background: var(--accent);
@@ -383,7 +374,6 @@ input, textarea, button, select {
 .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
 
 
-/* ─── INPUTS — radius/padding updated to CareerSync ── */
 
 .ip-input {
   width: 100%;
@@ -472,7 +462,6 @@ input, textarea, button, select {
 }
 
 
-/* ─── CARDS — radius updated to 12px ── */
 
 .ip-card {
   background: var(--bg-card);
@@ -510,7 +499,6 @@ input, textarea, button, select {
 .ip-card-body { padding: 20px; }    /* updated: was 18px */
 
 
-/* ─── BADGES (UNCHANGED) ── */
 
 .ip-badge {
   display: inline-flex;
@@ -551,7 +539,6 @@ input, textarea, button, select {
 .ip-status-inactive::before { background: var(--border-strong); }
 
 
-/* ─── NAV — updated sizes ── */
 
 .ip-navbar {
   background: var(--bg-card);
@@ -581,7 +568,6 @@ input, textarea, button, select {
 .ip-nav-link.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
 
 
-/* ─── SIDEBAR (UNCHANGED structure, spacing updated) ── */
 
 .ip-sidebar {
   background: var(--sidebar-bg);
@@ -627,7 +613,6 @@ input, textarea, button, select {
 }
 
 
-/* ─── TABLE (spacing updated) ── */
 
 .ip-table {
   width: 100%;
@@ -655,7 +640,6 @@ input, textarea, button, select {
 .ip-table tbody tr:hover td { background: var(--bg-hover); }
 
 
-/* ─── DIVIDER ── */
 
 .ip-divider {
   display: flex;
@@ -677,7 +661,6 @@ input, textarea, button, select {
 }
 
 
-/* ─── INTERVIEW SPECIFIC ── */
 
 .ip-bubble-ai {
   background: var(--bg-subtle);
@@ -796,7 +779,6 @@ input, textarea, button, select {
 }
 
 
-/* ─── UTILITIES ── */
 
 .ip-text-primary   { color: var(--text); }
 .ip-text-secondary { color: var(--text-secondary); }
@@ -836,7 +818,6 @@ input, textarea, button, select {
   to { transform: rotate(360deg); }
 }
 
-/* ─── ANIMATIONS ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
