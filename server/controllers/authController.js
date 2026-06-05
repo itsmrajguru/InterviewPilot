@@ -123,7 +123,7 @@ const signup = async (req, res) => {
                 }
             }, 0);
 
-            return res.status(401).json({
+            return res.status(200).json({
                 success: true,
                 message: "OTP sent to your email. Please verify to complete registration.",
                 requiresOtp: true,

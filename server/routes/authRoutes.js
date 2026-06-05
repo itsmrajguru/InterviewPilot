@@ -4,7 +4,7 @@ const express=require('express')
 const authRouter=express.Router()
 
 //importing the controllers 
-const{authController}=require('../controllers/authController')
+const authController=require('../controllers/authController')
 const{authRateLimiter}=require('../middleware/authRateLimiter')
 
 
