@@ -1,5 +1,5 @@
 /* calling RESTAPI's using axios to connect with the server */
-import api from '../api'
+import api from '../../api'
 
 /* here the  return is actually returning the json responses
 sent by the controller to the frontend */
