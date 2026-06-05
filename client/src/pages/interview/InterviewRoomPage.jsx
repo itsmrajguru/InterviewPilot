@@ -52,7 +52,7 @@ export default function InterviewRoomPage() {
   const isCoding = currentQuestion?.type === "coding";
   const allAnswered = questions.length > 0 && Object.keys(answered).length >= questions.length;
 
-  /* Submit an HR or technical answer */
+  /* submit an hr or technical answer */
   const handleSubmitAnswer = async () => {
     if (!answer.trim()) return;
     setSubmitting(true);
@@ -83,7 +83,7 @@ export default function InterviewRoomPage() {
     }
   };
 
-  /* Submit code to Judge0 + Gemini */
+  /* submit code to judge0 and gemini */
   const handleSubmitCode = async () => {
     if (!code.trim()) return;
     setSubmitting(true);
@@ -116,7 +116,7 @@ export default function InterviewRoomPage() {
     }
   };
 
-  /* Move to the next question */
+  /* move to the next question */
   const handleNext = () => {
     setAnswer("");
     setCode("// Write your solution here\n\n");
@@ -126,7 +126,7 @@ export default function InterviewRoomPage() {
     setCurrentIndex(prev => prev + 1);
   };
 
-  /* Complete the interview — Gemini generates the final report */
+  /* complete the interview — gemini generates the final report */
   const handleComplete = async () => {
     setCompleting(true);
     setError("");
@@ -157,7 +157,7 @@ export default function InterviewRoomPage() {
   return (
     <div className="min-h-screen ip-bg-page flex flex-col">
 
-      {/* Top bar: progress and question counter */}
+      {/* top bar: progress and question counter */}
       <nav className="ip-navbar sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="InterviewPilot" className="w-7 h-7 rounded-lg" />
@@ -182,10 +182,10 @@ export default function InterviewRoomPage() {
         </span>
       </nav>
 
-      {/* Main interview layout */}
+      {/* main interview layout */}
       <div className="flex flex-1 gap-0 max-w-6xl mx-auto w-full px-6 py-6">
 
-        {/* Left: question sidebar */}
+        {/* left: question sidebar */}
         <div className="w-48 shrink-0 hidden lg:flex flex-col gap-1 mr-6">
           <p className="ip-text-muted text-[10px] uppercase tracking-widest font-bold mb-2">Questions</p>
           {questions.map((q, i) => (
@@ -219,10 +219,10 @@ export default function InterviewRoomPage() {
           ))}
         </div>
 
-        {/* Right: question + answer area */}
+        {/* right: question + answer area */}
         <div className="flex-1 flex flex-col gap-4">
 
-          {/* Question card */}
+          {/* question card */}
           <div className="ip-card">
             <div className="ip-card-body">
               {/* question type badge */}
@@ -258,9 +258,9 @@ export default function InterviewRoomPage() {
             </div>
           </div>
 
-          {/* Answer area — textarea for HR/technical, code for coding */}
+          {/* answer area — textarea for hr/technical, code for coding */}
           {!isCoding ? (
-            /* HR / Technical answer textarea */
+            /* hr / technical answer textarea */
             <div className="ip-card">
               <div className="ip-card-body">
                 <label className="ip-label">Your Answer</label>
@@ -279,7 +279,7 @@ export default function InterviewRoomPage() {
               </div>
             </div>
           ) : (
-            /* Coding problem — language selector + code textarea */
+            /* coding problem — language selector + code textarea */
             <div className="ip-card">
               <div className="ip-card-header">
                 <span className="ip-card-title">Code Editor</span>
@@ -314,7 +314,7 @@ export default function InterviewRoomPage() {
             </div>
           )}
 
-          {/* Error message */}
+          {/* error message */}
           {error && (
             <div className="ip-alert ip-alert-danger">
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1" />
@@ -322,7 +322,7 @@ export default function InterviewRoomPage() {
             </div>
           )}
 
-          {/* Gemini feedback card — shown after submission */}
+          {/* gemini feedback card — shown after submission */}
           {feedback && (
             <div className="ip-card border border-primary-500/20 animate-fade-up">
               <div className="ip-card-body flex flex-col gap-3">
@@ -363,7 +363,7 @@ export default function InterviewRoomPage() {
             </div>
           )}
 
-          {/* Action buttons */}
+          {/* action buttons */}
           <div className="flex items-center justify-between">
 
             {/* submit button — only shown if not yet answered */}

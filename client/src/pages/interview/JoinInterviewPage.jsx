@@ -56,7 +56,7 @@ export default function JoinInterviewPage() {
     }
   };
 
-  /* Loading state */
+  /* loading state */
   if (loading) {
     return (
       <div className="min-h-screen ip-bg-page flex items-center justify-center">
@@ -68,7 +68,7 @@ export default function JoinInterviewPage() {
     );
   }
 
-  /* Error state — expired / invalid link */
+  /* error state — expired / invalid link */
   if (error) {
     return (
       <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
@@ -85,7 +85,7 @@ export default function JoinInterviewPage() {
     );
   }
 
-  /* Already completed */
+  /* already completed */
   if (session?.status === "completed") {
     return (
       <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
@@ -110,7 +110,7 @@ export default function JoinInterviewPage() {
     );
   }
 
-  /* Ready state — show session info and Start button */
+  /* ready state — show session info and start button */
   return (
     <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
 
@@ -188,7 +188,7 @@ export default function JoinInterviewPage() {
           </div>
         </div>
 
-        {/* Footer info */}
+        {/* footer info */}
         <p className="text-center text-[11px] ip-text-muted">
           © 2026 InterviewPilot · Powered by Gemini AI
         </p>

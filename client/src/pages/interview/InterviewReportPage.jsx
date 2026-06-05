@@ -36,21 +36,21 @@ export default function InterviewReportPage() {
     fetchReport();
   }, [id]);
 
-  /* Score color helper */
+  /* score color helper */
   const scoreColor = (score) => {
     if (score >= 75) return "text-green-400";
     if (score >= 50) return "text-yellow-400";
     return "text-red-400";
   };
 
-  /* Individual answer score color */
+  /* individual answer score color */
   const answerScoreColor = (score) => {
     if (score >= 8) return "ip-badge ip-badge-success";
     if (score >= 5) return "ip-badge ip-badge-warning";
     return "ip-badge ip-badge-danger";
   };
 
-  /* Loading state */
+  /* loading state */
   if (loading) {
     return (
       <div className="min-h-screen ip-bg-page flex items-center justify-center">
@@ -62,7 +62,7 @@ export default function InterviewReportPage() {
     );
   }
 
-  /* Error state */
+  /* error state */
   if (error) {
     return (
       <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
@@ -80,7 +80,7 @@ export default function InterviewReportPage() {
   return (
     <div className="min-h-screen ip-bg-page">
 
-      {/* Top navigation bar */}
+      {/* top navigation bar */}
       <nav className="ip-navbar sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="InterviewPilot" className="w-7 h-7 rounded-lg" />
@@ -97,7 +97,7 @@ export default function InterviewReportPage() {
 
       <div className="max-w-3xl mx-auto px-6 py-8 flex flex-col gap-6">
 
-        {/* Hero: overall score */}
+        {/* hero: overall score */}
         <div className="ip-card border border-primary-500/20">
           <div className="ip-card-body text-center py-8">
             {/* role and date */}
@@ -121,7 +121,7 @@ export default function InterviewReportPage() {
           </div>
         </div>
 
-        {/* Two column: strengths + weaknesses */}
+        {/* two column: strengths + weaknesses */}
         <div className="ip-grid-2">
 
           {/* strengths */}
@@ -167,7 +167,7 @@ export default function InterviewReportPage() {
           </div>
         </div>
 
-        {/* Improvement roadmap */}
+        {/* improvement roadmap */}
         <div className="ip-card">
           <div className="ip-card-header">
             <span className="ip-card-title">🗺️ Improvement Roadmap</span>
@@ -179,7 +179,7 @@ export default function InterviewReportPage() {
           </div>
         </div>
 
-        {/* Per-question answer breakdown */}
+        {/* per-question answer breakdown */}
         <div className="ip-card">
           <div className="ip-card-header">
             <span className="ip-card-title">📋 Answer Breakdown</span>
@@ -204,7 +204,7 @@ export default function InterviewReportPage() {
                     : a.answer}
                 </p>
 
-                {/* Gemini feedback for this question */}
+                {/* gemini feedback for this question */}
                 <p className="ip-text-muted text-[12px] italic">{a.feedback}</p>
               </div>
             ))}
@@ -216,7 +216,7 @@ export default function InterviewReportPage() {
           </div>
         </div>
 
-        {/* Footer CTA */}
+        {/* footer cta */}
         <div className="flex items-center justify-center gap-4 pb-8">
           <Link to="/student/dashboard" className="btn-secondary">
             ← Back to Dashboard
