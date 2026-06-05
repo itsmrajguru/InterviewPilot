@@ -4,8 +4,12 @@ import api from '../../api'
 /* here the  return is actually returning the json responses
 sent by the controller to the frontend */
 
-export async function signupUser({ username, email, password, role }) {
-  return api.post('auth/signup', { username, email, password, role })
+export async function signup(email, password) {
+  return api.post('auth/signup', { email, password })
+}
+
+export async function signupUser({ email, password, role }) {
+  return api.post('auth/signup', { email, password, role })
 }
 
 export async function loginUser(email, password) {
@@ -24,7 +28,7 @@ export async function loginUser(email, password) {
   return data;
 }
 
-export async function verifySignupOtp(email, otp) {
+export async function verifySignupOtp({ email, otp }) {
   return api.post('auth/verify-otp', { email, otp })
 }
 
@@ -34,4 +38,4 @@ export async function forgotPassword(email) {
 
 export async function resetPassword(token, newPassword) {
   return api.post('auth/reset-password', { token, newPassword })
-}
+}

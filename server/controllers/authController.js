@@ -123,7 +123,7 @@ const signup = async (req, res) => {
                 }
             }, 0);
 
-            return res.status(200).json({
+            return res.status(401).json({
                 success: true,
                 message: "OTP sent to your email. Please verify to complete registration.",
                 requiresOtp: true,
@@ -473,14 +473,14 @@ const resetPassword = async (req, res) => {
             await getUser.save()
 
             return res.status(200).json({
-                succes:true,
-                message:"Password reset successfully. Please login."
+                succes: true,
+                message: "Password reset successfully. Please login."
             })
         } catch (e) {
             console.log(e);
             return res.status(500).json({
-                success:false,
-                message:"Something went wrong! Please try again"
+                success: false,
+                message: "Something went wrong! Please try again"
             })
         }
     }

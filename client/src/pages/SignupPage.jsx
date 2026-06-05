@@ -53,9 +53,9 @@ we have also added the return to home page here*/}
           {/* careersync logo */}
           <img
             src="/logo.svg"
-            alt="CareerSync Logo"
+            alt="InterviewPilot Logo"
             className="w-32 h-32 mx-auto mb-6 shadow-2xl rounded-[32px] border border-white/10 p-2"
-            style={{ filter: "drop-shadow(0 0 50px rgba(91, 72, 232, 0.3))" }}
+            style={{ filter: "drop-shadow(0 0 50px rgba(0, 199, 183, 0.3))" }}
           />
           <h2 className="text-[52px] font-display font-black text-white leading-[0.9] tracking-[-3px] mb-3">
             Build your <span className="text-primary-400">future.</span>
