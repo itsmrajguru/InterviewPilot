@@ -1,20 +1,30 @@
 //creating InterviewReportPage
 
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import { getReport } from "../../services/interviewService";
 
 export default function InterviewReportPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [report, setReport] = useState(null);
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const savedSession = useMemo(() => {
+    return location.state?.session || JSON.parse(sessionStorage.getItem(`interview_session_${id}`) || "null");
+  }, [id, location.state]);
+  const savedReport = location.state?.report || savedSession?.report || null;
+
+  const [report, setReport] = useState(savedReport);
+  const [session, setSession] = useState(savedSession);
+  const [loading, setLoading] = useState(!savedReport);
   const [error, setError] = useState("");
 
   /* step 1 :fetch the full report from the backend on mount */
   useEffect(() => {
+    if (savedReport) {
+      return;
+    }
+
     const fetchReport = async () => {
       try {
         const data = await getReport(id);
@@ -34,7 +44,7 @@ export default function InterviewReportPage() {
       }
     };
     fetchReport();
-  }, [id]);
+  }, [id, savedReport]);
 
   /* score color helper */
   const scoreColor = (score) => {

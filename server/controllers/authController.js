@@ -123,7 +123,7 @@ const signup = async (req, res) => {
                 }
             }, 0);
 
-            return res.status(401).json({
+            return res.status(200).json({
                 success: true,
                 message: "OTP sent to your email. Please verify to complete registration.",
                 requiresOtp: true,
@@ -312,8 +312,8 @@ const refreshToken = async (req, res) => {
         /* step 3:Generate new access token, 
         but note :RefreshToken dont carry the user role, to put it into the access token
         so fetch user for it */
-        const refreshUser = await userModel.findById(decoded?._id).select('role');
-        const newAccessToken = generateAccessToken(decoded?._id, refreshUser?.role)
+        const refreshUser = await userModel.findById(decoded?.id).select('role');
+        const newAccessToken = generateAccessToken(decoded?.id, refreshUser?.role)
 
         return res.status(200).json({
             success: true,

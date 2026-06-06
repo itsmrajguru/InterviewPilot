@@ -12,7 +12,8 @@ export default function InterviewRoomPage() {
 
   /* step 1 :extract session data passed via navigation state from JoinInterviewPage */
   const sessionData = location.state?.session;
-  const [session, setSession] = useState(sessionData);
+  const savedSession = sessionData || JSON.parse(sessionStorage.getItem(`interview_session_${id}`) || "null");
+  const [session] = useState(savedSession);
 
   /* step 2 :extract which question the student is currently looking at */
   const [currentIndex, setCurrentIndex] = useState(session?.currentQuestionIndex || 0);
@@ -29,20 +30,32 @@ export default function InterviewRoomPage() {
   const [error, setError] = useState("");
 
   /* step 4 :track which questions have been answered */
-  const [answered, setAnswered] = useState({});
+  const [answered, setAnswered] = useState(JSON.parse(sessionStorage.getItem(`interview_answered_${id}`) || "{}"));
 
   /* completing state */
   const [completing, setCompleting] = useState(false);
 
   const textareaRef = useRef(null);
 
-  /* condition :if no session data was passed,
+  /* condition :if no session data was found,
   redirect back to login for now */
   useEffect(() => {
     if (!session) {
       navigate("/login");
     }
   }, [session, navigate]);
+
+  /* condition :save the interview data, so refresh does not remove it */
+  useEffect(() => {
+    if (session) {
+      sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(session));
+    }
+  }, [id, session]);
+
+  /* condition :save answered questions also, so refresh does not reset them */
+  useEffect(() => {
+    sessionStorage.setItem(`interview_answered_${id}`, JSON.stringify(answered));
+  }, [id, answered]);
 
   if (!session) return null;
 
@@ -133,7 +146,9 @@ export default function InterviewRoomPage() {
     try {
       const data = await completeSession(id);
       if (data.success) {
-        navigate(`/interview/${id}/report`);
+        const completedSession = { ...session, status: "completed", report: data.report };
+        sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(completedSession));
+        navigate(`/interview/${id}/report`, { state: { session: completedSession, report: data.report } });
       } else {
         setError(data.message || "Could not complete interview.");
         setCompleting(false);

@@ -46,7 +46,9 @@ export default function JoinInterviewPage() {
       await startSession(session._id);
       /* navigate to the interview room, passing session data via state
       so the room page does not need to re-fetch */
-      navigate(`/interview/${session._id}`, { state: { session } });
+      const activeSession = { ...session, status: "active" };
+      sessionStorage.setItem(`interview_session_${session._id}`, JSON.stringify(activeSession));
+      navigate(`/interview/${session._id}`, { state: { session: activeSession } });
     } catch (e) {
       /* inform to the developer */
       console.error("startSession error:", e);

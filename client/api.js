@@ -47,7 +47,7 @@ api.interceptors.request.use((config) => {
   //import the access token from localstorage
   const token = localStorage.getItem('token')
   if (token) {
-    config.headers.Authorization = `Bearer${token}`
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config;
 })
