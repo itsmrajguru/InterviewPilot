@@ -15,9 +15,11 @@ const generateSignedUploadParams = (sessionId, questionIndex) => {
     const timestamp = Math.round(Date.now() / 1000)
     const publicId  = `interviewpilot/${sessionId}/q${questionIndex}`
 
-    /* sign the request using cloudinary's built-in helper */
+    /* sign the request using cloudinary's built-in helper 
+       note: only include params that are sent in the form body.
+       resource_type is part of the URL path, not the form, so it must NOT be signed */
     const signature = cloudinary.utils.api_sign_request(
-        { timestamp, public_id: publicId, resource_type: 'video' },
+        { timestamp, public_id: publicId },
         process.env.CLOUDINARY_API_SECRET
     )
 

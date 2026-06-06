@@ -18,12 +18,17 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
   const timerRef    = useRef(null);
   const chunksRef   = useRef([]);
 
-  /* cleanup camera stream */
+  /* cleanup camera stream and reset to idle when question changes */
   useEffect(() => {
+    setPhase("idle");
+    setError("");
+    setElapsed(0);
+    setProgress(0);
     return () => {
       stopStream();
     };
   }, [questionIndex]);
+
 
   /* sync stream to video element when phase changes */
   useEffect(() => {
@@ -62,6 +67,12 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
 
   /* step 2 :start recording */
   const handleStartRecording = () => {
+    /* guard: stream must be active */
+    if (!streamRef.current) {
+      setError("camera stream lost. please re-enable camera.");
+      setPhase("idle");
+      return;
+    }
     chunksRef.current = [];
     setElapsed(0);
 

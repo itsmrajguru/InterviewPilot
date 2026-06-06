@@ -156,7 +156,21 @@ const startSession = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Session not found.' })
         }
 
-        /* condition :only pending sessions can be started */
+        /* condition :if already active, return success so page reloads work gracefully */
+        if (session.status === 'active') {
+            return res.status(200).json({
+                success: true,
+                message: 'Interview already active.',
+                session: {
+                    _id: session._id,
+                    status: session.status,
+                    startedAt: session.startedAt,
+                    currentQuestionIndex: session.currentQuestionIndex
+                }
+            })
+        }
+
+        /* condition :completed or cancelled sessions cannot be restarted */
         if (session.status !== 'pending') {
             return res.status(400).json({
                 success: false,
