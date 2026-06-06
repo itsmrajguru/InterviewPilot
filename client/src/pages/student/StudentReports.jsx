@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import StudentTopbar from "../../components/StudentTopbar";
 import { getStudentDashboard } from "../../services/interviewService";
 
 /* icons */
@@ -60,21 +61,10 @@ export default function StudentReports() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* top bar */}
-        <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
-          style={{
-            height: 52,
-            background: "var(--bg-card)",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            My Reports
-          </span>
-        </header>
+        <StudentTopbar
+          title="My Reports"
+          sub="Review scores, feedback and improvement areas"
+        />
 
         {/* page body */}
         <main className="flex-1 p-8">

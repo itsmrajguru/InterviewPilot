@@ -1,8 +1,8 @@
 //creating InterviewRoomPage
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { submitAnswer, submitCode, completeSession } from "../../services/interviewService";
+import { submitCode, completeSession } from "../../services/interviewService";
 import VideoRecorder from "../../components/VideoRecorder";
 
 
@@ -18,7 +18,6 @@ export default function InterviewRoomPage() {
 
   /* step 2 :extract which question the student is currently looking at */
   const [currentIndex, setCurrentIndex] = useState(session?.currentQuestionIndex || 0);
-  const [answer, setAnswer] = useState("");
 
   /* step 3 :extract code editor state for the coding question */
   const [code, setCode] = useState("// Write your solution here\n\n");
@@ -26,20 +25,16 @@ export default function InterviewRoomPage() {
 
   /* loading and feedback states */
   const [submitting, setSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState(null); 
-  const [codeResults, setCodeResults] = useState(null); 
+  const [feedback, setFeedback] = useState(null);
+  const [codeResults, setCodeResults] = useState(null);
   const [error, setError] = useState("");
 
-  /* answer mode toggle */
-  const [answerMode, setAnswerMode] = useState("video");
-
   /* step 4 :track which questions have been answered */
+
   const [answered, setAnswered] = useState(JSON.parse(sessionStorage.getItem(`interview_answered_${id}`) || "{}"));
 
   /* completing state */
   const [completing, setCompleting] = useState(false);
-
-  const textareaRef = useRef(null);
 
   /* condition :if no session data was found,
   redirect back to login for now */
@@ -68,37 +63,6 @@ export default function InterviewRoomPage() {
   const isLastQuestion = currentIndex === questions.length - 1;
   const isCoding = currentQuestion?.type === "coding";
   const allAnswered = questions.length > 0 && Object.keys(answered).length >= questions.length;
-
-  /* submit an hr or technical answer */
-  const handleSubmitAnswer = async () => {
-    if (!answer.trim()) return;
-    setSubmitting(true);
-    setFeedback(null);
-    setError("");
-
-    try {
-      const data = await submitAnswer({
-        sessionId: id,
-        questionIndex: currentIndex,
-        answer
-      });
-
-      if (data.success) {
-        /* show the Gemini score and feedback inline */
-        setFeedback(data.evaluation);
-        setAnswered(prev => ({ ...prev, [currentIndex]: true }));
-      } else {
-        setError(data.message || "Could not submit answer.");
-      }
-    } catch (e) {
-      /* inform to the developer */
-      console.error("submitAnswer error:", e);
-      /* inform to the user */
-      setError(e.response?.data?.message || "Connection error. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   /* submit code to judge0 and gemini */
   const handleSubmitCode = async () => {
@@ -135,7 +99,6 @@ export default function InterviewRoomPage() {
 
   /* move to the next question */
   const handleNext = () => {
-    setAnswer("");
     setCode("// Write your solution here\n\n");
     setFeedback(null);
     setCodeResults(null);
@@ -277,67 +240,27 @@ export default function InterviewRoomPage() {
             </div>
           </div>
 
-          {/* answer area — textarea for hr/technical, code for coding */}
+          {/* answer area */}
           {!isCoding ? (
-            <div className="ip-card">
-              <div className="ip-card-body">
-
-                {/* mode toggle */}
-                {!feedback && (
-                  <div className="flex gap-2 mb-4">
-                    <button
-                      className={answerMode === "video" ? "btn-primary text-xs py-1.5 px-3" : "btn-secondary text-xs py-1.5 px-3"}
-                      onClick={() => setAnswerMode("video")}
-                    >
-                      📹 Video Answer
-                    </button>
-                    <button
-                      className={answerMode === "text" ? "btn-primary text-xs py-1.5 px-3" : "btn-secondary text-xs py-1.5 px-3"}
-                      onClick={() => setAnswerMode("text")}
-                    >
-                      ✏️ Text Answer
-                    </button>
-                  </div>
-                )}
-
-                {/* video recorder */}
-                {answerMode === "video" && !feedback && (
-                  <VideoRecorder
-                    sessionId={id}
-                    questionIndex={currentIndex}
-                    onSubmitted={(evaluation, transcript) => {
-                      setFeedback(evaluation);
-                      setAnswered(prev => ({ ...prev, [currentIndex]: true }));
-                    }}
-                    disabled={submitting}
-                  />
-                )}
-
-                {/* text answer textarea */}
-                {answerMode === "text" && !feedback && (
-                  <>
-                    <label className="ip-label">Your Answer</label>
-                    <textarea
-                      ref={textareaRef}
-                      className="ip-input resize-none"
-                      rows={6}
-                      placeholder="Type your answer here in as much detail as you can..."
-                      value={answer}
-                      onChange={(e) => setAnswer(e.target.value)}
-                      disabled={!!feedback || submitting}
-                    />
-                    <div className="flex items-center justify-between mt-1">
-                      <span className="text-[11px] ip-text-muted">{answer.length} chars</span>
-                    </div>
-                  </>
-                )}
-              </div>
+            /* hr / technical — video recorder only, no text mode */
+            <div>
+              {!feedback && (
+                <VideoRecorder
+                  sessionId={id}
+                  questionIndex={currentIndex}
+                  onSubmitted={(evaluation) => {
+                    setFeedback(evaluation);
+                    setAnswered(prev => ({ ...prev, [currentIndex]: true }));
+                  }}
+                />
+              )}
             </div>
           ) : (
             /* coding problem — language selector + code textarea */
             <div className="ip-card">
               <div className="ip-card-header">
                 <span className="ip-card-title">Code Editor</span>
+
                 {/* language selector */}
                 <div className="flex gap-1">
                   {["javascript", "python", "cpp", "java"].map(lang => (
@@ -377,115 +300,101 @@ export default function InterviewRoomPage() {
             </div>
           )}
 
-          {/* gemini feedback card — shown after submission */}
+          {/* gemini feedback card */}
           {feedback && (
-            <div className="ip-card border border-primary-500/20 animate-fade-up">
-              <div className="ip-card-body flex flex-col gap-3">
-
-                {/* content and communication scores grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  <div className="ip-stat-card">
-                    <div className="ip-stat-label">Content Score</div>
-                    <div className="ip-stat-value">
-                      {feedback.score ?? feedback.contentScore}/10
-                    </div>
-                  </div>
-                  {feedback.communicationScore !== undefined && (
-                    <div className="ip-stat-card">
-                      <div className="ip-stat-label">Communication</div>
-                      <div className="ip-stat-value" style={{ color: "var(--accent)" }}>
-                        {feedback.communicationScore}/10
-                      </div>
-                    </div>
-                  )}
+            <div className="ip-card" style={{ padding: 20, marginTop: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                <div className="ip-stat-card">
+                  <div className="ip-stat-label">Content Score</div>
+                  <div className="ip-stat-value">{feedback.contentScore ?? feedback.score}/10</div>
                 </div>
-
-                {/* communication sub-scores */}
-                {feedback.communicationScore !== undefined && (
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-                    <div className="ip-stat-card">
-                      <div className="ip-stat-label">Clarity</div>
-                      <div style={{ fontWeight: 700, fontSize: 18 }}>{feedback.clarityScore}/10</div>
-                    </div>
-                    <div className="ip-stat-card">
-                      <div className="ip-stat-label">Vocabulary</div>
-                      <div style={{ fontWeight: 700, fontSize: 18 }}>{feedback.vocabularyScore}/10</div>
-                    </div>
-                    <div className="ip-stat-card">
-                      <div className="ip-stat-label">Structure</div>
-                      <div style={{ fontWeight: 700, fontSize: 18 }}>{feedback.structureScore}/10</div>
-                    </div>
+                <div className="ip-stat-card">
+                  <div className="ip-stat-label">Communication</div>
+                  <div className="ip-stat-value" style={{ color: "var(--accent)" }}>
+                    {feedback.communicationScore}/10
                   </div>
-                )}
-
-                {/* ai feedback text */}
-                <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                  {feedback.feedback}
-                </p>
-
-                {/* test case results for coding questions */}
-                {codeResults && (
-                  <div className="flex flex-col gap-2 mt-1">
-                    <p className="ip-text-muted text-[11px] uppercase tracking-widest font-bold">
-                      Test Results — {codeResults.filter(r => r.passed).length}/{codeResults.length} passed
-                    </p>
-                    {codeResults.map((r, i) => (
-                      <div
-                        key={i}
-                        className={`flex items-start gap-2 px-3 py-2 rounded-lg text-[12px] font-mono ${
-                          r.passed ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
-                        }`}
-                      >
-                        <span>{r.passed ? "✓" : "✗"}</span>
-                        <div>
-                          <span className="opacity-60">Input: </span>{r.input || "(none)"}<br />
-                          <span className="opacity-60">Expected: </span>{r.expectedOutput}<br />
-                          <span className="opacity-60">Got: </span>{r.actualOutput || r.error || "—"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                </div>
               </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
+                <div className="ip-stat-card">
+                  <div className="ip-stat-label">Clarity</div>
+                  <div style={{ fontWeight: 700, fontSize: 16 }}>{feedback.clarityScore}/10</div>
+                </div>
+                <div className="ip-stat-card">
+                  <div className="ip-stat-label">Vocabulary</div>
+                  <div style={{ fontWeight: 700, fontSize: 16 }}>{feedback.vocabularyScore}/10</div>
+                </div>
+                <div className="ip-stat-card">
+                  <div className="ip-stat-label">Structure</div>
+                  <div style={{ fontWeight: 700, fontSize: 16 }}>{feedback.structureScore}/10</div>
+                </div>
+              </div>
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                {feedback.feedback}
+              </p>
+
+              {/* coding question test case results */}
+              {codeResults && (
+                <div className="flex flex-col gap-2 mt-3">
+                  <p className="ip-text-muted text-[11px] uppercase tracking-widest font-bold">
+                    Test Results — {codeResults.filter(r => r.passed).length}/{codeResults.length} passed
+                  </p>
+                  {codeResults.map((r, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-start gap-2 px-3 py-2 rounded-lg text-[12px] font-mono ${
+                        r.passed ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
+                      }`}
+                    >
+                      <span>{r.passed ? "✓" : "✗"}</span>
+                      <div>
+                        <span className="opacity-60">Input: </span>{r.input || "(none)"}<br />
+                        <span className="opacity-60">Expected: </span>{r.expectedOutput}<br />
+                        <span className="opacity-60">Got: </span>{r.actualOutput || r.error || "—"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {/* action buttons */}
           <div className="flex items-center justify-between">
 
-            {/* submit button */}
-            {!feedback && answerMode === "text" ? (
+            {/* submit button — coding only, video answers self-submit */}
+            {!feedback && isCoding ? (
               <button
-                onClick={isCoding ? handleSubmitCode : handleSubmitAnswer}
-                disabled={submitting || (isCoding ? !code.trim() : !answer.trim())}
+                onClick={handleSubmitCode}
+                disabled={submitting || !code.trim()}
                 className="btn-primary"
               >
-                {submitting
-                  ? (isCoding ? "Running code..." : "Evaluating...")
-                  : (isCoding ? "Submit Code →" : "Submit Answer →")}
+                {submitting ? "Running code..." : "Submit Code →"}
               </button>
             ) : (
               /* after feedback: next question or complete */
-              isLastQuestion ? (
-                allAnswered ? (
-                  <button
-                    onClick={handleComplete}
-                    disabled={completing}
-                    className="btn-primary"
-                  >
-                    {completing ? "Generating Report..." : "Finish Interview & Get Report →"}
-                  </button>
+              feedback ? (
+                isLastQuestion ? (
+                  allAnswered ? (
+                    <button
+                      onClick={handleComplete}
+                      disabled={completing}
+                      className="btn-primary"
+                    >
+                      {completing ? "Generating Report..." : "Finish Interview & Get Report →"}
+                    </button>
+                  ) : (
+                    <span className="ip-text-muted text-[12px]">Answer all questions to finish.</span>
+                  )
                 ) : (
-                  <span className="ip-text-muted text-[12px]">Answer all questions to finish.</span>
+                  <button onClick={handleNext} className="btn-primary">
+                    Next Question →
+                  </button>
                 )
-              ) : (
-                <button onClick={handleNext} className="btn-primary">
-                  Next Question →
-                </button>
-              )
+              ) : <div />
             )}
 
-            {/* skip button — moves forward without submitting */}
+            {/* skip button */}
             {!feedback && !isLastQuestion && (
               <button
                 onClick={handleNext}

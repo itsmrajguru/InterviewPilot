@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import StudentTopbar from "../../components/StudentTopbar";
 import { createInterviewSession } from "../../services/interviewService";
 
 /* icons */
@@ -66,21 +67,10 @@ export default function StudentPractice() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* top bar */}
-        <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
-          style={{
-            height: 52,
-            background: "var(--bg-card)",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            AI Practice Room
-          </span>
-        </header>
+        <StudentTopbar
+          title="AI Practice Room"
+          sub="Create a custom mock interview before the real round"
+        />
 
         {/* page body */}
         <main className="flex-1 p-8 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">

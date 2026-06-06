@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import StudentTopbar from "../../components/StudentTopbar";
+import TextPracticeTerminal from "../../components/TextPracticeTerminal";
 import { getStudentDashboard } from "../../services/interviewService";
 
 /* icons */
@@ -180,27 +182,10 @@ export default function StudentDashboard() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* top bar */}
-        <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
-          style={{
-            height: 52,
-            background: "var(--bg-card)",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            Dashboard
-          </span>
-          <button
-            onClick={() => navigate("/student/practice")}
-            className="btn-primary py-2 px-4 text-xs flex items-center gap-1.5"
-          >
-            <IconPlay /> Start Practice
-          </button>
-        </header>
+        <StudentTopbar
+          title="Dashboard"
+          sub="Track interviews, scores and practice progress"
+        />
 
         {/* page body */}
         <main className="flex-1 p-8">
@@ -343,7 +328,7 @@ export default function StudentDashboard() {
                     onClick={() => navigate("/student/practice")}
                     className="btn-primary w-full py-2.5 text-sm justify-start gap-2.5 px-4"
                   >
-                    <IconPlay /> Start Practice Interview
+                    <IconPlay /> 📹 Start Video Practice
                   </button>
                   <button
                     onClick={() => navigate("/student/interviews")}
@@ -388,30 +373,7 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* practice cta banner */}
-              <div
-                className="rounded-md p-5"
-                style={{
-                  background: "var(--accent-light)",
-                  border: "1px solid rgba(91,72,232,0.15)",
-                }}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <IconCode />
-                  <span className="text-sm font-bold" style={{ color: "var(--accent)" }}>
-                    Practice Mode
-                  </span>
-                </div>
-                <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--text-secondary)" }}>
-                  Don't wait for a company invite. Practice anytime and build confidence before the real thing.
-                </p>
-                <button
-                  onClick={() => navigate("/student/practice")}
-                  className="btn-primary w-full py-2 text-xs"
-                >
-                  Start Practice Now
-                </button>
-              </div>
+              <TextPracticeTerminal />
             </div>
           </div>
         </main>

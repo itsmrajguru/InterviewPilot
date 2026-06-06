@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import StudentTopbar from "../../components/StudentTopbar";
 import { getStudentDashboard } from "../../services/interviewService";
 
 /* icons */
@@ -94,27 +95,10 @@ export default function StudentInterviews() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* top bar */}
-        <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
-          style={{
-            height: 52,
-            background: "var(--bg-card)",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            My Interviews
-          </span>
-          <button
-            onClick={() => navigate("/student/practice")}
-            className="btn-primary py-2 px-4 text-xs"
-          >
-            + New Practice
-          </button>
-        </header>
+        <StudentTopbar
+          title="My Interviews"
+          sub="Review all company invitations and completed rounds"
+        />
 
         {/* page body */}
         <main className="flex-1 p-8">
