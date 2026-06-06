@@ -27,7 +27,7 @@ export default function VerifySignupOtpPage() {
 
     try {
       //step 1 : call the verifySignupOtp api with email and otp
-      const data = await verifySignupOtp(email, otp);
+      const data = await verifySignupOtp({ email, otp });
 
       if (data && data.success) {
         //step 2 : on success, redirect to login page

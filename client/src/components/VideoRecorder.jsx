@@ -25,6 +25,15 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
     };
   }, [questionIndex]);
 
+  /* sync stream to video element when phase changes */
+  useEffect(() => {
+    if ((phase === "ready" || phase === "recording") && videoRef.current && streamRef.current) {
+      if (videoRef.current.srcObject !== streamRef.current) {
+        videoRef.current.srcObject = streamRef.current;
+      }
+    }
+  }, [phase]);
+
   /* helper :stop all camera and mic tracks */
   const stopStream = () => {
     if (streamRef.current) {
@@ -39,11 +48,15 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
     setError("");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      streamRef.current          = stream;
-      videoRef.current.srcObject = stream;
+      streamRef.current = stream;
       setPhase("ready");
     } catch (e) {
-      setError("camera or microphone access was denied. please allow access and try again.");
+      console.error("Camera access error:", e);
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setError("Camera access is not supported in this browser context (requires HTTPS or localhost).");
+      } else {
+        setError(`camera or microphone access failed: ${e.message || "access denied"}. please ensure a camera is connected and allow access.`);
+      }
     }
   };
 
@@ -119,7 +132,7 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
 
     } catch (e) {
       console.error("VideoRecorder upload error :", e);
-      setError("upload failed. please try again.");
+      setError(`upload failed: ${e.message}`);
       setPhase("ready");
     }
   };

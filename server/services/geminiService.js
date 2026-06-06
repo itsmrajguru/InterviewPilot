@@ -35,7 +35,7 @@ const stripFences = (text) => {
 /* generateInterviewQuestions service */
 const generateInterviewQuestions = async (role, difficulty, resumeText = '') => {
     const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build the prompt to tell Gemini exactly what JSON shape we want */
     const prompt = `
@@ -81,7 +81,7 @@ Return ONLY a valid JSON array — no markdown, no extra text:
 /* evaluateAnswer service */
 const evaluateAnswer = async (question, answer) => {
     const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build the prompt */
     const prompt = `
@@ -116,7 +116,7 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 /* evaluateCode service */
 const evaluateCode = async (problemDescription, code, language, testResults) => {
     const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :summarise test results so the prompt stays short */
     const passed = testResults.filter(t => t.passed).length
@@ -162,7 +162,7 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 /* evaluateCommunication service */
 const evaluateCommunication = async (question, transcript) => {
     const client = getClient()
-    const model  = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model  = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build the evaluation prompt */
     const prompt = `
@@ -215,7 +215,7 @@ Return ONLY valid JSON — no markdown, no extra text:
 /* generateReport service */
 const generateReport = async (sessionData) => {
     const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build a compact summary of all answers and scores */
     const answerSummary = (sessionData.answers || [])
