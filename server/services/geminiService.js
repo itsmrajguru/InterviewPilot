@@ -159,14 +159,72 @@ Return ONLY a valid JSON object — no markdown, no extra text:
     }
 }
 
+/* evaluateCommunication service */
+const evaluateCommunication = async (question, transcript) => {
+    const client = getClient()
+    const model  = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+
+    /* step 1 :build the evaluation prompt */
+    const prompt = `
+You are evaluating a candidate's spoken video interview answer.
+
+Question: ${question}
+Spoken Answer (transcript): ${transcript || '[No speech detected]'}
+
+Rate the following on 0-10 each:
+- contentScore: how correct and complete was the answer?
+- communicationScore: overall spoken communication quality
+- clarityScore: was it easy to understand?
+- vocabularyScore: did they use correct technical/professional vocabulary?
+- structureScore: did they answer in a structured, organised way?
+
+Return ONLY valid JSON — no markdown, no extra text:
+{
+  "contentScore": <0-10>,
+  "communicationScore": <0-10>,
+  "clarityScore": <0-10>,
+  "vocabularyScore": <0-10>,
+  "structureScore": <0-10>,
+  "feedback": "<2-3 sentences combining content accuracy and communication quality>"
+}
+`
+
+    try {
+        const result  = await model.generateContent(prompt)
+        const cleaned = stripFences(result.response.text())
+        const parsed  = JSON.parse(cleaned)
+        return {
+            contentScore:       Math.min(10, Math.max(0, Number(parsed.contentScore       || 5))),
+            communicationScore: Math.min(10, Math.max(0, Number(parsed.communicationScore || 5))),
+            clarityScore:       Math.min(10, Math.max(0, Number(parsed.clarityScore       || 5))),
+            vocabularyScore:    Math.min(10, Math.max(0, Number(parsed.vocabularyScore    || 5))),
+            structureScore:     Math.min(10, Math.max(0, Number(parsed.structureScore     || 5))),
+            feedback:           parsed.feedback || 'No feedback provided.'
+        }
+    } catch (e) {
+        console.log('evaluateCommunication Error :', e)
+        /* safe fallback so the session does not crash */
+        return {
+            contentScore: 5, communicationScore: 5, clarityScore: 5,
+            vocabularyScore: 5, structureScore: 5,
+            feedback: 'Could not evaluate communication automatically.'
+        }
+    }
+}
+
 /* generateReport service */
 const generateReport = async (sessionData) => {
     const client = getClient()
     const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
-    /* step 1 :build a compact summary of all answers + scores for the prompt */
+    /* step 1 :build a compact summary of all answers and scores */
     const answerSummary = (sessionData.answers || [])
-        .map((a, i) => `Q${i + 1} [${a.type}] Score: ${a.score}/10 — ${a.feedback}`)
+        .map((a, i) => {
+            const commLine = a.communicationScore
+                ? ` | Communication: ${a.communicationScore}/10 | Clarity: ${a.clarityScore}/10`
+                : ''
+            return `Q${i + 1} [${a.type}] Content: ${a.score}/10${commLine} — ${a.feedback}`
+        })
         .join('\\n')
 
     /* step 2 :build the prompt */
@@ -180,6 +238,8 @@ ${answerSummary}
 Write a comprehensive performance report. Return ONLY a valid JSON object:
 {
   "overallScore": <weighted average 0-100>,
+  "communicationScore": <average communication score 0-10, based on video answers only. 0 if no video answers>,
+  "videoAnswersCount": <number of questions that had video answers>,
   "summary": "<2-3 sentence overall summary>",
   "strengths": ["...", "..."],
   "weaknesses": ["...", "..."],
@@ -206,4 +266,4 @@ Write a comprehensive performance report. Return ONLY a valid JSON object:
     }
 }
 
-module.exports = { generateInterviewQuestions, evaluateAnswer, evaluateCode, generateReport }
+module.exports = { generateInterviewQuestions, evaluateAnswer, evaluateCode, evaluateCommunication, generateReport }
