@@ -580,6 +580,81 @@ const submitVideoAnswer = async (req, res) => {
     }
 }
 
+/* handleTextPracticeStart controller */
+const handleTextPracticeStart = async (req, res) => {
+    const { role } = req.body
+
+    /* condition :role is required */
+    if (!role) {
+        return res.status(400).json({ success: false, message: 'role is required.' })
+    }
+
+    try {
+        /* step 1 :generate questions and pick the first one */
+        const questions    = await generateInterviewQuestions(role, 'medium', '')
+        const firstQuestion = questions[0]?.question || `Tell me about yourself as a ${role}.`
+
+        return res.status(200).json({ success: true, firstQuestion })
+
+    } catch (e) {
+        console.log('handleTextPracticeStart Error :', e)
+        return res.status(500).json({ success: false, message: 'Could not generate question.' })
+    }
+}
+
+/* handleTextPracticeChat controller */
+const handleTextPracticeChat = async (req, res) => {
+    const { role, question, answer, questionNumber = 1, previousQA = [] } = req.body
+
+    /* condition :all fields are required */
+    if (!role || !question || !answer) {
+        return res.status(400).json({ success: false, message: 'role, question and answer are required.' })
+    }
+
+    try {
+        /* step 1 :evaluate the student answer */
+        const { score, feedback } = await evaluateAnswer(question, answer)
+
+        /* step 2 :if this was the last question, return a summary */
+        if (questionNumber >= 5) {
+            const allQA   = [...previousQA, { question, answer, score, feedback }]
+            const avgScore = Math.round(
+                allQA.reduce((sum, qa) => sum + (qa.score || 0), 0) / allQA.length
+            )
+            return res.status(200).json({
+                success: true,
+                score,
+                feedback,
+                isComplete: true,
+                summary: {
+                    avgScore,
+                    totalQuestions: allQA.length,
+                    message: `Practice complete! Your average score was ${avgScore}/10.`
+                }
+            })
+        }
+
+        /* step 3 :generate next question using a fresh pool from gemini */
+        const allAsked     = [...previousQA.map(qa => qa.question), question]
+        const pool         = await generateInterviewQuestions(role, 'medium', '')
+        const nextQuestion = pool.find(q => !allAsked.includes(q.question))?.question
+            || pool[questionNumber]?.question
+            || `Tell me more about your experience with ${role}.`
+
+        return res.status(200).json({
+            success: true,
+            score,
+            feedback,
+            isComplete: false,
+            nextQuestion
+        })
+
+    } catch (e) {
+        console.log('handleTextPracticeChat Error :', e)
+        return res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' })
+    }
+}
+
 module.exports = {
     createSession,
     joinSession,
@@ -591,5 +666,7 @@ module.exports = {
     getCompanySessions,
     getStudentDashboard,
     getVideoUploadParams,
-    submitVideoAnswer
+    submitVideoAnswer,
+    handleTextPracticeStart,
+    handleTextPracticeChat
 }

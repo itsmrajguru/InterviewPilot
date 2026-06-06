@@ -15,7 +15,9 @@ const {
     getCompanySessions,
     getStudentDashboard,
     getVideoUploadParams,
-    submitVideoAnswer
+    submitVideoAnswer,
+    handleTextPracticeStart,
+    handleTextPracticeChat
 } = require('../controllers/interviewController')
 
 /* importing the auth middleware */
@@ -28,7 +30,11 @@ interviewRouter.post('/create', protect, createSession)
 interviewRouter.get('/company/sessions', protect, getCompanySessions)
 
 
-/* Student / Public routes */
+/* text practice routes — no auth required */
+interviewRouter.post('/text-practice/start', handleTextPracticeStart)
+interviewRouter.post('/text-practice/chat',  handleTextPracticeChat)
+
+/* student / public routes */
 interviewRouter.get('/student/dashboard', protect, getStudentDashboard)
 interviewRouter.get('/join/:token', joinSession)
 interviewRouter.post('/:id/start', startSession)
