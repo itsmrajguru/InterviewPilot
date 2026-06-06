@@ -74,7 +74,12 @@ const reportSchema = new mongoose.Schema({
 const interviewSessionSchema = new mongoose.Schema(
     {
 
-        companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        /* stores the company user id when created from InterviewPilot frontend
+           OR the string 'careersync-service' when triggered by CareerSync integration */
+        companyId: { type: mongoose.Schema.Types.Mixed, required: true },
+
+        /* stores the CareerSync applicationId when session is triggered by CareerSync */
+        csApplicationId: { type: String, default: '' },
 
         studentEmail: { type: String, required: true },
 

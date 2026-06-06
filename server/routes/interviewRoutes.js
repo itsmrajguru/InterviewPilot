@@ -23,10 +23,28 @@ const {
 /* importing the auth middleware */
 const { protect } = require('../middleware/authMiddleware')
 
+/* flexibleAuth middleware */
+const flexibleAuth = (req, res, next) => {
+    const apiSecret = req.headers['x-api-secret']
+
+    if (apiSecret) {
+        /* CareerSync is calling — verify the shared API secret */
+        if (apiSecret !== process.env.INTERVIEWPILOT_API_SECRET) {
+            return res.status(401).json({ success: false, message: 'Invalid API secret.' })
+        }
+        /* set a synthetic user so createSession does not crash on req.user */
+        req.user = { id: 'careersync-service', role: 'service' }
+        return next()
+    }
+
+    /* otherwise fall through to normal JWT auth */
+    return protect(req, res, next)
+}
+
 
 /* Company / Recruiter routes */
 
-interviewRouter.post('/create', protect, createSession)
+interviewRouter.post('/create', flexibleAuth, createSession)
 interviewRouter.get('/company/sessions', protect, getCompanySessions)
 
 

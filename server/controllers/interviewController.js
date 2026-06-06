@@ -8,8 +8,16 @@ const { sendEmail } = require('../services/emailService')
 
 /* createSession controller*/
 const createSession = async (req, res) => {
-    /* step 1 : extract the studentEmail, role, difficulty and resumeText from req.body coming from the frontend */
-    const { studentEmail, role, difficulty = 'medium', resumeText = '' } = req.body
+    /* step 1 : extract the studentEmail, role, difficulty, resumeText from req.body coming from the frontend
+       csApplicationId and candidateName are only present when called from CareerSync */
+    const {
+        studentEmail,
+        role,
+        difficulty      = 'medium',
+        resumeText      = '',
+        csApplicationId = '',
+        candidateName   = ''
+    } = req.body
 
     /* condition :If we did not get any of them,simply return a json reply*/
     if (!studentEmail || !role) {
@@ -18,18 +26,20 @@ const createSession = async (req, res) => {
 
     try {
         /* step 2 :Generate a secure random invite token and set it to expire in 48 hours */
-        const inviteToken = crypto.randomBytes(32).toString('hex')
+        const inviteToken  = crypto.randomBytes(32).toString('hex')
         const inviteExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000)
 
-        /* step 3 :Create the session document — status starts as pending */
+        /* step 3 :Create the session document — status starts as pending
+           companyId falls back to a placeholder string when called by CareerSync service */
         const session = await InterviewSession.create({
-            companyId: req.user.id,
+            companyId:       req.user?.id || 'careersync-service',
             studentEmail,
             role,
             difficulty,
             resumeText,
             inviteToken,
-            inviteExpiry
+            inviteExpiry,
+            csApplicationId
         })
 
         /* step 4 :Build the invite link and send the email to the candidate via Resend */
@@ -381,15 +391,44 @@ const completeSession = async (req, res) => {
         })
 
         /* step 4 :save the report and mark session completed in the db */
-        session.report = reportData
-        session.status = 'completed'
+        session.report      = reportData
+        session.status      = 'completed'
         session.completedAt = new Date()
         await session.save()
+
+        /* step 5 :if this session was triggered by CareerSync, send results back (non-blocking) */
+        if (session.csApplicationId) {
+            try {
+                const axios     = require('axios')
+                const reportUrl = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/${session._id}/report`
+
+                await axios.post(
+                    `${process.env.CAREERSYNC_BACKEND_URL}/api/v1/integration/interview-result`,
+                    {
+                        csApplicationId: session.csApplicationId,
+                        overallScore:    session.report.overallScore,
+                        reportUrl,
+                        completedAt:     new Date()
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-secret': process.env.INTERVIEWPILOT_API_SECRET
+                        },
+                        timeout: 10000
+                    }
+                )
+                console.log(`Interview result sent back to CareerSync for application ${session.csApplicationId}`)
+            } catch (callbackErr) {
+                /* non-blocking — do not fail the interview completion if callback fails */
+                console.log('CareerSync callback failed (non-blocking) :', callbackErr.message)
+            }
+        }
 
         return res.status(200).json({
             success: true,
             message: 'Interview completed. Report generated.',
-            report: reportData
+            report:  reportData
         })
     } catch (e) {
         console.log(e);
