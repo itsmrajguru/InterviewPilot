@@ -16,7 +16,8 @@ const createSession = async (req, res) => {
         difficulty      = 'medium',
         resumeText      = '',
         csApplicationId = '',
-        candidateName   = ''
+        candidateName   = '',
+        companyEmail    = ''
     } = req.body
 
     /* condition :If we did not get any of them,simply return a json reply*/
@@ -29,10 +30,31 @@ const createSession = async (req, res) => {
         const inviteToken  = crypto.randomBytes(32).toString('hex')
         const inviteExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000)
 
-        /* step 3 :Create the session document — status starts as pending
-           companyId falls back to a placeholder string when called by CareerSync service */
+        /* step 2.5: find or auto-create company user by email from CareerSync */
+        let assignedCompanyId = req.user?.id || 'careersync-service';
+        if ((!req.user?.id || req.user.id === 'careersync-service') && companyEmail) {
+            const User = require('../models/AuthModel/UserModel');
+            const bcrypt = require('bcryptjs');
+            let companyUser = await User.findOne({ email: companyEmail });
+            if (!companyUser) {
+                /* condition : company not registered in InterviewPilot, auto-create their account */
+                const defaultPassword = 'InterviewPilot@123';
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(defaultPassword, salt);
+                companyUser = await User.create({
+                    email:      companyEmail,
+                    password:   hashedPassword,
+                    role:       'company',
+                    isVerified: true
+                });
+                console.log(`Auto-created company account for CareerSync user: ${companyEmail}`);
+            }
+            assignedCompanyId = companyUser._id;
+        }
+
+        /* step 3 :Create the session document — status starts as pending */
         const session = await InterviewSession.create({
-            companyId:       req.user?.id || 'careersync-service',
+            companyId:       assignedCompanyId,
             studentEmail,
             role,
             difficulty,
@@ -396,6 +418,39 @@ const completeSession = async (req, res) => {
         session.completedAt = new Date()
         await session.save()
 
+        /* step 4.5: send an email to the candidate that their interview is completed */
+        setTimeout(async () => {
+            try {
+                const reportUrl = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/${session._id}/report`
+                const html = `
+                    <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px;background:#f9f9ff;border-radius:16px;">
+                        <h2 style="color:#5b21b6;">Interview Completed!</h2>
+                        <p style="color:#444;font-size:15px;">
+                            You have successfully completed your interview for the role of <strong>${session.role}</strong>.
+                        </p>
+                        <p style="color:#444;font-size:15px;">
+                            Your final score is: <strong style="font-size:18px;color:#059669;">${reportData.overallScore}/100</strong>
+                        </p>
+                        <p style="color:#444;font-size:15px;">
+                            The hiring team will review your performance and reach out to you regarding the next steps about your hiring.
+                        </p>
+                        <a href="${reportUrl}" style="display:inline-block;margin:20px 0;padding:14px 28px;background:#5b21b6;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">
+                            View Detailed Report
+                        </a>
+                    </div>
+                `
+                await sendEmail({
+                    to: session.studentEmail,
+                    subject: `InterviewPilot — Interview Completed for ${session.role}`,
+                    text: `You have completed your interview for ${session.role}. Your score is ${reportData.overallScore}/100. We will contact you further about hiring.`,
+                    html
+                })
+                console.log("Completion Email Sent Successfully")
+            } catch (e) {
+                console.log('Completion Email Send Error :', e);
+            }
+        }, 0)
+
         /* step 5 :if this session was triggered by CareerSync, send results back (non-blocking) */
         if (session.csApplicationId) {
             try {
@@ -475,8 +530,17 @@ const getReport = async (req, res) => {
 /* getCompanySessions controller */
 const getCompanySessions = async (req, res) => {
     try {
+        const mongoose = require('mongoose');
+        /* convert string id to ObjectId for querying, since DB might store it as ObjectId */
+        const objId = new mongoose.Types.ObjectId(req.user.id);
+        
         /* step 1 :find all sessions belonging to this company from db, newest first */
-        const sessions = await InterviewSession.find({ companyId: req.user.id })
+        const sessions = await InterviewSession.find({ 
+            $or: [
+                { companyId: req.user.id }, 
+                { companyId: objId }
+            ]
+        })
             .select('studentEmail role difficulty status startedAt completedAt createdAt report.overallScore')
             .sort({ createdAt: -1 })
 
