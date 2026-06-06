@@ -37,3 +37,11 @@ export async function getReport(sessionId) {
 export async function getStudentDashboard() {
     return api.get('interviews/student/dashboard')
 }
+
+export async function getVideoUploadParams(sessionId, questionIndex) {
+    return api.get(`interviews/${sessionId}/video-upload-params?questionIndex=${questionIndex}`)
+}
+
+export async function submitVideoAnswer({ sessionId, questionIndex, videoUrl }) {
+    return api.post(`interviews/${sessionId}/video-answer`, { questionIndex, videoUrl })
+}

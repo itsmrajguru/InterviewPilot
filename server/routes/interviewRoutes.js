@@ -13,7 +13,9 @@ const {
     completeSession,
     getReport,
     getCompanySessions,
-    getStudentDashboard
+    getStudentDashboard,
+    getVideoUploadParams,
+    submitVideoAnswer
 } = require('../controllers/interviewController')
 
 /* importing the auth middleware */
@@ -31,6 +33,10 @@ interviewRouter.get('/student/dashboard', protect, getStudentDashboard)
 interviewRouter.get('/join/:token', joinSession)
 interviewRouter.post('/:id/start', startSession)
 interviewRouter.post('/:id/answer', submitAnswer)
+
+/* video answer routes */
+interviewRouter.get('/:id/video-upload-params', getVideoUploadParams)
+interviewRouter.post('/:id/video-answer', submitVideoAnswer)
 
 /* student submits code — Judge0 runs it, Gemini reviews quality */
 interviewRouter.post('/:id/code/submit', submitCode)

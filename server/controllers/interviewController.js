@@ -474,6 +474,112 @@ const getStudentDashboard = async (req, res) => {
     }
 }
 
+/* getVideoUploadParams controller */
+const getVideoUploadParams = async (req, res) => {
+    const { id }            = req.params
+    const { questionIndex } = req.query
+
+    /* condition :questionIndex must be provided */
+    if (questionIndex === undefined) {
+        return res.status(400).json({ success: false, message: 'questionIndex is required.' })
+    }
+
+    try {
+        /* step 1 :verify the session exists */
+        const session = await InterviewSession.findById(id)
+        if (!session) {
+            return res.status(404).json({ success: false, message: 'Session not found.' })
+        }
+
+        /* step 2 :generate and return signed cloudinary upload parameters */
+        const { generateSignedUploadParams } = require('../services/cloudinaryService')
+        const uploadParams = generateSignedUploadParams(id, questionIndex)
+
+        return res.status(200).json({ success: true, uploadParams })
+
+    } catch (e) {
+        console.log('getVideoUploadParams Error :', e)
+        return res.status(500).json({ success: false, message: 'Could not generate upload params.' })
+    }
+}
+
+/* submitVideoAnswer controller */
+const submitVideoAnswer = async (req, res) => {
+    const { id }                      = req.params
+    const { questionIndex, videoUrl } = req.body
+
+    /* condition :both fields are required */
+    if (!videoUrl || questionIndex === undefined) {
+        return res.status(400).json({ success: false, message: 'questionIndex and videoUrl are required.' })
+    }
+
+    try {
+        /* step 1 :find the session */
+        const session = await InterviewSession.findById(id)
+        if (!session) {
+            return res.status(404).json({ success: false, message: 'Session not found.' })
+        }
+
+        if (session.status !== 'active') {
+            return res.status(400).json({ success: false, message: 'Session is not active.' })
+        }
+
+        const question = session.questions[questionIndex]
+        if (!question) {
+            return res.status(400).json({ success: false, message: 'Invalid question index.' })
+        }
+
+        /* step 2 :transcribe the video using assemblyai */
+        console.log(`Transcribing video for session ${id} question ${questionIndex}...`)
+        const { transcribeVideo }       = require('../services/assemblyService')
+        const transcript                = await transcribeVideo(videoUrl)
+
+        /* step 3 :evaluate the transcript */
+        console.log(`Evaluating communication for session ${id} question ${questionIndex}...`)
+        const { evaluateCommunication } = require('../services/geminiService')
+        const evaluation                = await evaluateCommunication(question.question, transcript)
+
+        /* step 4 :build the answer document */
+        const answerDoc = {
+            questionIndex,
+            question:           question.question,
+            type:               question.type,
+            answer:             transcript,
+            videoUrl,
+            transcript,
+            score:              evaluation.contentScore,
+            communicationScore: evaluation.communicationScore,
+            clarityScore:       evaluation.clarityScore,
+            vocabularyScore:    evaluation.vocabularyScore,
+            structureScore:     evaluation.structureScore,
+            feedback:           evaluation.feedback,
+            submittedAt:        new Date()
+        }
+
+        /* step 5 :replace existing answer or push new one */
+        const existingIndex = session.answers.findIndex(a => a.questionIndex === questionIndex)
+        if (existingIndex !== -1) {
+            session.answers[existingIndex] = answerDoc
+        } else {
+            session.answers.push(answerDoc)
+        }
+
+        session.currentQuestionIndex = Math.max(session.currentQuestionIndex, questionIndex + 1)
+        await session.save()
+
+        return res.status(200).json({
+            success:    true,
+            message:    'Video answer transcribed and evaluated.',
+            transcript,
+            evaluation
+        })
+
+    } catch (e) {
+        console.log('submitVideoAnswer Error :', e)
+        return res.status(500).json({ success: false, message: 'Video evaluation failed. Please try again.' })
+    }
+}
+
 module.exports = {
     createSession,
     joinSession,
@@ -483,5 +589,7 @@ module.exports = {
     completeSession,
     getReport,
     getCompanySessions,
-    getStudentDashboard
+    getStudentDashboard,
+    getVideoUploadParams,
+    submitVideoAnswer
 }

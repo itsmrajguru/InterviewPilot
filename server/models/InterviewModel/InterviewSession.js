@@ -2,8 +2,7 @@
 
 const mongoose = require('mongoose')
 
-/* answerSchema 
-   Stores one student answer along with the Gemini evaluation for that answer */
+/* answerSchema */
 const answerSchema = new mongoose.Schema({
     questionIndex: { type: Number, required: true },
     question: { type: String, required: true },
@@ -14,6 +13,14 @@ const answerSchema = new mongoose.Schema({
     score: { type: Number, default: 0 },
 
     feedback: { type: String, default: '' },
+
+    /* video answer fields */
+    videoUrl:           { type: String, default: '' },
+    transcript:         { type: String, default: '' },
+    communicationScore: { type: Number, default: 0 },
+    clarityScore:       { type: Number, default: 0 },
+    vocabularyScore:    { type: Number, default: 0 },
+    structureScore:     { type: Number, default: 0 },
 
     submittedAt: { type: Date, default: Date.now }
 })
@@ -56,6 +63,10 @@ const reportSchema = new mongoose.Schema({
     weaknesses: [String],
 
     improvementRoadmap: { type: String, default: '' },
+
+    /* communication fields */
+    communicationScore: { type: Number, default: 0 },
+    videoAnswersCount:  { type: Number, default: 0 },
 
     generatedAt: { type: Date, default: Date.now }
 })
