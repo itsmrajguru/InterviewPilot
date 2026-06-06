@@ -1,0 +1,22 @@
+# local mongodb data directory — never commit this
+db_data/
+
+# node dependencies
+node_modules/
+server/node_modules/
+client/node_modules/
+
+# environment variables — contains secrets
+server/.env
+client/.env
+.env
+
+# build output
+client/dist/
+client/build/
+
+# os and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
