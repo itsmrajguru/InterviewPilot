@@ -67,12 +67,17 @@ export default function Sidebar({ role = "student" }) {
   return (
     <aside className="ip-sidebar">
       {/* logo area at top of sidebar */}
-      <div className="flex items-center gap-3 px-3 mb-6 mt-2">
-        <img src="/logo.svg" alt="InterviewPilot" className="w-8 h-8 rounded-lg" />
-        <span className="text-white font-bold text-[13px] tracking-tight">InterviewPilot</span>
+      <div className="flex items-center gap-3.5 px-3 mb-8 mt-2">
+        <img src="/logo.svg" alt="InterviewPilot" className="w-11 h-11 rounded-xl shadow-lg" />
+        <div className="flex flex-col leading-none">
+          <span className="text-white font-black text-[16px] tracking-tight">InterviewPilot</span>
+          <span className="text-white/40 font-bold text-[10px] uppercase tracking-[0.16em] mt-1.5">
+            AI Interviews
+          </span>
+        </div>
       </div>
 
-      <span className="ip-sidebar-section">
+      <span className="ip-sidebar-section !text-[12px] !tracking-[0.14em]">
         {role === "student" ? "Student" : "Recruiter"}
       </span>
 
@@ -83,7 +88,7 @@ export default function Sidebar({ role = "student" }) {
           <Link
             key={link.path}
             to={link.path}
-            className={`ip-sidebar-item ${isActive ? "active" : ""}`}
+            className={`ip-sidebar-item !text-[15px] !font-semibold !px-4 !py-3 [&_svg]:!w-[18px] [&_svg]:!h-[18px] ${isActive ? "active" : ""}`}
           >
             {link.icon}
             {link.name}
@@ -94,12 +99,12 @@ export default function Sidebar({ role = "student" }) {
       {/* spacer pushes logout to bottom */}
       <div className="flex-1" />
 
-      <span className="ip-sidebar-section">Account</span>
+      <span className="ip-sidebar-section !text-[12px] !tracking-[0.14em]">Account</span>
 
       {/* logout button */}
       <button
         onClick={handleLogout}
-        className="ip-sidebar-item w-full text-left"
+        className="ip-sidebar-item w-full text-left !text-[15px] !font-semibold !px-4 !py-3 [&_svg]:!w-[18px] [&_svg]:!h-[18px]"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
         Logout
