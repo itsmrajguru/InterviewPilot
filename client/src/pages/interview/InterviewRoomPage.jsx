@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { submitAnswer, submitCode, completeSession } from "../../services/interviewService";
+import VideoRecorder from "../../components/VideoRecorder";
 
 
 export default function InterviewRoomPage() {
@@ -28,6 +29,9 @@ export default function InterviewRoomPage() {
   const [feedback, setFeedback] = useState(null); 
   const [codeResults, setCodeResults] = useState(null); 
   const [error, setError] = useState("");
+
+  /* answer mode toggle */
+  const [answerMode, setAnswerMode] = useState("video");
 
   /* step 4 :track which questions have been answered */
   const [answered, setAnswered] = useState(JSON.parse(sessionStorage.getItem(`interview_answered_${id}`) || "{}"));
@@ -275,22 +279,58 @@ export default function InterviewRoomPage() {
 
           {/* answer area — textarea for hr/technical, code for coding */}
           {!isCoding ? (
-            /* hr / technical answer textarea */
             <div className="ip-card">
               <div className="ip-card-body">
-                <label className="ip-label">Your Answer</label>
-                <textarea
-                  ref={textareaRef}
-                  className="ip-input resize-none"
-                  rows={6}
-                  placeholder="Type your answer here in as much detail as you can..."
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  disabled={!!feedback || submitting}
-                />
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-[11px] ip-text-muted">{answer.length} chars</span>
-                </div>
+
+                {/* mode toggle */}
+                {!feedback && (
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      className={answerMode === "video" ? "btn-primary text-xs py-1.5 px-3" : "btn-secondary text-xs py-1.5 px-3"}
+                      onClick={() => setAnswerMode("video")}
+                    >
+                      📹 Video Answer
+                    </button>
+                    <button
+                      className={answerMode === "text" ? "btn-primary text-xs py-1.5 px-3" : "btn-secondary text-xs py-1.5 px-3"}
+                      onClick={() => setAnswerMode("text")}
+                    >
+                      ✏️ Text Answer
+                    </button>
+                  </div>
+                )}
+
+                {/* video recorder */}
+                {answerMode === "video" && !feedback && (
+                  <VideoRecorder
+                    sessionId={id}
+                    questionIndex={currentIndex}
+                    onSubmitted={(evaluation, transcript) => {
+                      setFeedback(evaluation);
+                      setAnswered(prev => ({ ...prev, [currentIndex]: true }));
+                    }}
+                    disabled={submitting}
+                  />
+                )}
+
+                {/* text answer textarea */}
+                {answerMode === "text" && !feedback && (
+                  <>
+                    <label className="ip-label">Your Answer</label>
+                    <textarea
+                      ref={textareaRef}
+                      className="ip-input resize-none"
+                      rows={6}
+                      placeholder="Type your answer here in as much detail as you can..."
+                      value={answer}
+                      onChange={(e) => setAnswer(e.target.value)}
+                      disabled={!!feedback || submitting}
+                    />
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-[11px] ip-text-muted">{answer.length} chars</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ) : (
@@ -341,17 +381,49 @@ export default function InterviewRoomPage() {
           {feedback && (
             <div className="ip-card border border-primary-500/20 animate-fade-up">
               <div className="ip-card-body flex flex-col gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-[13px] ip-text-muted font-bold uppercase tracking-widest">
-                    AI Evaluation
-                  </span>
-                  <span className={`text-[22px] font-black font-display ${scoreColor(feedback.score)}`}>
-                    {feedback.score}/10
-                  </span>
-                </div>
-                <p className="ip-text-secondary text-[13px] leading-relaxed">{feedback.feedback}</p>
 
-                {/* test case results for coding question */}
+                {/* content and communication scores grid */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div className="ip-stat-card">
+                    <div className="ip-stat-label">Content Score</div>
+                    <div className="ip-stat-value">
+                      {feedback.score ?? feedback.contentScore}/10
+                    </div>
+                  </div>
+                  {feedback.communicationScore !== undefined && (
+                    <div className="ip-stat-card">
+                      <div className="ip-stat-label">Communication</div>
+                      <div className="ip-stat-value" style={{ color: "var(--accent)" }}>
+                        {feedback.communicationScore}/10
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* communication sub-scores */}
+                {feedback.communicationScore !== undefined && (
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                    <div className="ip-stat-card">
+                      <div className="ip-stat-label">Clarity</div>
+                      <div style={{ fontWeight: 700, fontSize: 18 }}>{feedback.clarityScore}/10</div>
+                    </div>
+                    <div className="ip-stat-card">
+                      <div className="ip-stat-label">Vocabulary</div>
+                      <div style={{ fontWeight: 700, fontSize: 18 }}>{feedback.vocabularyScore}/10</div>
+                    </div>
+                    <div className="ip-stat-card">
+                      <div className="ip-stat-label">Structure</div>
+                      <div style={{ fontWeight: 700, fontSize: 18 }}>{feedback.structureScore}/10</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ai feedback text */}
+                <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                  {feedback.feedback}
+                </p>
+
+                {/* test case results for coding questions */}
                 {codeResults && (
                   <div className="flex flex-col gap-2 mt-1">
                     <p className="ip-text-muted text-[11px] uppercase tracking-widest font-bold">
@@ -381,8 +453,8 @@ export default function InterviewRoomPage() {
           {/* action buttons */}
           <div className="flex items-center justify-between">
 
-            {/* submit button — only shown if not yet answered */}
-            {!feedback ? (
+            {/* submit button */}
+            {!feedback && answerMode === "text" ? (
               <button
                 onClick={isCoding ? handleSubmitCode : handleSubmitAnswer}
                 disabled={submitting || (isCoding ? !code.trim() : !answer.trim())}

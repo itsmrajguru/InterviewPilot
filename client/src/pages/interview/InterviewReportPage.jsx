@@ -131,7 +131,44 @@ export default function InterviewReportPage() {
           </div>
         </div>
 
+        {/* communication assessment section */}
+        {report?.communicationScore > 0 && (
+          <div className="ip-card">
+            <div className="ip-card-header" style={{ marginBottom: 16 }}>
+              <span className="ip-card-title">Communication Assessment</span>
+              <span className="ip-badge ip-badge-primary">
+                {report.videoAnswersCount} video answer{report.videoAnswersCount !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="ip-card-body">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+                {/* overall communication grade */}
+                <div className="ip-stat-card">
+                  <div className="ip-stat-label">Overall Communication</div>
+                  <div className="ip-stat-value" style={{ color: "var(--accent)" }}>
+                    {report.communicationScore}/10
+                  </div>
+                </div>
+
+                {/* per-answer communication breakdown */}
+                {session.answers
+                  .filter(a => a.communicationScore > 0)
+                  .slice(0, 3)
+                  .map((a, i) => (
+                    <div key={i} className="ip-stat-card">
+                      <div className="ip-stat-label">Q{a.questionIndex + 1} — {a.type}</div>
+                      <div style={{ fontWeight: 700, fontSize: 18 }}>
+                        {a.communicationScore}/10
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* two column: strengths + weaknesses */}
+
         <div className="ip-grid-2">
 
           {/* strengths */}
