@@ -54,7 +54,7 @@ export default function StudentReports() {
   }, []);
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="student" />
 
       {/* main content */}
@@ -67,7 +67,7 @@ export default function StudentReports() {
         />
 
         {/* page body */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
 
           {/* welcome banner */}
           <div className="mb-7">

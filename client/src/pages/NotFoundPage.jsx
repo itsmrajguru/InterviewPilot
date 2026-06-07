@@ -6,7 +6,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-      <div className="min-h-screen ip-bg-page flex flex-col items-center justify-center p-6 animate-fade-up">
+      <div className="min-h-screen ip-bg-page flex flex-col items-center justify-center p-4 md:p-6 lg:p-8 animate-fade-up">
 
         
         {/* main container of the 404 page...
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
 
             {/* navigation buttons for the user...
             added two options for better user experience to go back or home */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mt-4">
+            <div className="flex flex-col md:flex-row gap-4 w-full justify-center mt-4">
               <button 
                 onClick={() => navigate(-1)}
                 className="btn-secondary"

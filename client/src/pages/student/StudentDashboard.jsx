@@ -175,7 +175,7 @@ export default function StudentDashboard() {
   const avgScore  = data?.avgScore ?? null;
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="student" />
 
         {/* main content */}
@@ -188,7 +188,7 @@ export default function StudentDashboard() {
         />
 
         {/* page body */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
 
           {/* welcome banner */}
           <div className="mb-7">
@@ -211,7 +211,7 @@ export default function StudentDashboard() {
           )}
 
           {/* stat cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <StatCard
               label="PENDING INTERVIEWS"
               value={loading ? "—" : pending.length}
@@ -231,10 +231,10 @@ export default function StudentDashboard() {
           </div>
 
           {/* two column layout */}
-          <div className="grid grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
             {/* left: interviews list */}
-            <div className="col-span-3 flex flex-col gap-5">
+            <div className="lg:col-span-3 flex flex-col gap-5">
 
               {/* pending interviews list */}
               <div className="ip-card">
@@ -316,7 +316,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* right: quick actions and tips */}
-            <div className="col-span-2 flex flex-col gap-5">
+            <div className="lg:col-span-2 flex flex-col gap-5">
 
               {/* quick actions card */}
               <div className="ip-card">

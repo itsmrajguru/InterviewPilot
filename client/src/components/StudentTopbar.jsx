@@ -19,9 +19,9 @@ export default function StudentTopbar({ title, sub }) {
 
   return (
     <header
-      className="flex items-center justify-between px-8 py-0 flex-shrink-0"
+      className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 md:px-8 py-4 md:py-0 flex-shrink-0 gap-3 md:gap-0"
       style={{
-        height: 68,
+        minHeight: 68,
         background: "rgba(255,255,255,0.92)",
         borderBottom: "1px solid var(--border)",
         position: "sticky",

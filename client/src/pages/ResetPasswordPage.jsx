@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex ip-bg-page">
+        <div className="min-h-screen w-full flex flex-col lg:flex-row ip-bg-page">
             {/*added new 40-60 view
 and this is the left side 60 panel*/}
             <div className="hidden lg:flex lg:flex-[0.6] ip-auth-left shadow-[inset_-20px_0_40px_rgba(0,0,0,0.1)]">
@@ -74,7 +74,7 @@ and this is the left side 60 panel*/}
             </div>
 
             {/*This side shows the actual form with newpassword and confirm newpassword */}
-            <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10">
+            <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10 px-4 md:px-6 lg:px-8">
                 <div className="w-full max-w-[320px] flex flex-col gap-6">
 
                     {/* mobile logo - only visible on small screens */}

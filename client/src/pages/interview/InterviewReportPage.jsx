@@ -105,7 +105,7 @@ export default function InterviewReportPage() {
         </div>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-6 py-8 flex flex-col gap-6">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 flex flex-col gap-6">
 
         {/* hero: overall score */}
         <div className="ip-card border border-primary-500/20">
@@ -141,7 +141,7 @@ export default function InterviewReportPage() {
               </span>
             </div>
             <div className="ip-card-body">
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* overall communication grade */}
                 <div className="ip-stat-card">
                   <div className="ip-stat-label">Overall Communication</div>

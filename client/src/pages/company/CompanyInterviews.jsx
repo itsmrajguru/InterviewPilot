@@ -115,7 +115,7 @@ export default function CompanyInterviews() {
   };
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="company" />
 
       {/* main content */}
@@ -123,9 +123,9 @@ export default function CompanyInterviews() {
 
         {/* top bar */}
         <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
+          className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 py-4 md:py-0 flex-shrink-0 gap-3 md:gap-0"
           style={{
-            height: 52,
+            minHeight: 52,
             background: "var(--bg-card)",
             borderBottom: "1px solid var(--border)",
             position: "sticky",
@@ -146,7 +146,7 @@ export default function CompanyInterviews() {
         </header>
 
         {/* page body */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
 
           {/* welcome banner */}
           <div className="mb-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -164,7 +164,7 @@ export default function CompanyInterviews() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             
             {/* search input box */}
-            <div className="relative col-span-2">
+            <div className="relative col-span-1 md:col-span-2">
               <span className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }}>
                 <IconSearch />
               </span>

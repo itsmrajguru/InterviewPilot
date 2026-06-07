@@ -63,7 +63,7 @@ export default function CompanyCompare() {
   const candidate2 = completedSessions.find(s => s._id === slot2);
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="company" />
 
       {/* main content */}
@@ -71,9 +71,9 @@ export default function CompanyCompare() {
 
         {/* top bar */}
         <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
+          className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 py-4 md:py-0 flex-shrink-0 gap-3 md:gap-0"
           style={{
-            height: 52,
+            minHeight: 52,
             background: "var(--bg-card)",
             borderBottom: "1px solid var(--border)",
             position: "sticky",
@@ -87,7 +87,7 @@ export default function CompanyCompare() {
         </header>
 
         {/* page body */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
 
           {/* welcome banner */}
           <div className="mb-7">

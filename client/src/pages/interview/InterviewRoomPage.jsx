@@ -165,7 +165,7 @@ export default function InterviewRoomPage() {
       </nav>
 
       {/* main interview layout */}
-      <div className="flex flex-1 gap-0 max-w-6xl mx-auto w-full px-6 py-6">
+      <div className="flex flex-1 gap-0 max-w-6xl mx-auto w-full px-4 md:px-6 py-6">
 
         {/* left: question sidebar */}
         <div className="w-48 shrink-0 hidden lg:flex flex-col gap-1 mr-6">

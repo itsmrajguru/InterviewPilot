@@ -90,7 +90,7 @@ export default function JoinInterviewPage() {
   /* already completed */
   if (session?.status === "completed") {
     return (
-      <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
+      <div className="min-h-screen ip-bg-page flex items-center justify-center p-4 md:p-6">
         <div className="ip-card max-w-md w-full text-center">
           <div className="ip-card-body py-10 flex flex-col gap-4">
             <div className="text-5xl">✅</div>
@@ -114,7 +114,7 @@ export default function JoinInterviewPage() {
 
   /* ready state — show session info and start button */
   return (
-    <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
+    <div className="min-h-screen ip-bg-page flex items-center justify-center p-4 md:p-6">
 
       <div className="w-full max-w-lg flex flex-col gap-6">
 

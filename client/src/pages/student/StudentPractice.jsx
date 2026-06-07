@@ -60,7 +60,7 @@ export default function StudentPractice() {
   };
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="student" />
 
       {/* main content */}
@@ -73,7 +73,7 @@ export default function StudentPractice() {
         />
 
         {/* page body */}
-        <main className="flex-1 p-8 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
 
           {/* welcome banner */}
           <div className="text-center mb-8">

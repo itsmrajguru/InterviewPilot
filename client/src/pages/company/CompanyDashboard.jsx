@@ -211,7 +211,7 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar role="company" />
 
       {/* Main content */}
@@ -219,9 +219,9 @@ export default function CompanyDashboard() {
 
         {/* top bar */}
         <header
-          className="flex items-center justify-between px-8 py-0 flex-shrink-0"
+          className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 py-4 md:py-0 flex-shrink-0 gap-3 md:gap-0"
           style={{
-            height: 52,
+            minHeight: 52,
             background: "var(--bg-card)",
             borderBottom: "1px solid var(--border)",
             position: "sticky",
@@ -241,7 +241,7 @@ export default function CompanyDashboard() {
         </header>
 
         {/* page body */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
 
           {/* welcome banner */}
           <div className="mb-7">
@@ -254,7 +254,7 @@ export default function CompanyDashboard() {
           </div>
 
           {/* stat cards */}
-          <div className="grid grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatCard
               label="TOTAL INVITED"
               value={loadingSessions ? "—" : totalInvited}
@@ -279,10 +279,10 @@ export default function CompanyDashboard() {
           </div>
 
           {/* two column layout */}
-          <div className="grid grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
             {/* left: candidates pipeline list */}
-            <div className="col-span-3 flex flex-col gap-5">
+            <div className="lg:col-span-3 flex flex-col gap-5">
               <div className="ip-card">
                 <div className="ip-card-header">
                   <span className="ip-card-title">Recent Candidates</span>
@@ -334,7 +334,7 @@ export default function CompanyDashboard() {
             </div>
 
             {/* right: quick actions and tips */}
-            <div className="col-span-2 flex flex-col gap-5">
+            <div className="lg:col-span-2 flex flex-col gap-5">
 
               {/* quick actions card */}
               <div className="ip-card">

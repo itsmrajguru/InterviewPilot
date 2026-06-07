@@ -39,7 +39,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex ip-bg-page">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row ip-bg-page">
 
       {/*added new 40-60 view
       and this is the left side 60 panel*/}
@@ -68,7 +68,7 @@ export default function LoginPage() {
 
       {/* added new 40-60 view
       and this is the right side 40 panel*/}
-      <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10">
+      <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10 px-4 md:px-6 lg:px-8">
         <div className="w-full max-w-[320px] flex flex-col gap-6">
 
           {/* mobile logo - only visible on small screens */}
