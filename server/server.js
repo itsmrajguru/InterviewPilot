@@ -8,16 +8,29 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    "https://interviewpilot.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:5176"
+].map(url => url?.replace(/\/$/, ""));
+
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || /^http:\/\/localhost:\d+$/.test(origin) || origin === process.env.CLIENT_URL) {
-            callback(null, true)
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+            callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'))
+            console.log("CORS Blocked Origin:", origin);
+            callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
-}))
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(express.json())
 app.use(cookieParser())
