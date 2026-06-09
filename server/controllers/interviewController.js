@@ -52,6 +52,27 @@ const createSession = async (req, res) => {
             assignedCompanyId = companyUser._id;
         }
 
+        /* Auto-create/find InterviewPilot account, send temp password in invite email, 
+        and set isVerified=true via invite-link verification for report/history access. */
+        let studentTempPassword = null;
+        {
+            const User   = require('../models/AuthModel/UserModel');
+            const bcrypt = require('bcryptjs');
+            let studentUser = await User.findOne({ email: studentEmail });
+            if (!studentUser) {
+                /* generate a readable temp password: 8 random hex chars + @IP */
+                studentTempPassword = crypto.randomBytes(4).toString('hex').toUpperCase() + '@IP';
+                studentUser = await User.create({
+                    email:      studentEmail,
+                    password:   studentTempPassword,  /* pre-save hook hashes this */
+                    role:       'student',
+                    isVerified: true   /* pre-verified — identity confirmed via email invite link */
+                });
+                console.log(`Auto-created student account for candidate: ${studentEmail}`);
+            }
+            /* if user already exists: do not overwrite their password — they may have changed it */
+        }
+
         /* step 3 :Create the session document — status starts as pending */
         const session = await InterviewSession.create({
             companyId:       assignedCompanyId,
@@ -65,7 +86,35 @@ const createSession = async (req, res) => {
         })
 
         /* step 4 :Build the invite link and send the email to the candidate via Resend */
-        const joinURL = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/join/${inviteToken}`
+        const joinURL      = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/join/${inviteToken}`
+        const loginURL     = `${process.env.CLIENT_URL || 'http://localhost:5175'}/login`
+        const dashboardURL = `${process.env.CLIENT_URL || 'http://localhost:5175'}/student/dashboard`
+
+        /* credentials block — only shown the first time (when account was just created) */
+        const credentialsSection = studentTempPassword ? `
+            <div style="margin:20px 0;padding:16px 20px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;">
+                <p style="color:#166534;font-weight:700;margin:0 0 8px 0;font-size:14px;">🎉 Your InterviewPilot Account Has Been Created!</p>
+                <p style="color:#444;font-size:13px;margin:0 0 10px 0;">
+                    After the interview, log in to <a href="${loginURL}" style="color:#5b21b6;font-weight:700;">InterviewPilot</a>
+                    to view your score, full report, and all future interview history.
+                </p>
+                <table style="font-size:13px;color:#333;border-collapse:collapse;">
+                    <tr><td style="padding:3px 12px 3px 0;font-weight:700;">Email:</td><td>${studentEmail}</td></tr>
+                    <tr><td style="padding:3px 12px 3px 0;font-weight:700;">Temporary Password:</td>
+                        <td><code style="background:#e5e7eb;padding:2px 8px;border-radius:4px;font-weight:700;">${studentTempPassword}</code></td>
+                    </tr>
+                </table>
+                <p style="color:#888;font-size:11px;margin:10px 0 0 0;">💡 You can change this password anytime after logging in.</p>
+            </div>
+        ` : `
+            <div style="margin:20px 0;padding:14px 18px;background:#eef0ff;border:1px solid #c8c4fe;border-radius:10px;">
+                <p style="color:#3d2ec4;font-size:13px;margin:0;">
+                    After the interview, visit your
+                    <a href="${dashboardURL}" style="color:#5b21b6;font-weight:700;">InterviewPilot Dashboard</a>
+                    to view your score and detailed report.
+                </p>
+            </div>
+        `
 
         const html = `
             <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px;background:#f9f9ff;border-radius:16px;">
@@ -77,6 +126,7 @@ const createSession = async (req, res) => {
                 <a href="${joinURL}" style="display:inline-block;margin:20px 0;padding:14px 28px;background:#5b21b6;color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">
                     Start My Interview
                 </a>
+                ${credentialsSection}
                 <p style="color:#888;font-size:12px;">If you did not expect this email, you can safely ignore it.</p>
             </div>
         `
@@ -84,10 +134,14 @@ const createSession = async (req, res) => {
         /* send the invite email without blocking the response */
         setTimeout(async () => {
             try {
+                const plainText = studentTempPassword
+                    ? `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nYour InterviewPilot account:\nEmail: ${studentEmail}\nTemporary Password: ${studentTempPassword}\n\nLog in after the interview to view your report: ${loginURL}`
+                    : `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nView your dashboard: ${dashboardURL}`
+
                 const emailSent = await sendEmail({
                     to: studentEmail,
                     subject: `InterviewPilot — Interview Invitation for ${role}`,
-                    text: `You have been invited to interview for ${role}. Join here: ${joinURL}`,
+                    text: plainText,
                     html
                 })
                 if (!emailSent) {
