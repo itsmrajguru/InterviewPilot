@@ -27,8 +27,10 @@ const loginSchema = joi.object({
 we are also adding the role with the id , becuase we have created authMiddlware
 that checks the type of user,to allow it to visit only the pages , he should */
 
-const generateAccessToken = (id, role) => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '15m' });
+const generateAccessToken = (id, role, email = '') => {
+    /* email is included so req.user.email is available in every controller
+       without an extra DB lookup — used by getStudentDashboard to query sessions */
+    return jwt.sign({ id, role, email }, process.env.JWT_SECRET, { expiresIn: '15m' });
 }
 
 const generateRefreshToken = (id) => {
@@ -196,7 +198,7 @@ const login = async (req, res) => {
             }
 
             /* step 4 :Generate Access token and Refresh Token along with setting cookie */
-            const accessToken = generateAccessToken(getUser?._id, getUser?.role)
+            const accessToken = generateAccessToken(getUser?._id, getUser?.role, getUser?.email)
             const refreshToken = generateRefreshToken(getUser?._id)
 
             /* step 5 :sending the accessToken to frontend 
@@ -312,8 +314,8 @@ const refreshToken = async (req, res) => {
         /* step 3:Generate new access token, 
         but note :RefreshToken dont carry the user role, to put it into the access token
         so fetch user for it */
-        const refreshUser = await userModel.findById(decoded?.id).select('role');
-        const newAccessToken = generateAccessToken(decoded?.id, refreshUser?.role)
+        const refreshUser = await userModel.findById(decoded?.id).select('role email');
+        const newAccessToken = generateAccessToken(decoded?.id, refreshUser?.role, refreshUser?.email)
 
         return res.status(200).json({
             success: true,
