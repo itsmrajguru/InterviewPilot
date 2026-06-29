@@ -54,7 +54,7 @@ export default function StudentReports() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="student" />
 
       {/* main content */}

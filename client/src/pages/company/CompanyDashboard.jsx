@@ -211,7 +211,7 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen" style={{ background: "var(--bg)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="company" />
 
       {/* Main content */}
@@ -219,19 +219,25 @@ export default function CompanyDashboard() {
 
         {/* top bar */}
         <header
-          className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 py-4 md:py-0 flex-shrink-0 gap-3 md:gap-0"
           style={{
-            minHeight: 52,
-            background: "var(--bg-card)",
-            borderBottom: "1px solid var(--border)",
+            padding: "0 28px",
+            height: 56,
+            background: "#ffffff",
+            borderBottom: "0.5px solid #dde1e8",
             position: "sticky",
             top: 0,
             zIndex: 40,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexShrink: 0,
+            fontFamily: "var(--font-sans)",
           }}
         >
-          <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            Recruiter Dashboard
-          </span>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: 11, color: "#7a8a99", letterSpacing: "0.04em", textTransform: "uppercase" }}>Recruiter workspace</span>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#111827" }}>Dashboard</span>
+          </div>
           <button
             onClick={() => setShowCreateModal(true)}
             className="btn-primary py-2 px-4 text-xs flex items-center gap-1.5"
