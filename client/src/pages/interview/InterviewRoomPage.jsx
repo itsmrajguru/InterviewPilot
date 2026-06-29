@@ -140,107 +140,117 @@ export default function InterviewRoomPage() {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
       {/* top bar: progress and question counter */}
-      <nav className="ip-navbar sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <img src="/logo.svg" alt="InterviewPilot" className="w-7 h-7 rounded-lg" />
-          <span className="ip-text-primary font-bold text-[13px]">
+      <nav style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "#ffffff", borderBottom: "0.5px solid #dde1e8", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <img src="/logo.svg" alt="InterviewPilot" style={{ width: 28, height: 28, borderRadius: 8 }} />
+          <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>
             {session.role} Interview
           </span>
-          <span className="ip-badge ip-badge-neutral capitalize">{session.difficulty}</span>
+          <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)", textTransform: "capitalize" }}>
+            {session.difficulty}
+          </span>
         </div>
 
-        <div className="flex-1 mx-6">
+        <div style={{ flex: 1, margin: "0 24px", maxWidth: 600 }}>
           {/* progress bar across all questions */}
-          <div className="w-full h-1.5 ip-bg-subtle rounded-full overflow-hidden">
+          <div style={{ width: "100%", height: 6, background: "var(--surface-1)", borderRadius: 10, overflow: "hidden" }}>
             <div
-              className="h-full bg-primary-500 rounded-full transition-all duration-500"
-              style={{ width: `${((currentIndex) / questions.length) * 100}%` }}
+              style={{ height: "100%", background: "#1d9e75", borderRadius: 10, transition: "all 0.5s", width: `${((currentIndex) / questions.length) * 100}%` }}
             />
           </div>
         </div>
 
-        <span className="ip-text-secondary text-[12px] font-medium">
+        <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-secondary)" }}>
           Q{currentIndex + 1} / {questions.length}
         </span>
       </nav>
 
       {/* main interview layout */}
-      <div className="flex flex-1 gap-0 max-w-6xl mx-auto w-full px-4 md:px-6 py-6">
+      <div style={{ display: "flex", flex: 1, gap: 24, maxWidth: 1152, margin: "0 auto", width: "100%", padding: "24px 16px" }}>
 
         {/* left: question sidebar */}
-        <div className="w-48 shrink-0 hidden lg:flex flex-col gap-1 mr-6">
-          <p className="ip-text-muted text-[10px] uppercase tracking-widest font-bold mb-2">Questions</p>
-          {questions.map((q, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                /* condition :only allow navigation to already-answered questions */
-                if (answered[i] || i === currentIndex) {
-                  setCurrentIndex(i);
-                  setAnswer("");
-                  setFeedback(null);
-                  setCodeResults(null);
-                  setError("");
-                }
-              }}
-              className={`text-left px-3 py-2 rounded-lg text-[11px] font-medium transition-all ${
-                i === currentIndex
-                  ? "bg-primary-500/20 ip-text-primary border border-primary-500/30"
-                  : answered[i]
-                  ? "ip-text-accent opacity-80"
-                  : "ip-text-muted opacity-50 cursor-not-allowed"
-              }`}
-            >
-              {/* question type label */}
-              <span className="block text-[9px] uppercase tracking-wider opacity-60 mb-0.5">
-                {q.type}
-              </span>
-              {/* truncated question text */}
-              {q.question.slice(0, 40)}…
-            </button>
-          ))}
+        <div style={{ width: 192, flexShrink: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-muted)", marginBottom: 8 }}>Questions</p>
+          {questions.map((q, i) => {
+            const isActive = i === currentIndex;
+            const isAnswered = answered[i];
+            const isDisabled = !isAnswered && !isActive;
+            return (
+              <button
+                key={i}
+                onClick={() => {
+                  if (!isDisabled) {
+                    setCurrentIndex(i);
+                    setCode("// Write your solution here\n\n");
+                    setFeedback(null);
+                    setCodeResults(null);
+                    setError("");
+                  }
+                }}
+                disabled={isDisabled}
+                style={{
+                  textAlign: "left", padding: "8px 12px", borderRadius: 8, fontSize: 11, fontWeight: 500, transition: "all 0.2s", cursor: isDisabled ? "not-allowed" : "pointer",
+                  background: isActive ? "#e6f4ea" : "transparent",
+                  color: isActive ? "#1d9e75" : (isAnswered ? "#0f6e56" : "var(--text-muted)"),
+                  border: isActive ? "0.5px solid #a7dfc9" : "0.5px solid transparent",
+                  opacity: isDisabled ? 0.5 : (isAnswered && !isActive ? 0.8 : 1)
+                }}
+              >
+                {/* question type label */}
+                <span style={{ display: "block", fontSize: 9, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.6, marginBottom: 2 }}>
+                  {q.type}
+                </span>
+                {/* truncated question text */}
+                {q.question.slice(0, 40)}…
+              </button>
+            );
+          })}
         </div>
 
         {/* right: question + answer area */}
-        <div className="flex-1 flex flex-col gap-4">
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
 
           {/* question card */}
-          <div className="ip-card">
-            <div className="ip-card-body">
+          <div style={{
+            background: "#ffffff",
+            border: "0.5px solid #dde1e8",
+            borderRadius: 12,
+            boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+            padding: 24,
+          }}>
+            <div>
               {/* question type badge */}
-              <div className="flex items-center gap-2 mb-3">
-                <span className="ip-badge ip-badge-primary capitalize">{currentQuestion?.type}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "#1d9e75", border: "0.5px solid #a7dfc9", textTransform: "capitalize" }}>{currentQuestion?.type}</span>
                 {currentQuestion?.topic && (
-                  <span className="ip-badge ip-badge-neutral">{currentQuestion.topic}</span>
+                  <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{currentQuestion.topic}</span>
                 )}
               </div>
 
               {/* the question text */}
-              <p className="ip-text-primary text-[15px] leading-relaxed font-medium">
+              <p style={{ fontSize: 15, color: "var(--text-primary)", lineHeight: 1.6, fontWeight: 500, margin: 0 }}>
                 {currentQuestion?.question}
               </p>
 
               {/* test cases for coding questions */}
               {isCoding && currentQuestion?.testCases?.length > 0 && (
-                <div className="mt-4 flex flex-col gap-2">
-                  <p className="ip-text-muted text-[11px] uppercase tracking-widest font-bold">
+                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-muted)", margin: 0 }}>
                     Sample Test Cases
                   </p>
                   {currentQuestion.testCases.map((tc, i) => (
-                    <div key={i} className="ip-bg-subtle rounded-lg p-3 font-mono text-[12px]">
-                      <span className="ip-text-muted">Input: </span>
-                      <span className="ip-text-primary">{tc.input || "(none)"}</span>
+                    <div key={i} style={{ background: "var(--surface-1)", borderRadius: 8, padding: 12, fontFamily: "monospace", fontSize: 12 }}>
+                      <span style={{ color: "var(--text-muted)" }}>Input: </span>
+                      <span style={{ color: "var(--text-primary)" }}>{tc.input || "(none)"}</span>
                       <br />
-                      <span className="ip-text-muted">Expected: </span>
-                      <span className="ip-text-accent">{tc.expectedOutput}</span>
+                      <span style={{ color: "var(--text-muted)" }}>Expected: </span>
+                      <span style={{ color: "#1d9e75" }}>{tc.expectedOutput}</span>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-          </div>
-
-          {/* answer area */}
+          </div>          {/* answer area */}
           {!isCoding ? (
             /* hr / technical — video recorder only, no text mode */
             <div>
@@ -257,32 +267,37 @@ export default function InterviewRoomPage() {
             </div>
           ) : (
             /* coding problem — language selector + code textarea */
-            <div className="ip-card">
-              <div className="ip-card-header">
-                <span className="ip-card-title">Code Editor</span>
+            <div style={{
+              background: "#ffffff",
+              border: "0.5px solid #dde1e8",
+              borderRadius: 12,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+              overflow: "hidden"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "0.5px solid var(--border)" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Code Editor</span>
 
                 {/* language selector */}
-                <div className="flex gap-1">
+                <div style={{ display: "flex", gap: 4 }}>
                   {["javascript", "python", "cpp", "java"].map(lang => (
                     <button
                       key={lang}
                       onClick={() => setLanguage(lang)}
                       disabled={!!feedback || submitting}
-                      className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide transition-all ${
-                        language === lang
-                          ? "bg-primary-500 text-white"
-                          : "ip-bg-subtle ip-text-muted"
-                      }`}
+                      style={{
+                        padding: "4px 8px", borderRadius: 6, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", transition: "all 0.15s", border: "none", cursor: (!!feedback || submitting) ? "not-allowed" : "pointer",
+                        background: language === lang ? "#1d9e75" : "var(--surface-1)",
+                        color: language === lang ? "#ffffff" : "var(--text-muted)"
+                      }}
                     >
                       {lang}
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="ip-card-body p-0">
+              <div style={{ padding: 0 }}>
                 <textarea
-                  className="w-full font-mono text-[13px] ip-bg-subtle ip-text-primary p-4 resize-none outline-none rounded-b-xl"
-                  rows={14}
+                  style={{ width: "100%", fontFamily: "monospace", fontSize: 13, background: "#1e1e1e", color: "#d4d4d4", padding: 16, resize: "none", outline: "none", minHeight: 300, border: "none" }}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   disabled={!!feedback || submitting}
@@ -294,63 +309,71 @@ export default function InterviewRoomPage() {
 
           {/* error message */}
           {error && (
-            <div className="ip-alert ip-alert-danger">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1" />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
               <span>{error}</span>
             </div>
-          )}
-
-          {/* gemini feedback card */}
+          )}              {/* gemini feedback card */}
           {feedback && (
-            <div className="ip-card" style={{ padding: 20, marginTop: 16 }}>
+            <div style={{
+              background: "#ffffff",
+              border: "0.5px solid #dde1e8",
+              borderRadius: 12,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+              padding: 24,
+              marginTop: 16
+            }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                <div className="ip-stat-card">
-                  <div className="ip-stat-label">Content Score</div>
-                  <div className="ip-stat-value">{feedback.contentScore ?? feedback.score}/10</div>
+                <div style={{ background: "var(--surface-1)", padding: 16, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Content Score</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: "var(--text-primary)" }}>{feedback.contentScore ?? feedback.score}/10</div>
                 </div>
-                <div className="ip-stat-card">
-                  <div className="ip-stat-label">Communication</div>
-                  <div className="ip-stat-value" style={{ color: "var(--accent)" }}>
+                <div style={{ background: "var(--surface-1)", padding: 16, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Communication</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: "#1d9e75" }}>
                     {feedback.communicationScore}/10
                   </div>
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
-                <div className="ip-stat-card">
-                  <div className="ip-stat-label">Clarity</div>
-                  <div style={{ fontWeight: 700, fontSize: 16 }}>{feedback.clarityScore}/10</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+                <div style={{ background: "var(--surface-1)", padding: 12, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Clarity</div>
+                  <div style={{ fontWeight: 700, fontSize: 18, color: "var(--text-primary)" }}>{feedback.clarityScore}/10</div>
                 </div>
-                <div className="ip-stat-card">
-                  <div className="ip-stat-label">Vocabulary</div>
-                  <div style={{ fontWeight: 700, fontSize: 16 }}>{feedback.vocabularyScore}/10</div>
+                <div style={{ background: "var(--surface-1)", padding: 12, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Vocabulary</div>
+                  <div style={{ fontWeight: 700, fontSize: 18, color: "var(--text-primary)" }}>{feedback.vocabularyScore}/10</div>
                 </div>
-                <div className="ip-stat-card">
-                  <div className="ip-stat-label">Structure</div>
-                  <div style={{ fontWeight: 700, fontSize: 16 }}>{feedback.structureScore}/10</div>
+                <div style={{ background: "var(--surface-1)", padding: 12, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Structure</div>
+                  <div style={{ fontWeight: 700, fontSize: 18, color: "var(--text-primary)" }}>{feedback.structureScore}/10</div>
                 </div>
               </div>
-              <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
                 {feedback.feedback}
               </p>
 
               {/* coding question test case results */}
               {codeResults && (
-                <div className="flex flex-col gap-2 mt-3">
-                  <p className="ip-text-muted text-[11px] uppercase tracking-widest font-bold">
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 16 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-muted)", margin: 0 }}>
                     Test Results — {codeResults.filter(r => r.passed).length}/{codeResults.length} passed
                   </p>
                   {codeResults.map((r, i) => (
                     <div
                       key={i}
-                      className={`flex items-start gap-2 px-3 py-2 rounded-lg text-[12px] font-mono ${
-                        r.passed ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
-                      }`}
+                      style={{
+                        display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 12px", borderRadius: 8, fontSize: 12, fontFamily: "monospace",
+                        background: r.passed ? "#f0fdf4" : "#fef2f2",
+                        color: r.passed ? "#15803d" : "#b91c1c",
+                        border: r.passed ? "0.5px solid #bbf7d0" : "0.5px solid #fecaca"
+                      }}
                     >
-                      <span>{r.passed ? "✓" : "✗"}</span>
+                      <span style={{ fontSize: 14 }}>{r.passed ? "✓" : "✗"}</span>
                       <div>
-                        <span className="opacity-60">Input: </span>{r.input || "(none)"}<br />
-                        <span className="opacity-60">Expected: </span>{r.expectedOutput}<br />
-                        <span className="opacity-60">Got: </span>{r.actualOutput || r.error || "—"}
+                        <span style={{ opacity: 0.6 }}>Input: </span>{r.input || "(none)"}<br />
+                        <span style={{ opacity: 0.6 }}>Expected: </span>{r.expectedOutput}<br />
+                        <span style={{ opacity: 0.6 }}>Got: </span>{r.actualOutput || r.error || "—"}
                       </div>
                     </div>
                   ))}
@@ -360,14 +383,14 @@ export default function InterviewRoomPage() {
           )}
 
           {/* action buttons */}
-          <div className="flex items-center justify-between">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
 
             {/* submit button — coding only, video answers self-submit */}
             {!feedback && isCoding ? (
               <button
                 onClick={handleSubmitCode}
                 disabled={submitting || !code.trim()}
-                className="btn-primary"
+                style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: (submitting || !code.trim()) ? "not-allowed" : "pointer", fontWeight: 500 }}
               >
                 {submitting ? "Running code..." : "Submit Code →"}
               </button>
@@ -379,15 +402,15 @@ export default function InterviewRoomPage() {
                     <button
                       onClick={handleComplete}
                       disabled={completing}
-                      className="btn-primary"
+                      style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: completing ? "not-allowed" : "pointer", fontWeight: 500 }}
                     >
                       {completing ? "Generating Report..." : "Finish Interview & Get Report →"}
                     </button>
                   ) : (
-                    <span className="ip-text-muted text-[12px]">Answer all questions to finish.</span>
+                    <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>Answer all questions to finish.</span>
                   )
                 ) : (
-                  <button onClick={handleNext} className="btn-primary">
+                  <button onClick={handleNext} style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500 }}>
                     Next Question →
                   </button>
                 )
@@ -398,7 +421,7 @@ export default function InterviewRoomPage() {
             {!feedback && !isLastQuestion && (
               <button
                 onClick={handleNext}
-                className="btn-secondary text-[12px]"
+                style={{ fontSize: 12, color: "var(--text-secondary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }}
               >
                 Skip
               </button>

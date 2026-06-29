@@ -67,36 +67,34 @@ export default function StudentReports() {
         />
 
         {/* page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <main style={{ flex: 1, padding: "24px 32px" }}>
 
           {/* welcome banner */}
-          <div className="mb-7">
-            <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+          <div style={{ marginBottom: 32 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
               Evaluation Reports
             </h1>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>
               review detailed ai feedback, strengths, and weaknesses from all your completed sessions
             </p>
           </div>
 
           {/* error banner */}
           {error && (
-            <div
-              className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded"
-              style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}
-            >
-              {error}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca", marginBottom: 24 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
+              <span>{error}</span>
             </div>
           )}
 
           {/* reports grid list */}
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="ip-spinner ip-spinner-dark" />
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0" }}>
+              <div style={{ width: 24, height: 24, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
             </div>
           ) : reports.length === 0 ? (
-            <div className="ip-card">
-              <div className="ip-card-body">
+            <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+              <div style={{ padding: 24 }}>
                 <EmptyState
                   icon="🎯"
                   title="no reports ready"
@@ -104,7 +102,7 @@ export default function StudentReports() {
                   action={
                     <button
                       onClick={() => navigate("/student/practice")}
-                      className="btn-primary py-2 px-4 text-xs mt-1"
+                      style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, marginTop: 8 }}
                     >
                       Start Practice Interview
                     </button>
@@ -113,19 +111,19 @@ export default function StudentReports() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
               {reports.map((session) => {
                 const hasScore = session.report?.overallScore !== undefined;
                 return (
-                  <div key={session._id} className="ip-card p-5 flex flex-col justify-between h-fit gap-4">
+                  <div key={session._id} style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: 20, display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 16 }}>
                     <div>
                       {/* header */}
-                      <div className="flex items-start justify-between gap-3 mb-2">
+                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 8 }}>
                         <div>
-                          <div className="text-sm font-bold truncate max-w-[190px]" style={{ color: "var(--text)" }}>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 190 }}>
                             {session.role || "Software Engineer"}
                           </div>
-                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>
+                          <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>
                             {session.companyName || "Practice Round"} ·{" "}
                             {session.createdAt
                               ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
@@ -136,11 +134,10 @@ export default function StudentReports() {
                         {/* score card */}
                         {hasScore && (
                           <div
-                            className="flex flex-col items-center justify-center p-2 rounded-lg text-center"
-                            style={{ background: "var(--accent-light)", minWidth: 54 }}
+                            style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 8, borderRadius: 8, textAlign: "center", background: "#f0fdf4", minWidth: 54 }}
                           >
-                            <span className="text-xs" style={{ color: "var(--text-muted)" }}>Score</span>
-                            <span className="text-base font-bold flex items-center gap-0.5 leading-none mt-1" style={{ color: "var(--accent)" }}>
+                            <span style={{ fontSize: 10, color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 700 }}>Score</span>
+                            <span style={{ fontSize: 16, fontWeight: 700, display: "flex", alignItems: "center", gap: 2, lineHeight: 1, marginTop: 4, color: "#15803d" }}>
                               <IconStar /> {session.report.overallScore}
                             </span>
                           </div>
@@ -149,20 +146,20 @@ export default function StudentReports() {
 
                       {/* summary text description */}
                       {session.report?.summary && (
-                        <p className="text-xs leading-relaxed line-clamp-3" style={{ color: "var(--text-secondary)" }}>
+                        <p style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                           {session.report.summary}
                         </p>
                       )}
                     </div>
 
                     {/* actions footer */}
-                    <div className="flex items-center justify-between mt-1 pt-3" style={{ borderTop: "1px solid var(--border)" }}>
-                      <span className="text-[10px] uppercase font-bold" style={{ color: "var(--text-muted)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 4, paddingTop: 12, borderTop: "0.5px solid var(--border)" }}>
+                      <span style={{ fontSize: 10, textTransform: "uppercase", fontWeight: 700, color: "var(--text-muted)" }}>
                         Status: Completed
                       </span>
                       <button
                         onClick={() => navigate(`/interview/${session._id}/report`)}
-                        className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1"
+                        style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--text-primary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 6, padding: "6px 12px", cursor: "pointer", fontWeight: 500 }}
                       >
                         Full Report <IconArrow />
                       </button>

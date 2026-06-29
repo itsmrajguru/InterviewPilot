@@ -101,39 +101,37 @@ export default function StudentInterviews() {
         />
 
         {/* page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <main style={{ flex: 1, padding: "24px 32px" }}>
 
           {/* welcome banner */}
-          <div className="mb-7">
-            <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+          <div style={{ marginBottom: 32 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
               Interview History
             </h1>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>
               manage and view the status of all your company invitations and practice rounds
             </p>
           </div>
 
           {/* error banner */}
           {error && (
-            <div
-              className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded"
-              style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}
-            >
-              {error}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca", marginBottom: 24 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
+              <span>{error}</span>
             </div>
           )}
 
           {/* filters list */}
-          <div className="flex items-center gap-2 mb-6 p-1 rounded-lg w-fit" style={{ background: "var(--bg-subtle)" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 4, marginBottom: 24, padding: 4, borderRadius: 10, background: "var(--surface-1)", border: "0.5px solid var(--border)" }}>
             {["all", "pending", "completed"].map(tab => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className="py-1.5 px-4 rounded-md text-[11px] font-bold transition-all capitalize"
                 style={{
-                  background: filter === tab ? "var(--bg-card)" : "transparent",
-                  color: filter === tab ? "var(--text)" : "var(--text-secondary)",
-                  boxShadow: filter === tab ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
+                  padding: "6px 16px", borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: "capitalize", cursor: "pointer", transition: "all 0.2s", border: "none",
+                  background: filter === tab ? "#ffffff" : "transparent",
+                  color: filter === tab ? "var(--text-primary)" : "var(--text-secondary)",
+                  boxShadow: filter === tab ? "0 1px 3px rgba(0,0,0,0.1)" : "none"
                 }}
               >
                 {tab}
@@ -142,15 +140,15 @@ export default function StudentInterviews() {
           </div>
 
           {/* interviews content table */}
-          <div className="ip-card">
-            <div className="ip-card-header">
-              <span className="ip-card-title">All Sessions</span>
-              <span className="ip-badge ip-badge-neutral">{filteredSessions.length} total</span>
+          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "0.5px solid var(--border)" }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>All Sessions</span>
+              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{filteredSessions.length} total</span>
             </div>
-            <div className="ip-card-body">
+            <div style={{ padding: 0 }}>
               {loading ? (
-                <div className="flex items-center justify-center py-10">
-                  <div className="ip-spinner ip-spinner-dark" />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 0" }}>
+                  <div style={{ width: 24, height: 24, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
                 </div>
               ) : filteredSessions.length === 0 ? (
                 <EmptyState
@@ -159,30 +157,29 @@ export default function StudentInterviews() {
                   sub={`you currently do not have any interviews matching the "${filter}" filter`}
                 />
               ) : (
-                <div className="flex flex-col">
-                  {filteredSessions.map((session) => {
-                    const s = statusMap[session.status] || statusMap.pending;
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {filteredSessions.map((session, index) => {
                     return (
-                      <div key={session._id} className="ip-activity-row">
+                      <div key={session._id} style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 20px", borderBottom: index < filteredSessions.length - 1 ? "0.5px solid var(--border)" : "none" }}>
                         <div
-                          className="ip-activity-icon flex-shrink-0"
                           style={{
-                            background: session.status === "completed" ? "var(--color-success-bg)"
-                              : session.status === "pending" ? "var(--color-warning-bg)"
-                              : "var(--accent-light)",
-                            color: session.status === "completed" ? "var(--color-success-text)"
-                              : session.status === "pending" ? "var(--color-warning-text)"
-                              : "var(--accent)",
+                            width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                            background: session.status === "completed" ? "#f0fdf4"
+                              : session.status === "pending" ? "#fefce8"
+                              : "var(--surface-1)",
+                            color: session.status === "completed" ? "#15803d"
+                              : session.status === "pending" ? "#a16207"
+                              : "var(--text-primary)"
                           }}
                         >
                           {session.status === "completed" ? <IconCheck /> : <IconClock />}
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold truncate" style={{ color: "var(--text)" }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {session.role || "Software Engineer"} Interview
                           </div>
-                          <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
                             {session.companyName || "Company"} · {session.difficulty || "Medium"} ·{" "}
                             {session.createdAt
                               ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
@@ -190,18 +187,25 @@ export default function StudentInterviews() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 flex-shrink-0">
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
                           {session.report?.overallScore !== undefined && (
-                            <div className="flex items-center gap-1 text-xs font-bold" style={{ color: "var(--accent)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 700, color: "#a16207" }}>
                               <IconStar />
                               {session.report.overallScore}/100
                             </div>
                           )}
-                          <span className={s.cls}>{s.label}</span>
+                          <span style={{
+                            fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "uppercase",
+                            background: session.status === "completed" ? "#f0fdf4" : (session.status === "pending" ? "#fefce8" : "var(--surface-1)"),
+                            color: session.status === "completed" ? "#15803d" : (session.status === "pending" ? "#a16207" : "var(--text-secondary)"),
+                            border: session.status === "completed" ? "0.5px solid #bbf7d0" : (session.status === "pending" ? "0.5px solid #fef08a" : "0.5px solid var(--border)")
+                          }}>
+                            {session.status}
+                          </span>
                           {session.status === "pending" && (
                             <button
                               onClick={() => navigate(`/interview/${session._id}`)}
-                              className="btn-primary py-1.5 px-3 text-xs"
+                              style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 6, padding: "6px 12px", cursor: "pointer", fontWeight: 500 }}
                             >
                               Join
                             </button>
@@ -209,7 +213,7 @@ export default function StudentInterviews() {
                           {session.status === "completed" && (
                             <Link
                               to={`/interview/${session._id}/report`}
-                              className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1"
+                              style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--text-primary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 6, padding: "6px 12px", cursor: "pointer", fontWeight: 500, textDecoration: "none" }}
                             >
                               Report <IconArrow />
                             </Link>

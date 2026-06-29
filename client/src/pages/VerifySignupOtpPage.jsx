@@ -45,33 +45,40 @@ export default function VerifySignupOtpPage() {
 
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-      <div className="w-full max-w-md p-6 md:p-8">
+      <div style={{ width: "100%", maxWidth: 440, padding: 24 }}>
         
         {/* logo and header */}
-        <div className="text-center mb-8 flex flex-col items-center">
-          <div onClick={() => navigate("/")} className="cursor-pointer mb-4 flex items-center justify-center w-12 h-12 rounded-xl" style={{ background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+        <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div onClick={() => navigate("/")} style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
             Verify Email
           </h1>
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            A 6-digit code has been sent to <span className="font-bold" style={{ color: "var(--text)" }}>{email}</span>
+          <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: 0 }}>
+            A 6-digit code has been sent to <span style={{ fontWeight: 500, color: "var(--text-primary)" }}>{email}</span>
           </p>
         </div>
 
         {/* auth card */}
-        <div className="ip-card p-6 md:p-8">
+        <div style={{
+          background: "#ffffff",
+          border: "0.5px solid #dde1e8",
+          borderRadius: 12,
+          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+          padding: 32,
+          width: "100%"
+        }}>
           {error && (
-            <div className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleOtpSubmit} className="flex flex-col gap-6">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-center" style={{ color: "var(--text-muted)" }}>Verification Code</label>
+          <form onSubmit={handleOtpSubmit} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", textAlign: "center" }}>Verification Code</label>
               <input
                 type="text"
                 inputMode="numeric"
@@ -81,19 +88,20 @@ export default function VerifySignupOtpPage() {
                 required
                 placeholder="000000"
                 autoFocus
-                className="px-3 py-4 rounded-lg text-3xl font-black text-center tracking-[0.5em] w-full outline-none transition-all"
-                style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                style={{ padding: "16px 14px", borderRadius: 8, fontSize: 32, fontWeight: 700, textAlign: "center", letterSpacing: "0.4em", width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
+                onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
               />
-              <p className="text-[9px] font-bold uppercase tracking-wider text-center mt-1" style={{ color: "var(--text-muted)" }}>
+              <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", textAlign: "center", marginTop: 4 }}>
                 Expires in 10 minutes
               </p>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <button
                 type="submit"
                 disabled={loading || otp.length !== 6}
-                className="btn-primary w-full py-2.5"
+                style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }}
               >
                 {loading ? "Verifying..." : "Confirm Verification"}
               </button>
@@ -101,9 +109,8 @@ export default function VerifySignupOtpPage() {
               <button
                 type="button"
                 onClick={() => navigate("/signup")}
-                className="py-2 text-[11px] font-bold uppercase tracking-widest transition-colors"
-                style={{ color: "var(--text-secondary)" }}
-                onMouseOver={(e) => e.currentTarget.style.color = "var(--text)"}
+                style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-secondary)", background: "none", border: "none", cursor: "pointer", padding: "8px 0" }}
+                onMouseOver={(e) => e.currentTarget.style.color = "var(--text-primary)"}
                 onMouseOut={(e) => e.currentTarget.style.color = "var(--text-secondary)"}
               >
                 ← Use different email
@@ -113,10 +120,10 @@ export default function VerifySignupOtpPage() {
         </div>
         
         {/* footer */}
-        <div className="mt-8 text-center flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+        <div style={{ marginTop: 32, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
           <span>&copy; 2026 InterviewPilot</span>
-          <Link to="/privacy">Privacy</Link>
-          <Link to="/legal">Legal</Link>
+          <Link to="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
+          <Link to="/legal" style={{ color: "inherit", textDecoration: "none" }}>Legal</Link>
         </div>
       </div>
     </div>

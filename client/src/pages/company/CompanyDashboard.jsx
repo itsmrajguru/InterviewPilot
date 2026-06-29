@@ -40,81 +40,129 @@ const IconSend = () => (
   </svg>
 );
 
+const S = {
+  metric: {
+    background: "#ffffff",
+    border: "0.5px solid #dde1e8",
+    borderRadius: 12,
+    padding: "18px 20px",
+    position: "relative",
+    overflow: "hidden",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+  },
+  metricLabel: {
+    fontSize: 11,
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+    color: "var(--text-muted)",
+    marginBottom: 10,
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+  },
+  metricValue: {
+    fontSize: 28,
+    fontWeight: 500,
+    color: "var(--text-primary)",
+    lineHeight: 1,
+  },
+  metricSub: {
+    fontSize: 12,
+    color: "var(--text-muted)",
+    marginTop: 6,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  },
+  card: {
+    background: "#ffffff",
+    border: "0.5px solid #dde1e8",
+    borderRadius: 12,
+    overflow: "hidden",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+  },
+  cardHeader: {
+    padding: "16px 20px 14px",
+    borderBottom: "0.5px solid var(--border)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cardTitle: {
+    fontSize: 13,
+    fontWeight: 500,
+    color: "var(--text-primary)",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+  },
+  cardBody: {
+    padding: "16px 20px",
+  },
+};
+
 /* stat card component */
-function StatCard({ label, value, sub, accent }) {
+function StatCard({ label, value, sub, icon, accent, subIcon }) {
   return (
-    <div className="ip-card p-5 flex flex-col justify-between">
-      <div>
-        <div className="ip-stat-label mb-2">{label}</div>
-        <div
-          className="text-3xl font-bold tracking-tight leading-none mb-1"
-          style={{ color: accent ? "var(--accent)" : "var(--text)" }}
-        >
-          {value}
-        </div>
+    <div style={{ ...S.metric, borderLeft: accent ? "2px solid #1d9e75" : "0.5px solid #dde1e8" }}>
+      <div style={S.metricLabel}>{icon} {label}</div>
+      <div style={{ ...S.metricValue, color: accent ? "#1d9e75" : "var(--text-primary)" }}>{value}</div>
+      <div style={{ ...S.metricSub, color: accent ? "#1d9e75" : "var(--text-muted)" }}>
+        {subIcon} {sub}
       </div>
-      {sub && <div className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>{sub}</div>}
     </div>
   );
 }
 
 /* candidate row component */
 function CandidateRow({ session, onViewReport }) {
-  const statusMap = {
-    pending:   { cls: "ip-badge ip-badge-warning", label: "Pending" },
-    active:    { cls: "ip-badge ip-badge-info",    label: "Active" },
-    completed: { cls: "ip-badge ip-badge-success", label: "Completed" },
-    expired:   { cls: "ip-badge ip-badge-neutral", label: "Expired" },
-  };
-  const s = statusMap[session.status] || statusMap.pending;
-
+  const isCompleted = session.status === "completed";
+  const isPending = session.status === "pending";
   return (
-    <div className="ip-activity-row">
-      <div
-        className="ip-activity-icon flex-shrink-0"
-        style={{
-          background: session.status === "completed" ? "var(--color-success-bg)"
-            : session.status === "pending" ? "var(--color-warning-bg)"
-            : session.status === "active" ? "var(--color-info-bg)"
-            : "var(--bg-subtle)",
-          color: session.status === "completed" ? "var(--color-success-text)"
-            : session.status === "pending" ? "var(--color-warning-text)"
-            : session.status === "active" ? "var(--color-info-text)"
-            : "var(--text-muted)",
-        }}
-      >
-        {session.status === "completed" ? <IconCheck /> : session.status === "active" ? <IconPlay /> : <IconClock />}
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: "0.5px solid var(--border)" }}>
+      <div style={{
+        width: 34, height: 34, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 15,
+        background: isCompleted ? "#e1f5ee" : isPending ? "#faeeda" : "var(--surface-1)",
+        color: isCompleted ? "#0f6e56" : isPending ? "#854f0b" : "var(--text-muted)",
+      }}>
+        {isCompleted ? (
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+        ) : (
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        )}
       </div>
-
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold truncate" style={{ color: "var(--text)" }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {session.studentEmail}
         </div>
-        <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+        <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
           {session.role} · <span className="capitalize">{session.difficulty}</span> ·{" "}
           {session.createdAt
-            ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })
+            ? new Date(session.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
             : "—"}
         </div>
       </div>
-
-      <div className="flex items-center gap-3 flex-shrink-0">
-        {session.status === "completed" && session.report?.overallScore !== undefined && (
-          <div className="flex items-center gap-1 text-xs font-bold" style={{ color: "var(--accent)" }}>
-            <IconStar />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        {isCompleted && session.report?.overallScore !== undefined && (
+          <span style={{ fontSize: 12, fontWeight: 500, color: "#0f6e56", background: "#e1f5ee", padding: "3px 10px", borderRadius: 20 }}>
             {session.report.overallScore}/100
-          </div>
+          </span>
         )}
-        <span className={s.cls}>{s.label}</span>
-        {session.status === "completed" ? (
+        {isCompleted ? (
           <button
             onClick={() => onViewReport(session._id)}
-            className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1"
+            style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--text-secondary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: "var(--radius)", padding: "4px 10px", textDecoration: "none", cursor: "pointer" }}
           >
             Report <IconArrow />
           </button>
+        ) : isPending ? (
+          <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "#faeeda", color: "#854f0b", border: "0.5px solid var(--border)" }}>
+            Pending
+          </span>
         ) : (
-          <div className="w-[74px]"></div> /* Placeholder to align rows */
+          <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>
+            {session.status}
+          </span>
         )}
       </div>
     </div>
@@ -124,15 +172,10 @@ function CandidateRow({ session, onViewReport }) {
 /* empty state component */
 function EmptyState({ icon, title, sub, action }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
-      <div
-        className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl mb-1"
-        style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)" }}
-      >
-        {icon}
-      </div>
-      <div className="text-sm font-semibold" style={{ color: "var(--text)" }}>{title}</div>
-      <div className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>{sub}</div>
+    <div style={{ textAlign: "center", padding: "30px 0", color: "var(--text-muted)", fontSize: 13, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+      <div style={{ fontSize: 28, marginBottom: 4 }}>{icon}</div>
+      <div style={{ fontWeight: 500, color: "var(--text-primary)" }}>{title}</div>
+      <div style={{ fontSize: 12 }}>{sub}</div>
       {action}
     </div>
   );
@@ -247,58 +290,61 @@ export default function CompanyDashboard() {
         </header>
 
         {/* page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <div style={{ flex: 1, overflowY: "auto", padding: 28, display: "flex", flexDirection: "column", gap: 24 }}>
 
           {/* welcome banner */}
-          <div className="mb-7">
-            <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
-              Talent Pipeline
-            </h1>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              Track and manage all your {companyName} interview candidates in one place.
-            </p>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+            <div>
+              <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)" }}>
+                Talent Pipeline
+              </h1>
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>
+                Track and manage all your {companyName} interview candidates in one place.
+              </p>
+            </div>
           </div>
 
           {/* stat cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
             <StatCard
               label="TOTAL INVITED"
+              icon={<IconUsers />}
               value={loadingSessions ? "—" : totalInvited}
               sub="All-time candidates"
             />
             <StatCard
               label="ACTIVE NOW"
+              icon={<IconClock />}
               value={loadingSessions ? "—" : activeNow}
               sub={activeNow > 0 ? "Currently interviewing" : "None right now"}
               accent={activeNow > 0}
             />
             <StatCard
               label="COMPLETED"
+              icon={<IconCheck />}
               value={loadingSessions ? "—" : completed}
               sub="Awaiting your review"
             />
             <StatCard
               label="PENDING"
+              icon={<IconClock />}
               value={loadingSessions ? "—" : pending}
               sub="Invites sent"
             />
           </div>
 
           {/* two column layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 16 }}>
 
             {/* left: candidates pipeline list */}
-            <div className="lg:col-span-3 flex flex-col gap-5">
-              <div className="ip-card">
-                <div className="ip-card-header">
-                  <span className="ip-card-title">Recent Candidates</span>
-                  <span className="ip-badge ip-badge-neutral">{totalInvited} total</span>
-                </div>
-                <div className="ip-card-body">
+            <div style={S.card}>
+              <div style={S.cardHeader}>
+                <span style={S.cardTitle}><IconUsers /> Recent Candidates</span>
+                <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{totalInvited} total</span>
+              </div>
+              <div style={{ padding: "8px 20px" }}>
                   {loadingSessions ? (
-                    <div className="flex items-center justify-center py-10">
-                      <div className="ip-spinner ip-spinner-dark" />
-                    </div>
+                    <div style={{ textAlign: "center", padding: "20px 0", color: "var(--text-muted)", fontSize: 13 }}>Loading...</div>
                   ) : sessions.length === 0 ? (
                     <EmptyState
                       icon="👥"
@@ -307,14 +353,14 @@ export default function CompanyDashboard() {
                       action={
                         <button
                           onClick={() => setShowCreateModal(true)}
-                          className="btn-primary py-2 px-4 text-xs mt-1"
+                          style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: "var(--radius)", padding: "6px 12px", cursor: "pointer", fontWeight: 500, marginTop: 8 }}
                         >
                           + Create First Interview
                         </button>
                       }
                     />
                   ) : (
-                    <div>
+                    <>
                       {sessions.slice(0, 8).map((session) => (
                         <CandidateRow
                           key={session._id}
@@ -323,67 +369,83 @@ export default function CompanyDashboard() {
                         />
                       ))}
                       {sessions.length > 8 && (
-                        <div className="mt-4 text-center">
+                        <div style={{ textAlign: "center", marginTop: 12 }}>
                           <Link
                             to="/company/interviews"
-                            className="text-xs font-semibold"
-                            style={{ color: "var(--accent)" }}
+                            style={{ fontSize: 12, color: "#1d9e75", display: "flex", alignItems: "center", justifyContent: "center", gap: 3, textDecoration: "none", fontWeight: 500 }}
                           >
-                            View all candidates →
+                            View all candidates <IconArrow />
                           </Link>
                         </div>
                       )}
-                    </div>
+                    </>
                   )}
-                </div>
               </div>
             </div>
 
             {/* right: quick actions and tips */}
-            <div className="lg:col-span-2 flex flex-col gap-5">
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
               {/* quick actions card */}
-              <div className="ip-card">
-                <div className="ip-card-header">
-                  <span className="ip-card-title">Quick Actions</span>
+              <div style={S.card}>
+                <div style={S.cardHeader}>
+                  <span style={S.cardTitle}><IconStar /> Quick Actions</span>
                 </div>
-                <div className="ip-card-body flex flex-col gap-2">
-                  <button
-                    onClick={() => setShowCreateModal(true)}
-                    className="btn-primary w-full py-2.5 text-sm justify-start gap-2.5 px-4"
-                  >
-                    <IconPlus /> Send New Invite
-                  </button>
-                  <button
-                    onClick={() => navigate("/company/interviews")}
-                    className="btn-secondary w-full py-2.5 text-sm justify-start gap-2.5 px-4"
-                  >
-                    <IconUsers /> View All Candidates
-                  </button>
+                <div style={{ ...S.cardBody, paddingTop: 12 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <div
+                      onClick={() => setShowCreateModal(true)}
+                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "#1d9e75"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "var(--text-primary)"); }}
+                    >
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "#e1f5ee", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <IconPlus />
+                      </div>
+                      <div>
+                        <div className="qa-label" style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>Send New Invite</div>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>Select role and difficulty</div>
+                      </div>
+                    </div>
+                    
+                    <div
+                      onClick={() => navigate("/company/interviews")}
+                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "#1d9e75"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "var(--text-primary)"); }}
+                    >
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "#e1f5ee", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <IconUsers />
+                      </div>
+                      <div>
+                        <div className="qa-label" style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>View All Candidates</div>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>Manage your pipeline</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* how it works step card */}
-              <div className="ip-card">
-                <div className="ip-card-header">
-                  <span className="ip-card-title">Hiring Workflow</span>
+              <div style={S.card}>
+                <div style={S.cardHeader}>
+                  <span style={S.cardTitle}><IconCheck /> Hiring Workflow</span>
                 </div>
-                <div className="ip-card-body flex flex-col gap-4">
+                <div style={S.cardBody}>
                   {[
                     { icon: "1", title: "Create Interview", desc: "Select a role and difficulty. We'll email the candidate a secure, one-time link." },
                     { icon: "2", title: "AI Evaluation", desc: "The AI conducts technical and HR rounds, grading responses in real-time." },
                     { icon: "3", title: "Review Report", desc: "Get a comprehensive breakdown of their strengths, weaknesses, and a final score." },
                   ].map((item) => (
-                    <div key={item.icon} className="flex items-start gap-3">
+                    <div key={item.icon} style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 16 }}>
                       <div
-                        className="w-7 h-7 rounded flex items-center justify-center text-sm flex-shrink-0 mt-0.5"
-                        style={{ background: "var(--accent-light)", color: "var(--accent)", fontWeight: 700, fontSize: 12 }}
+                        style={{ width: 24, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0, marginTop: 2, background: "var(--surface-1)", color: "var(--text-secondary)", fontWeight: 700, border: "0.5px solid var(--border)" }}
                       >
                         {item.icon}
                       </div>
                       <div>
-                        <div className="text-sm font-semibold" style={{ color: "var(--text)" }}>{item.title}</div>
-                        <div className="text-xs mt-0.5 leading-relaxed" style={{ color: "var(--text-muted)" }}>{item.desc}</div>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)" }}>{item.title}</div>
+                        <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, lineHeight: 1.5 }}>{item.desc}</div>
                       </div>
                     </div>
                   ))}
@@ -391,7 +453,7 @@ export default function CompanyDashboard() {
               </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
 
       {/* create interview modal popup */}

@@ -73,55 +73,53 @@ export default function StudentPractice() {
         />
 
         {/* page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 flex flex-col items-center justify-center max-w-2xl mx-auto w-full">
+        <main style={{ flex: 1, padding: "24px 32px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", maxWidth: 672, margin: "0 auto", width: "100%" }}>
 
           {/* welcome banner */}
-          <div className="text-center mb-8">
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl mx-auto mb-3"
-              style={{ background: "var(--accent-light)", color: "var(--accent)", border: "1px solid rgba(91,72,232,0.15)" }}
+              style={{ width: 48, height: 48, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, margin: "0 auto 12px auto", background: "#f5f3ff", color: "#6d28d9", border: "0.5px solid #ede9fe" }}
             >
               🤖
             </div>
-            <h1 className="text-2xl font-bold tracking-tight mb-2" style={{ color: "var(--text)" }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", margin: 0, marginBottom: 8 }}>
               Custom AI Practice
             </h1>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>
               practice answering custom questions and coding tasks configured by you
             </p>
           </div>
 
           {/* error banner */}
           {error && (
-            <div
-              className="mb-6 w-full flex items-center gap-2 text-sm px-4 py-3 rounded"
-              style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}
-            >
-              {error}
+            <div style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca", marginBottom: 24 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
+              <span>{error}</span>
             </div>
           )}
 
           {/* config form card */}
-          <div className="ip-card w-full p-6">
+          <div style={{ width: "100%", background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: 24 }}>
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-                <div className="ip-spinner ip-spinner-dark mb-1" />
-                <div className="text-sm font-semibold" style={{ color: "var(--text)" }}>Preparing Practice Room...</div>
-                <div className="text-xs max-w-xs" style={{ color: "var(--text-muted)" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 0", textAlign: "center", gap: 16 }}>
+                <div style={{ width: 24, height: 24, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Preparing Practice Room...</div>
+                <div style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 300 }}>
                   our ai interviewer is generating questions and coding challenges based on your settings
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleStartPractice} className="flex flex-col gap-5">
+              <form onSubmit={handleStartPractice} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                     Target Job Role
                   </label>
                   <input
                     type="text"
-                    className="px-3 py-2.5 rounded-lg text-sm w-full outline-none transition-all"
-                    style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                    style={{ padding: "10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
+                    onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
                     placeholder="e.g. Frontend React Developer, Python Backend Developer"
                     value={jobRole}
                     onChange={(e) => setJobRole(e.target.value)}
@@ -129,21 +127,21 @@ export default function StudentPractice() {
                   />
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                     Difficulty Level
                   </label>
-                  <div className="grid grid-cols-3 gap-1 p-1 rounded-lg" style={{ background: "var(--bg-subtle)" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, padding: 4, borderRadius: 10, background: "var(--surface-1)", border: "0.5px solid var(--border)" }}>
                     {["easy", "medium", "hard"].map(d => (
                       <button
                         key={d}
                         type="button"
                         onClick={() => setDifficulty(d)}
-                        className="py-2 rounded-md text-[11px] font-bold transition-all capitalize"
                         style={{
-                          background: difficulty === d ? "var(--bg-card)" : "transparent",
-                          color: difficulty === d ? "var(--text)" : "var(--text-secondary)",
-                          boxShadow: difficulty === d ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
+                          padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: "capitalize", cursor: "pointer", transition: "all 0.2s", border: "none",
+                          background: difficulty === d ? "#ffffff" : "transparent",
+                          color: difficulty === d ? "var(--text-primary)" : "var(--text-secondary)",
+                          boxShadow: difficulty === d ? "0 1px 3px rgba(0,0,0,0.1)" : "none"
                         }}
                       >
                         {d}
@@ -152,13 +150,14 @@ export default function StudentPractice() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                     Resume Summary (Optional)
                   </label>
                   <textarea
-                    className="px-3 py-2.5 rounded-lg text-sm w-full outline-none transition-all h-24 resize-none"
-                    style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                    style={{ padding: "10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)", height: 96, resize: "none" }}
+                    onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
                     placeholder="paste your resume text to receive personalized question prompts..."
                     value={resumeText}
                     onChange={(e) => setResumeText(e.target.value)}
@@ -167,7 +166,7 @@ export default function StudentPractice() {
 
                 <button
                   type="submit"
-                  className="btn-primary w-full py-3 text-sm font-semibold flex items-center justify-center gap-2 mt-2"
+                  style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "12px 16px", cursor: "pointer", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", marginTop: 8 }}
                 >
                   <IconCode /> Start Free Practice Round
                 </button>

@@ -76,12 +76,23 @@ export default function InterviewReportPage() {
   if (error) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div className="ip-card max-w-md w-full text-center">
-          <div className="ip-card-body py-10 flex flex-col gap-4">
-            <div className="text-5xl">⚠️</div>
-            <p className="ip-text-secondary">{error}</p>
-            <button onClick={() => navigate(-1)} className="btn-primary">Go Back</button>
-          </div>
+        <div style={{
+          background: "#ffffff",
+          border: "0.5px solid #dde1e8",
+          borderRadius: 12,
+          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+          padding: 40,
+          width: "100%",
+          maxWidth: 440,
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          alignItems: "center"
+        }}>
+          <div style={{ fontSize: 40 }}>⚠️</div>
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>{error}</p>
+          <button onClick={() => navigate(-1)} style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }}>Go Back</button>
         </div>
       </div>
     );
@@ -91,41 +102,48 @@ export default function InterviewReportPage() {
     <div style={{ minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
       {/* top navigation bar */}
-      <nav className="ip-navbar sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <img src="/logo.svg" alt="InterviewPilot" className="w-7 h-7 rounded-lg" />
-          <span className="ip-text-primary font-bold text-[13px]">Interview Report</span>
+      <nav style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "#ffffff", borderBottom: "0.5px solid #dde1e8", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <img src="/logo.svg" alt="InterviewPilot" style={{ width: 28, height: 28, borderRadius: 8 }} />
+          <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>Interview Report</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {/* back to dashboard */}
-          <Link to="/student/dashboard" className="btn-secondary text-[12px]">
+          <Link to="/student/dashboard" style={{ fontSize: 12, color: "var(--text-secondary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 8, padding: "8px 16px", textDecoration: "none", fontWeight: 500 }}>
             ← Dashboard
           </Link>
         </div>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 flex flex-col gap-6">
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: "32px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
 
         {/* hero: overall score */}
-        <div className="ip-card border border-primary-500/20">
-          <div className="ip-card-body text-center py-8">
+        <div style={{
+          background: "#ffffff",
+          border: "0.5px solid #dde1e8",
+          borderRadius: 12,
+          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+          padding: 40,
+          textAlign: "center"
+        }}>
+          <div>
             {/* role and date */}
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="ip-badge ip-badge-primary">{session?.role}</span>
-              <span className="ip-badge ip-badge-neutral capitalize">{session?.difficulty}</span>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 16 }}>
+              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "#1d9e75", border: "0.5px solid #a7dfc9", textTransform: "capitalize" }}>{session?.role}</span>
+              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)", textTransform: "capitalize" }}>{session?.difficulty}</span>
             </div>
 
             {/* overall score — the big number */}
-            <div className={`text-[72px] font-black font-display leading-none mb-2 ${scoreColor(report?.overallScore)}`}>
+            <div className={scoreColor(report?.overallScore)} style={{ fontSize: 72, fontWeight: 900, lineHeight: 1, marginBottom: 8, color: report?.overallScore >= 75 ? "#15803d" : (report?.overallScore >= 50 ? "#a16207" : "#b91c1c") }}>
               {report?.overallScore}
             </div>
-            <p className="ip-text-muted text-[12px] uppercase tracking-widest font-bold mb-4">
+            <p style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-muted)", margin: 0, marginBottom: 16 }}>
               Overall Score / 100
             </p>
 
             {/* summary paragraph */}
-            <p className="ip-text-secondary text-[14px] leading-relaxed max-w-xl mx-auto">
+            <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, maxWidth: 600, margin: "0 auto" }}>
               {report?.summary}
             </p>
           </div>
@@ -133,19 +151,25 @@ export default function InterviewReportPage() {
 
         {/* communication assessment section */}
         {report?.communicationScore > 0 && (
-          <div className="ip-card">
-            <div className="ip-card-header" style={{ marginBottom: 16 }}>
-              <span className="ip-card-title">Communication Assessment</span>
-              <span className="ip-badge ip-badge-primary">
+          <div style={{
+            background: "#ffffff",
+            border: "0.5px solid #dde1e8",
+            borderRadius: 12,
+            boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+            padding: 24
+          }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>Communication Assessment</span>
+              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "#1d9e75", border: "0.5px solid #a7dfc9" }}>
                 {report.videoAnswersCount} video answer{report.videoAnswersCount !== 1 ? "s" : ""}
               </span>
             </div>
-            <div className="ip-card-body">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12 }}>
                 {/* overall communication grade */}
-                <div className="ip-stat-card">
-                  <div className="ip-stat-label">Overall Communication</div>
-                  <div className="ip-stat-value" style={{ color: "var(--accent)" }}>
+                <div style={{ background: "var(--surface-1)", padding: 16, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Overall Communication</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: "#1d9e75" }}>
                     {report.communicationScore}/10
                   </div>
                 </div>
@@ -155,9 +179,9 @@ export default function InterviewReportPage() {
                   .filter(a => a.communicationScore > 0)
                   .slice(0, 3)
                   .map((a, i) => (
-                    <div key={i} className="ip-stat-card">
-                      <div className="ip-stat-label">Q{a.questionIndex + 1} — {a.type}</div>
-                      <div style={{ fontWeight: 700, fontSize: 18 }}>
+                    <div key={i} style={{ background: "var(--surface-1)", padding: 16, borderRadius: 8 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Q{a.questionIndex + 1} — {a.type}</div>
+                      <div style={{ fontWeight: 700, fontSize: 18, color: "var(--text-primary)" }}>
                         {a.communicationScore}/10
                       </div>
                     </div>

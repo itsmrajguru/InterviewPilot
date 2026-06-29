@@ -12,52 +12,50 @@ export default function NotFoundPage() {
         {/* main container of the 404 page...
         designed this block to match the clean and modern card aesthetics 
         of the careersync platform */}
-        <div className="ip-card max-w-lg w-full text-center p-12 relative overflow-hidden">
+        <div style={{
+          background: "#ffffff",
+          border: "0.5px solid #dde1e8",
+          borderRadius: 12,
+          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+          width: "100%",
+          maxWidth: 400,
+          padding: 40,
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16
+        }}>
+          <div style={{ fontSize: 40, marginBottom: 8 }}>🔍</div>
+          <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>Error 404</span>
           
-          {/* background glow effect to maintain the premium feel */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 rounded-full blur-3xl -mr-16 -mt-16" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-neutral-400/5 rounded-full blur-3xl -ml-16 -mb-16" />
+          <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
+            Lost in <span style={{ color: "#1d9e75" }}>Space?</span>
+          </h1>
+          
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, lineHeight: 1.5, maxWidth: 280 }}>
+            The page you are looking for does not exist or has been moved to a different coordinate.
+          </p>
 
-          <div className="relative z-10 flex flex-col items-center gap-4">
-            {/* icon representing the error state...
-            used the searchX icon from lucide react icons set */}
-            <div className="w-20 h-20 ip-bg-subtle ip-border rounded-2xl flex items-center justify-center text-4xl mb-4">
-              🔍
-            </div>
-
-            <span className="ip-badge ip-badge-danger">Error 404</span>
-            <h1 className="text-[36px] font-display font-black ip-text-primary tracking-[-2px] leading-tight">
-              Lost in <span className="ip-text-accent">Space?</span>
-            </h1>
-            
-            <p className="ip-text-secondary text-[14px] max-w-[300px] leading-relaxed lowercase">
-              the page you are looking for does not exist or has been moved to a different coordinate.
-            </p>
-
-            {/* navigation buttons for the user...
-            added two options for better user experience to go back or home */}
-            <div className="flex flex-col md:flex-row gap-4 w-full justify-center mt-4">
-              <button 
-                onClick={() => navigate(-1)}
-                className="btn-secondary"
-              >
-                ← Go Back
-              </button>
-              
-              <button 
-                onClick={() => navigate("/login")}
-                className="btn-primary"
-              >
-                Go to Login
-              </button>
-            </div>
+          <div style={{ display: "flex", gap: 12, marginTop: 16, width: "100%", justifyContent: "center" }}>
+            <button 
+              onClick={() => navigate(-1)}
+              style={{ fontSize: 12, color: "var(--text-secondary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }}
+            >
+              ← Go Back
+            </button>
+            <button 
+              onClick={() => navigate("/login")}
+              style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }}
+            >
+              Go to Login
+            </button>
           </div>
         </div>
 
-        {/* small strategic footer as seen in other pages... */}
-        <div className="mt-12">
-          <p className="text-[11px] ip-text-muted font-bold uppercase tracking-widest italic opacity-50">
-            "InterviewPilot — The interview infrastructure."
+        <div style={{ marginTop: 40 }}>
+          <p style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            InterviewPilot
           </p>
         </div>
       </div>

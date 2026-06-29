@@ -152,26 +152,24 @@ export default function CompanyInterviews() {
         </header>
 
         {/* page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <main style={{ flex: 1, padding: "24px 32px" }}>
 
           {/* welcome banner */}
-          <div className="mb-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div style={{ marginBottom: 32, display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
                 Pipeline Registry
               </h1>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+              <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>
                 search, filter and inspect all candidate invites sent by your organization
               </p>
             </div>
-          </div>
-
-          {/* search and filter tools bar */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          </div>          {/* search and filter tools bar */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 24 }}>
             
             {/* search input box */}
-            <div className="relative col-span-1 md:col-span-2">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }}>
+            <div style={{ position: "relative", gridColumn: "span 2" }}>
+              <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", display: "flex" }}>
                 <IconSearch />
               </span>
               <input
@@ -179,8 +177,9 @@ export default function CompanyInterviews() {
                 placeholder="search by email or role..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="pl-9 pr-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
-                style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text)" }}
+                style={{ padding: "10px 12px 10px 36px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "#ffffff", border: "0.5px solid var(--border)", color: "var(--text-primary)", transition: "all 0.2s" }}
+                onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
               />
             </div>
 
@@ -188,8 +187,7 @@ export default function CompanyInterviews() {
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg text-sm outline-none cursor-pointer"
-              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text)" }}
+              style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "#ffffff", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
             >
               <option value="all">all statuses</option>
               <option value="pending">pending</option>
@@ -202,8 +200,7 @@ export default function CompanyInterviews() {
             <select
               value={difficultyFilter}
               onChange={e => setDifficultyFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg text-sm outline-none cursor-pointer"
-              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text)" }}
+              style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "#ffffff", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
             >
               <option value="all">all difficulties</option>
               <option value="easy">easy</option>
@@ -213,15 +210,15 @@ export default function CompanyInterviews() {
           </div>
 
           {/* list card representation */}
-          <div className="ip-card">
-            <div className="ip-card-header flex items-center justify-between">
-              <span className="ip-card-title">Talent Pipeline Registry</span>
-              <span className="ip-badge ip-badge-neutral">{filteredSessions.length} listed</span>
+          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "0.5px solid var(--border)" }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Talent Pipeline Registry</span>
+              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{filteredSessions.length} listed</span>
             </div>
-            <div className="ip-card-body">
+            <div style={{ padding: 0 }}>
               {loading ? (
-                <div className="flex items-center justify-center py-10">
-                  <div className="ip-spinner ip-spinner-dark" />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 0" }}>
+                  <div style={{ width: 24, height: 24, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
                 </div>
               ) : filteredSessions.length === 0 ? (
                 <EmptyState
@@ -230,49 +227,55 @@ export default function CompanyInterviews() {
                   sub="we couldn't find any candidate invites matching your search or filters"
                 />
               ) : (
-                <div className="flex flex-col">
-                  {filteredSessions.map((session) => {
-                    const s = statusMap[session.status] || statusMap.pending;
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {filteredSessions.map((session, index) => {
                     return (
-                      <div key={session._id} className="ip-activity-row">
+                      <div key={session._id} style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 20px", borderBottom: index < filteredSessions.length - 1 ? "0.5px solid var(--border)" : "none" }}>
                         <div
-                          className="ip-activity-icon flex-shrink-0"
                           style={{
-                            background: session.status === "completed" ? "var(--color-success-bg)"
-                              : session.status === "pending" ? "var(--color-warning-bg)"
-                              : "var(--bg-subtle)",
-                            color: session.status === "completed" ? "var(--color-success-text)"
-                              : session.status === "pending" ? "var(--color-warning-text)"
+                            width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                            background: session.status === "completed" ? "#f0fdf4"
+                              : session.status === "pending" ? "#fefce8"
+                              : "var(--surface-1)",
+                            color: session.status === "completed" ? "#15803d"
+                              : session.status === "pending" ? "#a16207"
                               : "var(--text-muted)",
                           }}
                         >
                           {session.status === "completed" ? <IconCheck /> : <IconClock />}
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold truncate" style={{ color: "var(--text)" }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {session.studentEmail}
                           </div>
-                          <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                            {session.role} · <span className="capitalize">{session.difficulty}</span> ·{" "}
+                          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
+                            {session.role} · <span style={{ textTransform: "capitalize" }}>{session.difficulty}</span> ·{" "}
                             {session.createdAt
                               ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
                               : "—"}
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 flex-shrink-0">
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
                           {session.status === "completed" && session.report?.overallScore !== undefined && (
-                            <div className="flex items-center gap-1 text-xs font-bold" style={{ color: "var(--accent)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 700, color: "#a16207" }}>
                               <IconStar />
                               {session.report.overallScore}/100
                             </div>
                           )}
-                          <span className={s.cls}>{s.label}</span>
+                          <span style={{
+                            fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "uppercase",
+                            background: session.status === "completed" ? "#f0fdf4" : (session.status === "pending" ? "#fefce8" : "var(--surface-1)"),
+                            color: session.status === "completed" ? "#15803d" : (session.status === "pending" ? "#a16207" : "var(--text-secondary)"),
+                            border: session.status === "completed" ? "0.5px solid #bbf7d0" : (session.status === "pending" ? "0.5px solid #fef08a" : "0.5px solid var(--border)")
+                          }}>
+                            {session.status}
+                          </span>
                           {session.status === "completed" && (
                             <button
                               onClick={() => navigate(`/interview/${session._id}/report`)}
-                              className="btn-secondary py-1.5 px-3 text-xs flex items-center gap-1"
+                              style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--text-primary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 6, padding: "6px 12px", cursor: "pointer", fontWeight: 500 }}
                             >
                               Report <IconArrow />
                             </button>
@@ -285,7 +288,6 @@ export default function CompanyInterviews() {
               )}
             </div>
           </div>
-
         </main>
       </div>
     </div>

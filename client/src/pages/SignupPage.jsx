@@ -40,42 +40,49 @@ export default function SignupPage() {
 
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-      <div className="w-full max-w-md p-6 md:p-8">
+      <div style={{ width: "100%", maxWidth: 440, padding: 24 }}>
         
         {/* logo and header */}
-        <div className="text-center mb-8 flex flex-col items-center">
-          <div onClick={() => navigate("/")} className="cursor-pointer mb-4 flex items-center justify-center w-12 h-12 rounded-xl" style={{ background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+        <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div onClick={() => navigate("/")} style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
             Create Account
           </h1>
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+          <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: 0 }}>
             Join the unified network for careers
           </p>
         </div>
 
         {/* auth card */}
-        <div className="ip-card p-6 md:p-8">
+        <div style={{
+          background: "#ffffff",
+          border: "0.5px solid #dde1e8",
+          borderRadius: 12,
+          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+          padding: 32,
+          width: "100%"
+        }}>
           {error && (
-            <div className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Identity</label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-1 p-0.5 rounded-lg" style={{ background: "var(--bg-subtle)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Identity</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, padding: 4, borderRadius: 8, background: "var(--surface-1)" }}>
                 <button
                   type="button"
                   onClick={() => setRole("student")}
-                  className="py-1.5 rounded-md text-[11px] font-bold transition-all"
                   style={{
-                    background: role === "student" ? "var(--bg-card)" : "transparent",
-                    color: role === "student" ? "var(--text)" : "var(--text-secondary)",
+                    padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.15s",
+                    background: role === "student" ? "#ffffff" : "transparent",
+                    color: role === "student" ? "var(--text-primary)" : "var(--text-secondary)",
                     boxShadow: role === "student" ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
                   }}
                 >
@@ -84,10 +91,10 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setRole("company")}
-                  className="py-1.5 rounded-md text-[11px] font-bold transition-all"
                   style={{
-                    background: role === "company" ? "var(--bg-card)" : "transparent",
-                    color: role === "company" ? "var(--text)" : "var(--text-secondary)",
+                    padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.15s",
+                    background: role === "company" ? "#ffffff" : "transparent",
+                    color: role === "company" ? "var(--text-primary)" : "var(--text-secondary)",
                     boxShadow: role === "company" ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
                   }}
                 >
@@ -96,8 +103,8 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Email address</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Email address</label>
               <input
                 type="email"
                 name="email"
@@ -105,14 +112,15 @@ export default function SignupPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@example.com"
-                className="px-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
-                style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                style={{ padding: "10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
+                onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Password</label>
-              <div className="relative">
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Password</label>
+              <div style={{ position: "relative" }}>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -121,14 +129,14 @@ export default function SignupPage() {
                   required
                   placeholder="••••••••"
                   minLength={6}
-                  className="px-3 py-2 pr-10 rounded-lg text-sm w-full outline-none transition-all"
-                  style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                  style={{ padding: "10px 38px 10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                  onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: "var(--text-muted)" }}
+                  style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
                   tabIndex={-1}
                 >
                   {showPassword ? (
@@ -143,24 +151,24 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-2.5 mt-2"
+              style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%", marginTop: 8 }}
             >
               {loading ? "Creating account..." : "Sign Up"}
             </button>
           </form>
 
-          <div className="mt-6 pt-5 flex flex-col gap-2 text-center text-xs" style={{ borderTop: "1px solid var(--border)", color: "var(--text-secondary)" }}>
+          <div style={{ marginTop: 24, paddingTop: 20, display: "flex", flexDirection: "column", gap: 8, textAlign: "center", fontSize: 12, borderTop: "0.5px solid var(--border)", color: "var(--text-secondary)" }}>
             <div>
-              Already have an account? <Link to="/login" className="font-bold" style={{ color: "var(--text)" }}>Sign in</Link>
+              Already have an account? <Link to="/login" style={{ fontWeight: 500, color: "var(--text-primary)", textDecoration: "none" }}>Sign in</Link>
             </div>
           </div>
         </div>
         
         {/* footer */}
-        <div className="mt-8 text-center flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+        <div style={{ marginTop: 32, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
           <span>&copy; 2026 InterviewPilot</span>
-          <Link to="/privacy">Privacy</Link>
-          <Link to="/legal">Legal</Link>
+          <Link to="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
+          <Link to="/legal" style={{ color: "inherit", textDecoration: "none" }}>Legal</Link>
         </div>
       </div>
     </div>
