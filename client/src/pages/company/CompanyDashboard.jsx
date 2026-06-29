@@ -491,7 +491,8 @@ export default function CompanyDashboard() {
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
                 <span style={{ fontWeight: 500, wordBreak: "break-all" }}>{createSuccess}</span>
               </div>
-             {/* modal body form */}
+            )}
+            {/* modal body form */}
             {!createSuccess && (
               <form onSubmit={handleCreateInterview}>
                 <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>

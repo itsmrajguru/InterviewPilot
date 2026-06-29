@@ -50,6 +50,9 @@ app.use('/api/v1/auth', authRouter)
 const { interviewRouter } = require('./routes/interviewRoutes')
 app.use('/api/v1/interviews', interviewRouter)
 
+const careersyncRouter = require('./routes/careersyncRoutes')
+app.use('/api/v1/careersync', careersyncRouter)
+
 
 //creating a welcome route
 app.get('/', (req, res) => {

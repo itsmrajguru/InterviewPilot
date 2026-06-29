@@ -9,6 +9,13 @@ const GEMINI_KEYS = [
     process.env.GEMINI_API_KEY_1,
     process.env.GEMINI_API_KEY_2,
     process.env.GEMINI_API_KEY_3,
+    process.env.GEMINI_API_KEY_4,
+    process.env.GEMINI_API_KEY_5,
+    process.env.GEMINI_API_KEY_6,
+    process.env.GEMINI_API_KEY_7,
+    process.env.GEMINI_API_KEY_8,
+    process.env.GEMINI_API_KEY_9,
+    process.env.GEMINI_API_KEY_10,
 ].filter(Boolean)
 
 let keyIndex = 0
@@ -49,9 +56,9 @@ Role: ${role}
 Difficulty: ${difficulty}
 ${resumeText ? `Candidate Resume Summary:\n${resumeText.slice(0, 1500)}` : ''}
 
-Generate exactly 8 questions in this mix:
+Generate exactly 10 questions in this mix:
 - 2 HR / behavioural questions
-- 4 technical concept questions specific to the role
+- 6 technical concept questions specific to the role
 - 2 coding problem descriptions (describe the problem clearly, include 2 sample test cases)
 
 Return ONLY a valid JSON array — no markdown, no extra text:
@@ -74,11 +81,7 @@ Return ONLY a valid JSON array — no markdown, no extra text:
     } catch (e) {
         /* inform to the developer */
         console.log('generateInterviewQuestions Error :', e);
-        /* return a safe fallback so the session does not crash */
-        return [
-            { type: 'hr', question: 'Tell me about yourself.', topic: 'Introduction' },
-            { type: 'technical', question: `Explain a core concept in ${role}.`, topic: role },
-        ]
+        throw new Error('Failed to generate interview questions. The AI service might be rate limited. Please try again in a minute.');
     }
 }
 
@@ -213,29 +216,41 @@ Return ONLY valid JSON — no markdown, no extra text:
 /* generateReport service */
 const generateReport = async (sessionData) => {
 
-    /* step 1 :build a compact summary of all answers and scores */
+    /* step 1 :build a complete transcript of all questions and raw answers */
     const answerSummary = (sessionData.answers || [])
         .map((a, i) => {
-            const commLine = a.communicationScore
-                ? ` | Communication: ${a.communicationScore}/10 | Clarity: ${a.clarityScore}/10`
-                : ''
-            return `Q${i + 1} [${a.type}] Content: ${a.score}/10${commLine} — ${a.feedback}`
+            if (a.type === 'coding') {
+                return `Q${i + 1} [coding]: ${a.question}\nCandidate Code:\n${a.answer}\nTest Results: Passed ${a.testsPassed || 0}/${a.testsTotal || 0}`;
+            }
+            return `Q${i + 1} [${a.type}]: ${a.question}\nCandidate Transcript:\n${a.answer || '[No speech detected]'}`;
         })
-        .join('\\n')
+        .join('\n\n')
 
     /* step 2 :build the prompt */
     const prompt = `
-You are a career coach writing a post-interview performance report.
+You are a senior technical interviewer and career coach evaluating a candidate's complete interview.
 
 Role Interviewed For: ${sessionData.role || 'Software Engineer'}
-Questions and Scores:
+Questions and Raw Answers:
 ${answerSummary}
 
-Write a comprehensive performance report. Return ONLY a valid JSON object:
+Evaluate EACH question and generate a comprehensive performance report. 
+Return ONLY a valid JSON object:
 {
+  "answersFeedback": [
+    {
+      "questionIndex": <index of the question, 0 to N-1>,
+      "score": <0-10>,
+      "communicationScore": <0-10 for spoken answers, null for coding>,
+      "clarityScore": <0-10 for spoken answers, null for coding>,
+      "vocabularyScore": <0-10 for spoken answers, null for coding>,
+      "structureScore": <0-10 for spoken answers, null for coding>,
+      "feedback": "<2-3 sentence constructive feedback on this specific answer>"
+    }
+  ],
   "overallScore": <weighted average 0-100>,
-  "communicationScore": <average communication score 0-10, based on video answers only. 0 if no video answers>,
-  "videoAnswersCount": <number of questions that had video answers>,
+  "communicationScore": <average communication score 0-10, based on spoken answers only>,
+  "videoAnswersCount": <number of questions that had spoken answers>,
   "summary": "<2-3 sentence overall summary>",
   "strengths": ["...", "..."],
   "weaknesses": ["...", "..."],
@@ -253,6 +268,7 @@ Write a comprehensive performance report. Return ONLY a valid JSON object:
         console.log('generateReport Error :', e);
         /* safe fallback so the session can still complete */
         return {
+            answersFeedback: [],
             overallScore: 50,
             summary: 'Report could not be generated automatically.',
             strengths: [],

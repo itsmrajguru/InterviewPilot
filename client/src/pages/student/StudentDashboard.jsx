@@ -220,15 +220,15 @@ export default function StudentDashboard() {
   ];
 
   const skillRows = skillBreakdown ? [
-    { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "#1d9e75" },
-    { label: "Technical", pct: skillBreakdown.tech, color: "#ef9f27" },
-    { label: "Coding", pct: skillBreakdown.code, color: "#d85a30" },
-    { label: "Communication", pct: skillBreakdown.comm, color: "#1d9e75" },
+    { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "var(--color-primary-500)" },
+    { label: "Technical", pct: skillBreakdown.tech, color: "var(--text-secondary)" },
+    { label: "Coding", pct: skillBreakdown.code, color: "var(--text-muted)" },
+    { label: "Communication", pct: skillBreakdown.comm, color: "var(--color-primary-500)" },
   ] : [
-    { label: "HR / Behavioural", pct: null, color: "#1d9e75" },
-    { label: "Technical", pct: null, color: "#ef9f27" },
-    { label: "Coding", pct: null, color: "#d85a30" },
-    { label: "Communication", pct: null, color: "#1d9e75" },
+    { label: "HR / Behavioural", pct: null, color: "var(--color-primary-500)" },
+    { label: "Technical", pct: null, color: "var(--text-secondary)" },
+    { label: "Coding", pct: null, color: "var(--text-muted)" },
+    { label: "Communication", pct: null, color: "var(--color-primary-500)" },
   ];
 
   return (

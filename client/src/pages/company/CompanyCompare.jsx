@@ -120,7 +120,8 @@ export default function CompanyCompare() {
                 />
               </div>
             </div>
-          )             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               
               {/* slot selectors panel */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, padding: 16, borderRadius: 12, background: "#ffffff", border: "0.5px solid #dde1e8", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>

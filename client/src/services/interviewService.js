@@ -14,8 +14,8 @@ export async function joinSession(token) {
     return api.get(`interviews/join/${token}`)
 }
 
-export async function startSession(sessionId) {
-    return api.post(`interviews/${sessionId}/start`)
+export async function startSession(sessionId, resumeText = '') {
+    return api.post(`interviews/${sessionId}/start`, { resumeText })
 }
 
 export async function submitAnswer({ sessionId, questionIndex, answer }) {

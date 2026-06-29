@@ -11,11 +11,13 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentInterviews from "./pages/student/StudentInterviews";
 import StudentPractice from "./pages/student/StudentPractice";
 import StudentReports from "./pages/student/StudentReports";
+import StudentProfile from "./pages/student/StudentProfile";
 
 /* company / recruiter pages */
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyInterviews from "./pages/company/CompanyInterviews";
 import CompanyCompare from "./pages/company/CompanyCompare";
+import CompanyProfile from "./pages/company/CompanyProfile";
 
 /* Interview flow pages — join link → room → report */
 import JoinInterviewPage from "./pages/interview/JoinInterviewPage";
@@ -43,11 +45,13 @@ function App() {
         <Route path="/student/interviews" element={<StudentInterviews />} />
         <Route path="/student/practice" element={<StudentPractice />} />
         <Route path="/student/reports" element={<StudentReports />} />
+        <Route path="/student/profile" element={<StudentProfile />} />
 
         {/* company / recruiter routes */}
         <Route path="/company/dashboard" element={<CompanyDashboard />} />
         <Route path="/company/interviews" element={<CompanyInterviews />} />
         <Route path="/company/compare" element={<CompanyCompare />} />
+        <Route path="/company/profile" element={<CompanyProfile />} />
 
         {/* Interview flow — public join link, protected room and report */}
         <Route path="/interview/join/:token" element={<JoinInterviewPage />} />

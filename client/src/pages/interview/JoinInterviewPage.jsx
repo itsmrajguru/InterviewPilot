@@ -12,6 +12,7 @@ export default function JoinInterviewPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [starting, setStarting] = useState(false);
+  const [resumeText, setResumeText] = useState("");
 
   /* step 1: on mount, validate the token and fetch session data */
   useEffect(() => {
@@ -41,14 +42,23 @@ export default function JoinInterviewPage() {
   /* step 2: when student clicks Start Interview, mark session active
   and navigate to the interview room */
   const handleStart = async () => {
+    if (!resumeText.trim()) {
+      setError("Please provide your resume summary to personalize your interview.");
+      return;
+    }
     setStarting(true);
     try {
-      await startSession(session._id);
-      /* navigate to the interview room, passing session data via state
-      so the room page does not need to re-fetch */
-      const activeSession = { ...session, status: "active" };
-      sessionStorage.setItem(`interview_session_${session._id}`, JSON.stringify(activeSession));
-      navigate(`/interview/${session._id}`, { state: { session: activeSession } });
+      const data = await startSession(session._id, resumeText);
+      if (data.success) {
+        /* navigate to the interview room, passing session data via state
+        so the room page does not need to re-fetch */
+        const activeSession = data.session;
+        sessionStorage.setItem(`interview_session_${session._id}`, JSON.stringify(activeSession));
+        navigate(`/interview/${session._id}`, { state: { session: activeSession } });
+      } else {
+        setError(data.message || "Could not start the interview.");
+        setStarting(false);
+      }
     } catch (e) {
       /* inform to the developer */
       console.error("startSession error:", e);
@@ -146,10 +156,10 @@ export default function JoinInterviewPage() {
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-            You're Invited!
+            Personalize Your Interview
           </h1>
           <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, marginTop: 4 }}>
-            A recruiter has invited you to complete an AI-powered interview.
+            Provide your resume to generate 10 questions tailored exactly to your background.
           </p>
         </div>
 
@@ -164,61 +174,48 @@ export default function JoinInterviewPage() {
           flexDirection: "column",
           gap: 20
         }}>
-          {/* role + difficulty */}
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-            <div>
-              <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", margin: 0, marginBottom: 4 }}>Role</p>
-              <p style={{ fontSize: 20, fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>
-                {session?.role}
-              </p>
-            </div>
-            <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#f0fdf4", color: "#15803d", border: "0.5px solid #bbf7d0", textTransform: "capitalize" }}>
-              {session?.difficulty}
-            </span>
-          </div>
 
-          {/* divider */}
-          <div style={{ borderTop: "0.5px solid var(--border)" }} />
 
-          {/* what to expect section */}
+          {/* resume input */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", margin: 0, marginBottom: 12 }}>
-              What to Expect
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", margin: 0, marginBottom: 8 }}>
+              Your Resume Summary
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {[
-                { icon: "🧠", text: "2 behavioural / HR questions" },
-                { icon: "⚡", text: "4 technical concept questions" },
-                { icon: "💻", text: "1-2 live coding problems" },
-                { icon: "📊", text: "AI-graded report at the end" },
-              ].map((item, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ fontSize: 18 }}>{item.icon}</span>
-                  <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{item.text}</span>
-                </div>
-              ))}
-            </div>
+            <p style={{ fontSize: 12, color: "var(--text-secondary)", margin: 0, marginBottom: 12 }}>
+              Paste your resume or a summary of your experience below. We will use this to generate personalized interview questions just for you.
+            </p>
+            <textarea
+              value={resumeText}
+              onChange={(e) => {
+                setResumeText(e.target.value);
+                setError("");
+              }}
+              placeholder="e.g. I have 3 years of experience in React and Node.js..."
+              style={{
+                width: "100%",
+                minHeight: 120,
+                padding: "12px",
+                borderRadius: 8,
+                border: "1px solid var(--border)",
+                fontSize: 13,
+                fontFamily: "var(--font-sans)",
+                resize: "vertical",
+                background: "#f8fafc",
+                outline: "none"
+              }}
+            />
           </div>
 
           {/* divider */}
           <div style={{ borderTop: "0.5px solid var(--border)" }} />
-
-          {/* tips */}
-          <div style={{ display: "flex", gap: 12, padding: "16px", borderRadius: 8, background: "#f8fafc", border: "0.5px solid #e2e8f0", alignItems: "flex-start" }}>
-            <span style={{ fontSize: 18, flexShrink: 0 }}>💡</span>
-            <span style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-              Find a quiet place, answer in full sentences, and take your time.
-              Once you start you cannot pause the interview.
-            </span>
-          </div>
 
           {/* submit button */}
           <button
             onClick={handleStart}
             disabled={starting}
-            style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "12px 16px", cursor: "pointer", fontWeight: 500, width: "100%", marginTop: 4 }}
+            style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "12px 16px", cursor: starting ? "not-allowed" : "pointer", fontWeight: 500, width: "100%", marginTop: 4, opacity: starting ? 0.7 : 1 }}
           >
-            {starting ? "Starting..." : "Start Interview →"}
+            {starting ? "Generating your personalized interview..." : "Start Interview →"}
           </button>
         </div>
 

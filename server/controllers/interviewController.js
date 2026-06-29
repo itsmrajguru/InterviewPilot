@@ -200,17 +200,6 @@ const joinSession = async (req, res) => {
             return res.status(400).json({ success: false, message: 'This interview has already been completed.' })
         }
 
-        /* step 3 :generate questions with Gemini if they have not been generated yet */
-        if (!session.questions || session.questions.length === 0) {
-            console.log('Generating interview questions via Gemini...')
-            const questions = await generateInterviewQuestions(
-                session.role,
-                session.difficulty,
-                session.resumeText
-            )
-            session.questions = questions
-            await session.save()
-        }
 
         return res.status(200).json({
             success: true,
@@ -232,8 +221,9 @@ const joinSession = async (req, res) => {
 
 /* startSession controller */
 const startSession = async (req, res) => {
-    /* step 1 :Extract id from req.params */
+    /* step 1 :Extract id from req.params and resumeText from req.body */
     const { id } = req.params
+    const { resumeText } = req.body
 
     try {
         /* step 2 :find the session */
@@ -264,7 +254,22 @@ const startSession = async (req, res) => {
             })
         }
 
-        /* step 3 :mark as active in the db */
+        /* step 3 :update resume text and mark as active in the db */
+        if (resumeText !== undefined) {
+            session.resumeText = resumeText;
+        }
+        
+        /* step 4 :generate questions with Gemini if they have not been generated yet */
+        if (!session.questions || session.questions.length === 0) {
+            console.log('Generating interview questions via Gemini...')
+            const questions = await generateInterviewQuestions(
+                session.role,
+                session.difficulty,
+                session.resumeText
+            )
+            session.questions = questions
+        }
+
         session.status = 'active'
         session.startedAt = new Date()
         await session.save()
@@ -276,12 +281,14 @@ const startSession = async (req, res) => {
                 _id: session._id,
                 status: session.status,
                 startedAt: session.startedAt,
-                currentQuestionIndex: session.currentQuestionIndex
+                currentQuestionIndex: session.currentQuestionIndex,
+                questions: session.questions,
+                answers: session.answers
             }
         })
     } catch (e) {
         console.log(e);
-        return res.status(500).json({ success: false, message: 'Something went wrong ! Please try again' })
+        return res.status(500).json({ success: false, message: e.message || 'Something went wrong ! Please try again' })
     }
 }
 
@@ -384,15 +391,7 @@ const submitCode = async (req, res) => {
         const testsPassed = testResults.filter(t => t.passed).length
         const testsTotal = testResults.length
 
-        /* step 5 :get Gemini code-quality score and feedback */
-        const { score, feedback } = await evaluateCode(
-            question.question,
-            code,
-            language,
-            testResults
-        )
-
-        /* step 6 :save the code submission to the session in the db */
+        /* step 5 :save the code submission to the session in the db */
         session.codeSubmission = {
             problemDescription: question.question,
             code,
@@ -400,8 +399,6 @@ const submitCode = async (req, res) => {
             testResults,
             testsPassed,
             testsTotal,
-            score,
-            feedback,
             submittedAt: new Date()
         }
 
@@ -411,8 +408,8 @@ const submitCode = async (req, res) => {
             question: question.question,
             type: 'coding',
             answer: code,
-            score,
-            feedback,
+            testsPassed,
+            testsTotal,
             submittedAt: new Date()
         }
         const existingIndex = session.answers.findIndex(a => a.questionIndex === questionIndex)
@@ -428,11 +425,10 @@ const submitCode = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: 'Code executed and evaluated.',
+            message: 'Code executed and saved.',
             testResults,
             testsPassed,
-            testsTotal,
-            evaluation: { score, feedback }
+            testsTotal
         })
     } catch (e) {
         console.log(e);
@@ -461,12 +457,28 @@ const completeSession = async (req, res) => {
 
         /* step 3 :ask Gemini to write the performance report */
         console.log('Generating final report via Gemini...')
-        const reportData = await generateReport({
-            role: session.role,
-            answers: session.answers
-        })
+        const reportData = await generateReport(session)
 
-        /* step 4 :save the report and mark session completed in the db */
+        /* step 4 :map the per-question feedback back to the session.answers */
+        if (reportData.answersFeedback && Array.isArray(reportData.answersFeedback)) {
+            reportData.answersFeedback.forEach(fb => {
+                const answer = session.answers.find(a => a.questionIndex === fb.questionIndex);
+                if (answer) {
+                    answer.score = fb.score;
+                    answer.feedback = fb.feedback;
+                    if (answer.type !== 'coding') {
+                        answer.communicationScore = fb.communicationScore;
+                        answer.clarityScore = fb.clarityScore;
+                        answer.vocabularyScore = fb.vocabularyScore;
+                        answer.structureScore = fb.structureScore;
+                    }
+                }
+            });
+            /* remove answersFeedback from the report data since it's now in the answers array */
+            delete reportData.answersFeedback;
+        }
+
+        /* step 5 :save the report and mark session completed in the db */
         session.report      = reportData
         session.status      = 'completed'
         session.completedAt = new Date()
@@ -705,12 +717,7 @@ const submitVideoAnswer = async (req, res) => {
         const { transcribeVideo }       = require('../services/assemblyService')
         const transcript                = await transcribeVideo(videoUrl)
 
-        /* step 3 :evaluate the transcript */
-        console.log(`Evaluating communication for session ${id} question ${questionIndex}...`)
-        const { evaluateCommunication } = require('../services/geminiService')
-        const evaluation                = await evaluateCommunication(question.question, transcript)
-
-        /* step 4 :build the answer document */
+        /* step 3 :build the answer document */
         const answerDoc = {
             questionIndex,
             question:           question.question,
@@ -718,16 +725,10 @@ const submitVideoAnswer = async (req, res) => {
             answer:             transcript,
             videoUrl,
             transcript,
-            score:              evaluation.contentScore,
-            communicationScore: evaluation.communicationScore,
-            clarityScore:       evaluation.clarityScore,
-            vocabularyScore:    evaluation.vocabularyScore,
-            structureScore:     evaluation.structureScore,
-            feedback:           evaluation.feedback,
             submittedAt:        new Date()
         }
 
-        /* step 5 :replace existing answer or push new one */
+        /* step 4 :replace existing answer or push new one */
         const existingIndex = session.answers.findIndex(a => a.questionIndex === questionIndex)
         if (existingIndex !== -1) {
             session.answers[existingIndex] = answerDoc
@@ -740,9 +741,8 @@ const submitVideoAnswer = async (req, res) => {
 
         return res.status(200).json({
             success:    true,
-            message:    'Video answer transcribed and evaluated.',
-            transcript,
-            evaluation
+            message:    'Video answer transcribed and saved.',
+            transcript
         })
 
     } catch (e) {

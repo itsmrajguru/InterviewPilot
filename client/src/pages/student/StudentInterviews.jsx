@@ -105,10 +105,10 @@ export default function StudentInterviews() {
 
           {/* welcome banner */}
           <div style={{ marginBottom: 32 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
               Interview History
             </h1>
-            <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>
+            <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
               manage and view the status of all your company invitations and practice rounds
             </p>
           </div>
