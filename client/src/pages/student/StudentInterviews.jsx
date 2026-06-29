@@ -81,10 +81,10 @@ export default function StudentInterviews() {
   });
 
   const statusMap = {
-    pending:   { cls: "ip-badge ip-badge-warning", label: "Pending" },
-    active:    { cls: "ip-badge ip-badge-info",    label: "Active" },
-    completed: { cls: "ip-badge ip-badge-success", label: "Completed" },
-    expired:   { cls: "ip-badge ip-badge-neutral", label: "Expired" },
+    pending:   { cls: { fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "uppercase", background: "#fefce8", color: "#a16207", border: "0.5px solid #fef08a" }, label: "Pending" },
+    active:    { cls: { fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "uppercase", background: "#f0f9ff", color: "#0369a1", border: "0.5px solid #bae6fd" }, label: "Active" },
+    completed: { cls: { fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "uppercase", background: "#f0fdf4", color: "#15803d", border: "0.5px solid #bbf7d0" }, label: "Completed" },
+    expired:   { cls: { fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "uppercase", background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }, label: "Expired" },
   };
 
   return (

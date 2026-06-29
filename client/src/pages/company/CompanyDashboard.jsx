@@ -283,7 +283,7 @@ export default function CompanyDashboard() {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="btn-primary py-2 px-4 text-xs flex items-center gap-1.5"
+            style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}
           >
             <IconPlus /> Create Interview
           </button>
@@ -459,22 +459,19 @@ export default function CompanyDashboard() {
       {/* create interview modal popup */}
       {showCreateModal && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+          style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
           onClick={() => { setShowCreateModal(false); setCreateError(""); setCreateSuccess(""); }}
         >
           <div 
-            className="w-full max-w-md rounded-xl shadow-2xl overflow-hidden" 
-            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+            style={{ width: "100%", maxWidth: 448, borderRadius: 12, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)", overflow: "hidden", background: "#ffffff", border: "0.5px solid #dde1e8" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* modal header */}
-            <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
-              <span className="text-sm font-bold" style={{ color: "var(--text)" }}>Create New Interview</span>
+            <div style={{ padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "0.5px solid var(--border)" }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Create New Interview</span>
               <button
-                className="w-8 h-8 flex items-center justify-center rounded-md transition-colors"
-                style={{ color: "var(--text-muted)" }}
-                onMouseOver={(e) => e.currentTarget.style.background = "var(--bg-subtle)"}
+                style={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 6, background: "transparent", color: "var(--text-muted)", border: "none", cursor: "pointer" }}
+                onMouseOver={(e) => e.currentTarget.style.background = "var(--surface-1)"}
                 onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
                 onClick={() => { setShowCreateModal(false); setCreateError(""); setCreateSuccess(""); }}
               >
@@ -484,29 +481,26 @@ export default function CompanyDashboard() {
 
             {/* modal alerts */}
             {createError && (
-              <div className="mx-6 mt-5 px-3 py-2.5 rounded text-xs flex items-center gap-2" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
-                <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+              <div style={{ margin: "20px 24px 0", padding: "10px 12px", borderRadius: 4, fontSize: 12, display: "flex", alignItems: "center", gap: 8, background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "0.5px solid var(--color-danger-border)" }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
                 <span>{createError}</span>
               </div>
             )}
             {createSuccess && (
-              <div className="mx-6 mt-5 px-3 py-2.5 rounded text-xs flex items-center gap-2" style={{ background: "var(--color-success-bg)", color: "var(--color-success-text)", border: "1px solid var(--color-success-border)" }}>
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
-                <span className="font-medium break-all">{createSuccess}</span>
+              <div style={{ margin: "20px 24px 0", padding: "10px 12px", borderRadius: 4, fontSize: 12, display: "flex", alignItems: "center", gap: 8, background: "var(--color-success-bg)", color: "var(--color-success-text)", border: "0.5px solid var(--color-success-border)" }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
+                <span style={{ fontWeight: 500, wordBreak: "break-all" }}>{createSuccess}</span>
               </div>
-            )}
-
-            {/* modal body form */}
+             {/* modal body form */}
             {!createSuccess && (
               <form onSubmit={handleCreateInterview}>
-                <div className="px-6 py-5 flex flex-col gap-4">
+                <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
                   
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Candidate Email</label>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Candidate Email</label>
                     <input
                       type="email"
-                      className="px-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
-                      style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                      style={{ padding: "8px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
                       placeholder="candidate@email.com"
                       value={candidateEmail}
                       onChange={(e) => setCandidateEmail(e.target.value)}
@@ -514,12 +508,11 @@ export default function CompanyDashboard() {
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Job Role</label>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Job Role</label>
                     <input
                       type="text"
-                      className="px-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
-                      style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                      style={{ padding: "8px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
                       placeholder="e.g. Frontend Engineer"
                       value={jobRole}
                       onChange={(e) => setJobRole(e.target.value)}
@@ -527,18 +520,18 @@ export default function CompanyDashboard() {
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Difficulty</label>
-                    <div className="grid grid-cols-3 gap-1 p-1 rounded-lg" style={{ background: "var(--bg-subtle)" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Difficulty</label>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 4, padding: 4, borderRadius: 8, background: "var(--surface-1)" }}>
                       {["easy", "medium", "hard"].map(d => (
                         <button
                           key={d}
                           type="button"
                           onClick={() => setDifficulty(d)}
-                          className="py-1.5 rounded-md text-[11px] font-bold transition-all capitalize"
                           style={{
-                            background: difficulty === d ? "var(--bg-card)" : "transparent",
-                            color: difficulty === d ? "var(--text)" : "var(--text-secondary)",
+                            padding: "6px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: "capitalize", border: "none", cursor: "pointer", transition: "all 0.2s",
+                            background: difficulty === d ? "#ffffff" : "transparent",
+                            color: difficulty === d ? "var(--text-primary)" : "var(--text-secondary)",
                             boxShadow: difficulty === d ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
                           }}
                         >
@@ -548,17 +541,17 @@ export default function CompanyDashboard() {
                     </div>
                   </div>
                   
-                  <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>
+                  <p style={{ fontSize: 11, marginTop: 4, color: "var(--text-muted)" }}>
                     An invite email will be sent to the candidate immediately. The secure link will expire in 48 hours.
                   </p>
                 </div>
 
                 {/* modal footer buttons */}
-                <div className="px-6 py-4 flex items-center justify-end gap-3" style={{ background: "var(--bg-subtle)", borderTop: "1px solid var(--border)" }}>
-                  <button type="button" className="btn-secondary py-1.5 px-4 text-xs" onClick={() => setShowCreateModal(false)}>
+                <div style={{ padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 12, background: "var(--surface-1)", borderTop: "0.5px solid var(--border)" }}>
+                  <button type="button" style={{ fontSize: 12, color: "var(--text-primary)", background: "transparent", border: "0.5px solid var(--border)", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }} onClick={() => setShowCreateModal(false)}>
                     Cancel
                   </button>
-                  <button type="submit" className="btn-primary py-1.5 px-4 text-xs flex items-center gap-1.5" disabled={createLoading}>
+                  <button type="submit" style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }} disabled={createLoading}>
                     {createLoading ? "Sending..." : <><IconSend /> Send Link</>}
                   </button>
                 </div>
@@ -566,8 +559,8 @@ export default function CompanyDashboard() {
             )}
 
             {createSuccess && (
-              <div className="px-6 py-5 flex items-center justify-end" style={{ background: "var(--bg-subtle)", borderTop: "1px solid var(--border)" }}>
-                <button className="btn-primary py-1.5 px-4 text-xs w-full" onClick={() => { setShowCreateModal(false); setCreateSuccess(""); }}>
+              <div style={{ padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "flex-end", background: "var(--surface-1)", borderTop: "0.5px solid var(--border)" }}>
+                <button style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }} onClick={() => { setShowCreateModal(false); setCreateSuccess(""); }}>
                   Done
                 </button>
               </div>

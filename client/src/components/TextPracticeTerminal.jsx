@@ -125,15 +125,15 @@ export default function TextPracticeTerminal() {
   };
 
   return (
-    <div className="ip-card" style={{ overflow: "hidden" }}>
+    <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", overflow: "hidden" }}>
 
       {/* setup phase */}
       {phase === "setup" && (
         <>
-          <div className="ip-card-header">
-            <span className="ip-card-title">💬 Text Practice Terminal</span>
+          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>💬 Text Practice Terminal</span>
           </div>
-          <div className="ip-card-body flex flex-col gap-4">
+          <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
               quick ai interview — no camera needed · 5 questions · instant feedback
             </p>
@@ -163,9 +163,9 @@ export default function TextPracticeTerminal() {
       {/* chatting phase */}
       {phase === "chatting" && (
         <>
-          <div className="ip-card-header" style={{ alignItems: "center" }}>
-            <div className="flex flex-col gap-0.5">
-              <span className="ip-card-title">💬 Text Practice</span>
+          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>💬 Text Practice</span>
               <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                 {role} · Question {questionNumber} of 5
               </span>
@@ -283,10 +283,10 @@ export default function TextPracticeTerminal() {
       {/* complete phase */}
       {phase === "complete" && summary && (
         <>
-          <div className="ip-card-header">
-            <span className="ip-card-title">💬 Text Practice Terminal</span>
+          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>💬 Text Practice Terminal</span>
           </div>
-          <div className="ip-card-body flex flex-col items-center gap-4 py-8 text-center">
+          <div style={{ padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 16, textAlign: "center" }}>
             <div className="text-4xl">✅</div>
             <div>
               <div className="text-lg font-bold mb-1" style={{ color: "var(--text)" }}>

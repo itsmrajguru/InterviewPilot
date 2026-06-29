@@ -93,26 +93,26 @@ export default function CompanyCompare() {
         </header>
 
         {/* page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <main style={{ flex: 1, padding: "24px 32px" }}>
 
           {/* welcome banner */}
-          <div className="mb-7">
-            <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+          <div style={{ marginBottom: 32 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
               Side-by-Side Comparison
             </h1>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>
               select two completed evaluations to compare their scores, feedback, and key credentials side-by-side
             </p>
           </div>
 
           {/* loading state */}
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="ip-spinner ip-spinner-dark" />
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0" }}>
+              <div style={{ width: 24, height: 24, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
             </div>
           ) : completedSessions.length < 2 ? (
-            <div className="ip-card">
-              <div className="ip-card-body">
+            <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+              <div style={{ padding: 24 }}>
                 <EmptyState
                   icon="⚖️"
                   title="insufficient data"
@@ -120,22 +120,20 @@ export default function CompanyCompare() {
                 />
               </div>
             </div>
-          ) : (
-            <div className="flex flex-col gap-6">
+          )             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               
               {/* slot selectors panel */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, padding: 16, borderRadius: 12, background: "#ffffff", border: "0.5px solid #dde1e8", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
                 
                 {/* slot 1 selector */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                     Candidate A
                   </label>
                   <select
                     value={slot1}
                     onChange={e => setSlot1(e.target.value)}
-                    className="px-3 py-2.5 rounded-lg text-sm outline-none cursor-pointer w-full"
-                    style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                    style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
                   >
                     <option value="">choose candidate...</option>
                     {completedSessions.map(s => (
@@ -147,15 +145,14 @@ export default function CompanyCompare() {
                 </div>
 
                 {/* slot 2 selector */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                     Candidate B
                   </label>
                   <select
                     value={slot2}
                     onChange={e => setSlot2(e.target.value)}
-                    className="px-3 py-2.5 rounded-lg text-sm outline-none cursor-pointer w-full"
-                    style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
+                    style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
                   >
                     <option value="">choose candidate...</option>
                     {completedSessions.map(s => (
@@ -169,48 +166,48 @@ export default function CompanyCompare() {
 
               {/* comparison metrics table card */}
               {candidate1 || candidate2 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
                   
                   {/* candidate a specs */}
-                  <div className="ip-card p-6 flex flex-col gap-4">
+                  <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
                     {candidate1 ? (
                       <>
                         <div>
-                          <div className="text-xs uppercase font-bold tracking-wider" style={{ color: "var(--accent)" }}>
+                          <div style={{ fontSize: 10, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", color: "#1d9e75" }}>
                             Candidate A
                           </div>
-                          <h2 className="text-lg font-bold mt-1" style={{ color: "var(--text)" }}>
+                          <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", margin: "4px 0" }}>
                             {candidate1.studentEmail}
                           </h2>
-                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-                            {candidate1.role} · <span className="capitalize">{candidate1.difficulty}</span>
+                          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                            {candidate1.role} · <span style={{ textTransform: "capitalize" }}>{candidate1.difficulty}</span>
                           </div>
                         </div>
 
                         {/* overall score card badge */}
-                        <div className="p-4 rounded-xl flex items-center justify-between" style={{ background: "var(--accent-light)" }}>
-                          <span className="text-xs font-semibold" style={{ color: "var(--accent)" }}>Overall Assessment Grade</span>
-                          <span className="text-xl font-bold flex items-center gap-1 leading-none" style={{ color: "var(--accent)" }}>
+                        <div style={{ padding: 16, borderRadius: 12, background: "#f0fdf4", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#1d9e75" }}>Overall Assessment Grade</span>
+                          <span style={{ fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, lineHeight: 1, color: "#1d9e75" }}>
                             <IconStar /> {candidate1.report.overallScore}/100
                           </span>
                         </div>
 
                         {/* report summaries */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                             Performance Summary
                           </span>
-                          <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                          <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--text-secondary)", margin: 0 }}>
                             {candidate1.report.summary}
                           </p>
                         </div>
 
                         {/* key strengths */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                             Identified Strengths
                           </span>
-                          <ul className="list-disc pl-4 flex flex-col gap-1 text-xs" style={{ color: "var(--text-secondary)" }}>
+                          <ul style={{ paddingLeft: 16, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
                             {candidate1.report.strengths?.slice(0, 3).map((st, i) => (
                               <li key={i}>{st}</li>
                             ))}
@@ -218,11 +215,11 @@ export default function CompanyCompare() {
                         </div>
 
                         {/* weaknesses */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                             Areas for Improvement
                           </span>
-                          <ul className="list-disc pl-4 flex flex-col gap-1 text-xs" style={{ color: "var(--text-secondary)" }}>
+                          <ul style={{ paddingLeft: 16, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
                             {candidate1.report.weaknesses?.slice(0, 3).map((wk, i) => (
                               <li key={i}>{wk}</li>
                             ))}
@@ -231,58 +228,58 @@ export default function CompanyCompare() {
 
                         <button
                           onClick={() => navigate(`/interview/${candidate1._id}/report`)}
-                          className="btn-primary w-full py-2.5 text-xs mt-3 flex items-center justify-center gap-1.5"
+                          style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, width: "100%", marginTop: 12 }}
                         >
                           View Full Report <IconArrow />
                         </button>
                       </>
                     ) : (
-                      <div className="flex items-center justify-center py-20 text-xs" style={{ color: "var(--text-muted)" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", fontSize: 12, color: "var(--text-muted)" }}>
                         please choose candidate a above to compare
                       </div>
                     )}
                   </div>
 
                   {/* candidate b specs */}
-                  <div className="ip-card p-6 flex flex-col gap-4">
+                  <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
                     {candidate2 ? (
                       <>
                         <div>
-                          <div className="text-xs uppercase font-bold tracking-wider" style={{ color: "var(--accent)" }}>
+                          <div style={{ fontSize: 10, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", color: "#1d9e75" }}>
                             Candidate B
                           </div>
-                          <h2 className="text-lg font-bold mt-1" style={{ color: "var(--text)" }}>
+                          <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", margin: "4px 0" }}>
                             {candidate2.studentEmail}
                           </h2>
-                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-                            {candidate2.role} · <span className="capitalize">{candidate2.difficulty}</span>
+                          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                            {candidate2.role} · <span style={{ textTransform: "capitalize" }}>{candidate2.difficulty}</span>
                           </div>
                         </div>
 
                         {/* overall score card badge */}
-                        <div className="p-4 rounded-xl flex items-center justify-between" style={{ background: "var(--accent-light)" }}>
-                          <span className="text-xs font-semibold" style={{ color: "var(--accent)" }}>Overall Assessment Grade</span>
-                          <span className="text-xl font-bold flex items-center gap-1 leading-none" style={{ color: "var(--accent)" }}>
+                        <div style={{ padding: 16, borderRadius: 12, background: "#f0fdf4", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#1d9e75" }}>Overall Assessment Grade</span>
+                          <span style={{ fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, lineHeight: 1, color: "#1d9e75" }}>
                             <IconStar /> {candidate2.report.overallScore}/100
                           </span>
                         </div>
 
                         {/* report summaries */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                             Performance Summary
                           </span>
-                          <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+                          <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--text-secondary)", margin: 0 }}>
                             {candidate2.report.summary}
                           </p>
                         </div>
 
                         {/* key strengths */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                             Identified Strengths
                           </span>
-                          <ul className="list-disc pl-4 flex flex-col gap-1 text-xs" style={{ color: "var(--text-secondary)" }}>
+                          <ul style={{ paddingLeft: 16, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
                             {candidate2.report.strengths?.slice(0, 3).map((st, i) => (
                               <li key={i}>{st}</li>
                             ))}
@@ -290,11 +287,11 @@ export default function CompanyCompare() {
                         </div>
 
                         {/* weaknesses */}
-                        <div className="flex flex-col gap-2">
-                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
                             Areas for Improvement
                           </span>
-                          <ul className="list-disc pl-4 flex flex-col gap-1 text-xs" style={{ color: "var(--text-secondary)" }}>
+                          <ul style={{ paddingLeft: 16, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
                             {candidate2.report.weaknesses?.slice(0, 3).map((wk, i) => (
                               <li key={i}>{wk}</li>
                             ))}
@@ -303,13 +300,13 @@ export default function CompanyCompare() {
 
                         <button
                           onClick={() => navigate(`/interview/${candidate2._id}/report`)}
-                          className="btn-primary w-full py-2.5 text-xs mt-3 flex items-center justify-center gap-1.5"
+                          style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, width: "100%", marginTop: 12 }}
                         >
                           View Full Report <IconArrow />
                         </button>
                       </>
                     ) : (
-                      <div className="flex items-center justify-center py-20 text-xs" style={{ color: "var(--text-muted)" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", fontSize: 12, color: "var(--text-muted)" }}>
                         please choose candidate b above to compare
                       </div>
                     )}
@@ -317,11 +314,10 @@ export default function CompanyCompare() {
 
                 </div>
               ) : (
-                <div className="ip-card p-12 text-center text-xs" style={{ color: "var(--text-muted)" }}>
+                <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: 48, textAlign: "center", fontSize: 12, color: "var(--text-muted)" }}>
                   select at least one candidate from the selector boxes to display candidate cards
                 </div>
               )}
-
             </div>
           )}
 

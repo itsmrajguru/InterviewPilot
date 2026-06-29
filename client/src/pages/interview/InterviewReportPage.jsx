@@ -54,19 +54,19 @@ export default function InterviewReportPage() {
   };
 
   /* individual answer score color */
-  const answerScoreColor = (score) => {
-    if (score >= 8) return "ip-badge ip-badge-success";
-    if (score >= 5) return "ip-badge ip-badge-warning";
-    return "ip-badge ip-badge-danger";
+  const answerScoreStyle = (score) => {
+    if (score >= 8) return { background: "#f0fdf4", color: "#15803d", border: "0.5px solid #bbf7d0" };
+    if (score >= 5) return { background: "#fefce8", color: "#a16207", border: "0.5px solid #fef08a" };
+    return { background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" };
   };
 
   /* loading state */
   if (loading) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div className="text-center">
-          <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="ip-text-secondary text-[14px]">Loading your report...</p>
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+          <div style={{ width: 40, height: 40, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+          <p style={{ fontSize: 14, color: "var(--text-secondary)" }}>Loading your report...</p>
         </div>
       </div>
     );
@@ -196,87 +196,95 @@ export default function InterviewReportPage() {
         <div className="ip-grid-2">
 
           {/* strengths */}
-          <div className="ip-card">
-            <div className="ip-card-header">
-              <span className="ip-card-title">💪 Strengths</span>
+          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+            <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>💪 Strengths</span>
             </div>
-            <div className="ip-card-body">
+            <div style={{ padding: "16px 20px" }}>
               {report?.strengths?.length > 0 ? (
-                <ul className="flex flex-col gap-2">
+                <ul style={{ display: "flex", flexDirection: "column", gap: 8, margin: 0, padding: 0, listStyle: "none" }}>
                   {report.strengths.map((s, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-green-400 shrink-0 mt-0.5">✓</span>
-                      <span className="ip-text-secondary text-[13px]">{s}</span>
+                    <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <span style={{ fontSize: 13, color: "#10b981", marginTop: 2 }}>✓</span>
+                      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{s}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="ip-text-muted text-[13px]">No specific strengths identified.</p>
+                <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>No specific strengths identified.</p>
               )}
             </div>
           </div>
 
           {/* weaknesses */}
-          <div className="ip-card">
-            <div className="ip-card-header">
-              <span className="ip-card-title">🎯 Areas to Improve</span>
+          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+            <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>🎯 Areas to Improve</span>
             </div>
-            <div className="ip-card-body">
+            <div style={{ padding: "16px 20px" }}>
               {report?.weaknesses?.length > 0 ? (
-                <ul className="flex flex-col gap-2">
+                <ul style={{ display: "flex", flexDirection: "column", gap: 8, margin: 0, padding: 0, listStyle: "none" }}>
                   {report.weaknesses.map((w, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-yellow-400 shrink-0 mt-0.5">△</span>
-                      <span className="ip-text-secondary text-[13px]">{w}</span>
+                    <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <span style={{ fontSize: 13, color: "#f43f5e", marginTop: 2 }}>⨯</span>
+                      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{w}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="ip-text-muted text-[13px]">No specific weaknesses identified.</p>
+                <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>No specific weaknesses identified.</p>
               )}
             </div>
           </div>
         </div>
 
         {/* improvement roadmap */}
-        <div className="ip-card">
-          <div className="ip-card-header">
-            <span className="ip-card-title">🗺️ Improvement Roadmap</span>
+        <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>🗺️ Improvement Roadmap</span>
           </div>
-          <div className="ip-card-body">
-            <p className="ip-text-secondary text-[13px] leading-relaxed">
+          <div style={{ padding: "16px 20px" }}>
+            <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
               {report?.improvementRoadmap}
             </p>
           </div>
         </div>
 
         {/* per-question answer breakdown */}
-        <div className="ip-card">
-          <div className="ip-card-header">
-            <span className="ip-card-title">📋 Answer Breakdown</span>
-            <span className="ip-badge ip-badge-neutral">{session?.answers?.length} answers</span>
+        <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>📋 Answer Breakdown</span>
+            <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{session?.answers?.length} answers</span>
           </div>
-          <div className="ip-card-body flex flex-col gap-4">
+          <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
             {session?.answers?.map((a, i) => (
-              <div key={i} className="border-b ip-border-top pb-4 last:border-none last:pb-0">
+              <div key={i} style={{ paddingBottom: 16, borderBottom: i < session.answers.length - 1 ? "0.5px solid var(--border)" : "none" }}>
                 {/* question header row */}
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="ip-badge ip-badge-neutral capitalize text-[10px]">{a.type}</span>
-                    <p className="ip-text-primary text-[13px] font-medium">{a.question}</p>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 12 }}>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "capitalize", background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)", display: "inline-block", marginBottom: 6 }}>{a.type}</span>
+                    <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>{a.question}</p>
                   </div>
-                  <span className={answerScoreColor(a.score)}>{a.score}/10</span>
+                  <div style={{ ...answerScoreStyle(a.score), fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                    <span style={{ fontSize: 10 }}>Score:</span> {a.score}/10
+                  </div>
                 </div>
 
-                {/* the student's answer */}
-                <p className="ip-text-secondary text-[12px] mb-2 leading-relaxed bg-white/5 rounded-lg p-3">
-                  {a.type === "coding"
-                    ? <code className="font-mono text-[11px]">{a.answer?.slice(0, 200)}…</code>
-                    : a.answer}
-                </p>
-
-                {/* gemini feedback for this question */}
-                <p className="ip-text-muted text-[12px] italic">{a.feedback}</p>
+                {/* detailed feedback content */}
+                {a.feedback ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <p style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6, background: "var(--surface-1)", borderRadius: 8, padding: 12, margin: 0 }}>
+                      <strong style={{ display: "block", marginBottom: 4, color: "var(--text-primary)" }}>Your Answer:</strong>
+                      {a.answer}
+                    </p>
+                    <p style={{ fontSize: 12, color: "var(--text-muted)", fontStyle: "italic", margin: 0 }}>
+                      <strong style={{ color: "var(--text-secondary)", fontStyle: "normal" }}>AI Feedback: </strong>
+                      {a.feedback}
+                    </p>
+                  </div>
+                ) : (
+                  <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>No answer details available.</p>
+                )}
               </div>
             ))}
 
