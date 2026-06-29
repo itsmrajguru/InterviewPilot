@@ -232,7 +232,7 @@ export default function StudentReports() {
         .sr-card { transition: box-shadow 0.18s, transform 0.18s; }
         .sr-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important; transform: translateY(-2px); }
         .sr-filter-btn:hover { background: #f1f4f7 !important; }
-        .sr-report-btn:hover { background: #0f6e56 !important; }
+        .sr-report-btn:hover { background: #000000 !important; }
       `}</style>
 
       <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
@@ -268,7 +268,7 @@ export default function StudentReports() {
             {/* ── LOADING ── */}
             {loading ? (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0" }}>
-                <div style={{ width: 28, height: 28, border: "3px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "sr-spin 0.7s linear infinite" }}/>
+                <div style={{ width: 28, height: 28, border: "3px solid #111827", borderTopColor: "transparent", borderRadius: "50%", animation: "sr-spin 0.7s linear infinite" }}/>
               </div>
 
             ) : reports.length === 0 ? (
@@ -283,7 +283,7 @@ export default function StudentReports() {
                   width: 56, height: 56, borderRadius: 16,
                   background: "#e1f5ee", border: "1px solid #a7dfc9",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: 16, color: "#1d9e75"
+                  marginBottom: 16, color: "#111827"
                 }}>
                   <IconTrophy />
                 </div>
@@ -295,9 +295,9 @@ export default function StudentReports() {
                   onClick={() => navigate("/student/practice")}
                   style={{
                     display: "flex", alignItems: "center", gap: 8,
-                    padding: "10px 20px", borderRadius: 8, fontSize: 13,
-                    fontWeight: 700, border: "none", cursor: "pointer",
-                    background: "#1d9e75", color: "#ffffff"
+                    padding: "8px 16px", borderRadius: 6, fontSize: 12,
+                    fontWeight: 600, border: "none", cursor: "pointer",
+                    background: "#111827", color: "#ffffff"
                   }}
                 >
                   <IconPlay /> Start Practice Interview
@@ -446,7 +446,7 @@ export default function StudentReports() {
                           background: "#fafafa"
                         }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#1d9e75" }}/>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#111827" }}/>
                             <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
                               Completed
                             </span>
@@ -455,10 +455,10 @@ export default function StudentReports() {
                             className="sr-report-btn"
                             onClick={() => navigate(`/interview/${session._id}/report`)}
                             style={{
-                              display: "flex", alignItems: "center", gap: 6,
-                              padding: "7px 14px", borderRadius: 8, fontSize: 12,
-                              fontWeight: 700, border: "none", cursor: "pointer",
-                              background: "#1d9e75", color: "#ffffff",
+                              display: "flex", alignItems: "center", gap: 5,
+                              padding: "5px 12px", borderRadius: 6, fontSize: 11,
+                              fontWeight: 600, border: "none", cursor: "pointer",
+                              background: "#111827", color: "#ffffff",
                               transition: "background 0.15s"
                             }}
                           >

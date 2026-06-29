@@ -73,7 +73,7 @@ Return ONLY a valid JSON array — no markdown, no extra text:
 `
 
     try {
-        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.5-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const questions = JSON.parse(cleaned)
@@ -104,7 +104,7 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 `
 
     try {
-        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.5-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const evaluation = JSON.parse(cleaned)
@@ -148,7 +148,7 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 `
 
     try {
-        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.5-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const evaluation = JSON.parse(cleaned)
@@ -191,7 +191,7 @@ Return ONLY valid JSON — no markdown, no extra text:
 `
 
     try {
-        const result  = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
+        const result  = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.5-flash' }).generateContent(prompt))
         const cleaned = stripFences(result.response.text())
         const parsed  = JSON.parse(cleaned)
         return {
@@ -259,7 +259,7 @@ Return ONLY a valid JSON object:
 `
 
     try {
-        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.5-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const report = JSON.parse(cleaned)

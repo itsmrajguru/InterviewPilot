@@ -13,10 +13,11 @@ async function run() {
       if (!keys[i]) continue;
       console.log(`\nTesting Key ${i+1}:`, keys[i]);
       const genAI = new GoogleGenerativeAI(keys[i]);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       try {
         const result = await model.generateContent("Hello!");
-        console.log("Success with Key", i+1);
+        console.log("Success with Key", i+1, result.response.text());
+        break;
       } catch (e) {
         console.error("Error with Key", i+1, ":", e.message);
       }
