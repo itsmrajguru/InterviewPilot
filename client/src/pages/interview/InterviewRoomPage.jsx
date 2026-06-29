@@ -137,7 +137,7 @@ export default function InterviewRoomPage() {
   };
 
   return (
-    <div className="min-h-screen ip-bg-page flex flex-col">
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
       {/* top bar: progress and question counter */}
       <nav className="ip-navbar sticky top-0 z-10">

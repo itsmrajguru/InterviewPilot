@@ -44,81 +44,56 @@ export default function VerifySignupOtpPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row ip-bg-page">
-
-      {/* we created a 40-60 panel view and added the left side showup view here */}
-      <div className="hidden lg:flex lg:flex-[0.6] ip-auth-left shadow-[inset_-20px_0_40px_rgba(0,0,0,0.1)]">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px]" />
-        <div className="relative z-10 w-full max-w-[440px] text-center">
-          <img
-            src="/logo.svg"
-            alt="InterviewPilot Logo"
-            className="w-32 h-32 mx-auto mb-6 shadow-2xl rounded-[32px] border border-white/10 p-2"
-            style={{ filter: "drop-shadow(0 0 50px rgba(0, 199, 183, 0.3))" }}
-          />
-          <h2 className="text-[52px] font-display font-black text-white leading-[0.9] tracking-[-3px] mb-3">
-            Final <span className="text-primary-400">step.</span>
-          </h2>
-          <p className="text-[17px] text-white/60 font-medium leading-relaxed mb-4 mx-auto max-w-[380px]">
-            We prioritize account integrity above all. This final verification step ensures that your professional profile remains protected.
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div className="w-full max-w-md p-6 md:p-8">
+        
+        {/* logo and header */}
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div onClick={() => navigate("/")} className="cursor-pointer mb-4 flex items-center justify-center w-12 h-12 rounded-xl" style={{ background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+            Verify Email
+          </h1>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            A 6-digit code has been sent to <span className="font-bold" style={{ color: "var(--text)" }}>{email}</span>
           </p>
         </div>
-      </div>
 
-      {/* and this right side content actuually showws the form here */}
-      <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10 px-4 md:px-6 lg:px-8">
-        <div className="w-full max-w-[320px] flex flex-col gap-8">
-
-          {/* mobile logo - only visible on small screens */}
-          <div className="lg:hidden flex justify-center mb-2" onClick={() => navigate("/")}>
-            <img src="/logo.svg" alt="Logo" className="w-14 h-14 rounded-2xl shadow-lg ip-border" />
-          </div>
-
-          {/* Hero section */}
-          <div className="text-left">
-            <h1 className="text-[30px] font-display font-black ip-text-primary tracking-[-1.5px] leading-tight mb-2">
-              Verify Email.
-            </h1>
-            <p className="ip-text-secondary text-[12px] font-medium leading-tight">
-              A 6-digit code has been sent to <span className="font-black ip-text-primary underline decoration-primary-400">{email}</span>.
-            </p>
-          </div>
-
-
-          {/* Displaying state messages 
-i.e. those error message , which shoudl be shown on incorrect email,
-incorrect password, email not verified... etc*/}
+        {/* auth card */}
+        <div className="ip-card p-6 md:p-8">
           {error && (
-            <div className="ip-alert ip-alert-danger animate-fade-up">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5" />
+            <div className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          {/* this form takes the input data from the user
- and sends to the backend through axios */}
           <form onSubmit={handleOtpSubmit} className="flex flex-col gap-6">
-            <div className="ip-form-group">
-              <label className="ip-label text-center">Verification Code</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-center" style={{ color: "var(--text-muted)" }}>Verification Code</label>
               <input
                 type="text"
                 inputMode="numeric"
                 maxLength={6}
-                className="ip-input text-center tracking-[0.5em] text-3xl font-black py-4"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                 required
                 placeholder="000000"
                 autoFocus
+                className="px-3 py-4 rounded-lg text-3xl font-black text-center tracking-[0.5em] w-full outline-none transition-all"
+                style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
               />
-              <p className="text-[9px] ip-text-muted text-center font-bold uppercase tracking-wider mt-1">Expires in 10 minutes</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-center mt-1" style={{ color: "var(--text-muted)" }}>
+                Expires in 10 minutes
+              </p>
             </div>
 
             <div className="flex flex-col gap-3">
               <button
                 type="submit"
                 disabled={loading || otp.length !== 6}
-                className="btn-primary w-full py-3"
+                className="btn-primary w-full py-2.5"
               >
                 {loading ? "Verifying..." : "Confirm Verification"}
               </button>
@@ -126,12 +101,22 @@ incorrect password, email not verified... etc*/}
               <button
                 type="button"
                 onClick={() => navigate("/signup")}
-                className="btn-ghost text-[11px] font-black uppercase tracking-widest"
+                className="py-2 text-[11px] font-bold uppercase tracking-widest transition-colors"
+                style={{ color: "var(--text-secondary)" }}
+                onMouseOver={(e) => e.currentTarget.style.color = "var(--text)"}
+                onMouseOut={(e) => e.currentTarget.style.color = "var(--text-secondary)"}
               >
                 ← Use different email
               </button>
             </div>
           </form>
+        </div>
+        
+        {/* footer */}
+        <div className="mt-8 text-center flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+          <span>&copy; 2026 InterviewPilot</span>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/legal">Legal</Link>
         </div>
       </div>
     </div>

@@ -39,85 +39,50 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row ip-bg-page">
-
-      {/*added new 40-60 view
-      and this is the left side 60 panel*/}
-      <div className="hidden lg:flex lg:flex-[0.6] ip-auth-left shadow-[inset_-20px_0_40px_rgba(0,0,0,0.1)]">
-
-        {/* this diaplays the content on the left panel with 
-        carrersync logo and the text below it
-        we have also added the return to home page here*/}
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px]" />
-        <div className="relative z-10 w-full max-w-[440px] text-center">
-          {/* careersync logo */}
-          <img
-            src="/logo.svg"
-            alt="InterviewPilot Logo"
-            className="w-32 h-32 mx-auto mb-6 shadow-2xl rounded-[32px] border border-white/10 p-2"
-            style={{ filter: "drop-shadow(0 0 50px rgba(0, 199, 183, 0.3))" }}
-          />
-          <h2 className="text-[52px] font-display font-black text-white leading-[0.9] tracking-[-3px] mb-3">
-            One source of <span className="text-primary-400">truth.</span>
-          </h2>
-          <p className="text-[17px] text-white/60 font-medium leading-relaxed mb-4 mx-auto max-w-[380px]">
-            The modern talent infrastructure for the world's most ambitious companies. Sign in to access your verified professional ecosystem.
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div className="w-full max-w-md p-6 md:p-8">
+        
+        {/* logo and header */}
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div onClick={() => navigate("/")} className="cursor-pointer mb-4 flex items-center justify-center w-12 h-12 rounded-xl" style={{ background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+            Welcome back
+          </h1>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            Sign in to your InterviewPilot account
           </p>
         </div>
-      </div>
 
-      {/* added new 40-60 view
-      and this is the right side 40 panel*/}
-      <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10 px-4 md:px-6 lg:px-8">
-        <div className="w-full max-w-[320px] flex flex-col gap-6">
-
-          {/* mobile logo - only visible on small screens */}
-          <div className="lg:hidden flex justify-center mb-2" onClick={() => navigate("/")}>
-            <img src="/logo.svg" alt="Logo" className="w-14 h-14 rounded-2xl shadow-lg ip-border" />
-          </div>
-
-          {/* Hero section */}
-          <div className="text-left">
-            <h1 className="text-[28px] font-display font-black ip-text-primary tracking-[-1.5px] leading-tight mb-1">
-              Welcome back.
-            </h1>
-            <p className="ip-text-secondary text-[12px] font-medium">
-              Continue your professional growth journey.
-            </p>
-          </div>
-
-          {/* Displaying state messages 
-          i.e. those error message , which shoudl be shown on incorrect email,
-          incorrect password, email not verified... etc*/}
+        {/* auth card */}
+        <div className="ip-card p-6 md:p-8">
           {error && (
-            <div className="ip-alert ip-alert-danger animate-fade-up">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5" />
+            <div className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          {/*through this form, we will take the email and password
-          from the user and log them in directly  */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-            <div className="ip-form-group">
-              <label className="ip-label">Email address</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Email address</label>
               <input
                 type="email"
                 name="email"
-                className="ip-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="name@company.com"
+                placeholder="name@example.com"
+                className="px-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
+                style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
               />
             </div>
 
-            <div className="ip-form-group">
-              {/* forgot password section... 
-              Option for the user to change the password*/}
-              <div className="flex items-center justify-between px-0.5">
-                <label className="ip-label mb-0">Password</label>
-                <Link to="/forgot-password" className="text-[9px] font-black ip-text-accent hover:underline uppercase tracking-widest">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Password</label>
+                <Link to="/forgot-password" className="text-[11px] font-bold" style={{ color: "var(--accent)" }}>
                   Forgot Password?
                 </Link>
               </div>
@@ -126,61 +91,54 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   autoComplete="current-password"
-                  className="ip-input pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
                   minLength={6}
+                  className="px-3 py-2 pr-10 rounded-lg text-sm w-full outline-none transition-all"
+                  style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
                 />
-                {/* the eye button that display , and undisplay the password 
-                to show and hide it for the user */}
                 <button
                   type="button"
                   onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 ip-text-muted hover:text-black transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                  style={{ color: "var(--text-muted)" }}
                   tabIndex={-1}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
                   ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                   )}
                 </button>
               </div>
             </div>
 
-            {/* submit button */}
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-3 mt-1"
+              className="btn-primary w-full py-2.5 mt-2"
             >
-              {loading ? "Signing in..." : "Sign in to InterviewPilot"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          {/* links to go to the signup and company login pages */}
-          <div className="text-center text-[12px] ip-text-secondary font-medium border-t ip-border-top pt-6">
-            New here?{" "}
-            <Link to="/signup" className="ip-text-primary hover:text-primary-500 font-black transition-colors underline decoration-primary-500/20 hover:decoration-primary-500">
-              Start your profile
-            </Link>
-            <span className="block mt-2 text-[11px] ip-text-secondary">
-              A recruiter?{" "}
-              <Link to="/company-login" className="ip-text-accent font-black hover:underline">
-                Recruiter Portal →
-              </Link>
-            </span>
+          <div className="mt-6 pt-5 flex flex-col gap-2 text-center text-xs" style={{ borderTop: "1px solid var(--border)", color: "var(--text-secondary)" }}>
+            <div>
+              New here? <Link to="/signup" className="font-bold" style={{ color: "var(--text)" }}>Create an account</Link>
+            </div>
+            <div>
+              Are you a recruiter? <Link to="/company-login" className="font-bold" style={{ color: "var(--accent)" }}>Company Portal →</Link>
+            </div>
           </div>
         </div>
-
-        {/* Footer info */}
-        <div className="mt-10 flex items-center justify-center gap-6 text-[9px] ip-text-muted font-bold uppercase tracking-widest opacity-60">
+        
+        {/* footer */}
+        <div className="mt-8 text-center flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
           <span>&copy; 2026 InterviewPilot</span>
-          <Link to="/privacy" className="hover:text-black">Privacy</Link>
-          <Link to="/legal" className="hover:text-black">Legal</Link>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/legal">Legal</Link>
         </div>
       </div>
     </div>

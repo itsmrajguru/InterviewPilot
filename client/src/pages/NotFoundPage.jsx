@@ -6,7 +6,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-      <div className="min-h-screen ip-bg-page flex flex-col items-center justify-center p-4 md:p-6 lg:p-8 animate-fade-up">
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
         
         {/* main container of the 404 page...

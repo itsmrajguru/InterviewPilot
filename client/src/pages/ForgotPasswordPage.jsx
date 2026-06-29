@@ -29,107 +29,83 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex flex-col lg:flex-row ip-bg-page">
-            {/*added new 40-60 view
-            and this is the left side 60 panel*/}
-            <div className="hidden lg:flex lg:flex-[0.6] ip-auth-left shadow-[inset_-20px_0_40px_rgba(0,0,0,0.1)]">
-                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px]" />
-                <div className="relative z-10 w-full max-w-[440px] text-center">
-                    {/* this diaplays the content on the left panel with 
-                    carrersync logo and the text below it
-                    we have also added the return to home page here*/}
-                    <img
-                        src="/logo.svg"
-                        alt="InterviewPilot Logo"
-                        className="w-32 h-32 mx-auto mb-6 shadow-2xl rounded-[32px] border border-white/10 p-2"
-                        style={{ filter: "drop-shadow(0 0 50px rgba(0, 199, 183, 0.3))" }}
-                    />
-                    <h2 className="text-[52px] font-display font-black text-white leading-[0.9] tracking-[-3px] mb-3">
-                        Recover your <span className="text-primary-400">access.</span>
-                    </h2>
-                    <p className="text-[17px] text-white/60 font-medium leading-relaxed mb-4 mx-auto max-w-[380px]">
-                        Identity protection is a core pillar of InterviewPilot. Recover your credentials through our encrypted channels to ensure your data remains yours.
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+            <div className="w-full max-w-md p-6 md:p-8">
+                
+                {/* logo and header */}
+                <div className="text-center mb-8 flex flex-col items-center">
+                    <Link to="/" className="cursor-pointer mb-4 flex items-center justify-center w-12 h-12 rounded-xl" style={{ background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </Link>
+                    <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+                        Account Recovery
+                    </h1>
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                        Enter your email below to receive a secure recovery link
                     </p>
                 </div>
-            </div>
 
-            {/* added new 40-60 view
-            and this is the right side 40 panel*/}
-            <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10 px-4 md:px-6 lg:px-8">
-                <div className="w-full max-w-[320px] flex flex-col gap-6">
-
-                    {/* mobile logo - only visible on small screens */}
-                    <div className="lg:hidden flex justify-center mb-2">
-                        <Link to="/">
-                            <img src="/logo.svg" alt="Logo" className="w-14 h-14 rounded-2xl shadow-lg ip-border" />
-                        </Link>
-                    </div>
-
-                    {/* Hero section */}
-                    <div className="text-left">
-                        <h1 className="text-[30px] font-display font-black ip-text-primary tracking-[-1.5px] leading-tight mb-1">
-                            Account Recovery.
-                        </h1>
-                        <p className="ip-text-secondary text-[12px] font-medium leading-relaxed">
-                            Enter your email below to receive a secure recovery link.
-                        </p>
-                    </div>
-
-                    {/* Displaying state messages */}
+                {/* auth card */}
+                <div className="ip-card p-6 md:p-8">
                     {error && (
-                        <div className="ip-alert ip-alert-danger animate-fade-up">
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5" />
+                        <div className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
+                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                             <span>{error}</span>
                         </div>
                     )}
 
                     {message ? (
                         <div className="flex flex-col gap-6">
-                            <div className="ip-alert ip-alert-success animate-fade-up">
-                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0 mt-1.5" />
+                            <div className="flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-success-bg)", color: "var(--color-success-text)", border: "1px solid var(--color-success-border)" }}>
+                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
                                 <span>{message}</span>
                             </div>
                             <Link
                                 to="/login"
-                                className="btn-primary w-full py-3 text-center"
+                                className="btn-primary w-full py-2.5 text-center"
                             >
                                 Return to Login
                             </Link>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                            <div className="ip-form-group">
-                                <label className="ip-label">Email Address</label>
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Email Address</label>
                                 <input
                                     type="email"
-                                    className="ip-input"
-                                    placeholder="name@company.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
+                                    placeholder="name@example.com"
+                                    className="px-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
+                                    style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
                                 />
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="btn-primary w-full py-3"
+                                className="btn-primary w-full py-2.5 mt-2"
                             >
                                 {loading ? "Sending link..." : "Send Reset Link"}
                             </button>
                         </form>
                     )}
 
-                    {/* Navigation Footer */}
                     {!message && (
-                        <div className="text-center text-[12px] ip-text-secondary font-medium border-t ip-border-top pt-6 flex flex-col gap-3">
+                        <div className="mt-6 pt-5 flex flex-col gap-2 text-center text-xs" style={{ borderTop: "1px solid var(--border)", color: "var(--text-secondary)" }}>
                             <div>
-                                <Link to="/login" className="ip-text-primary hover:text-primary-500 font-black transition-colors underline decoration-primary-500/20 hover:decoration-primary-500">
-                                    Back to Login
-                                </Link>
+                                Remember your password? <Link to="/login" className="font-bold" style={{ color: "var(--text)" }}>Back to Login</Link>
                             </div>
                         </div>
                     )}
+                </div>
+                
+                {/* footer */}
+                <div className="mt-8 text-center flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                    <span>&copy; 2026 InterviewPilot</span>
+                    <Link to="/privacy">Privacy</Link>
+                    <Link to="/legal">Legal</Link>
                 </div>
             </div>
         </div>

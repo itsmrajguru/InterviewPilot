@@ -61,7 +61,7 @@ export default function JoinInterviewPage() {
   /* loading state */
   if (loading) {
     return (
-      <div className="min-h-screen ip-bg-page flex items-center justify-center">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div className="text-center">
           <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="ip-text-secondary text-[14px]">Validating your interview link...</p>
@@ -73,7 +73,7 @@ export default function JoinInterviewPage() {
   /* error state — expired / invalid link */
   if (error) {
     return (
-      <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div className="ip-card max-w-md w-full text-center">
           <div className="ip-card-body py-10 flex flex-col gap-4">
             <div className="text-5xl">⚠️</div>
@@ -90,7 +90,7 @@ export default function JoinInterviewPage() {
   /* already completed */
   if (session?.status === "completed") {
     return (
-      <div className="min-h-screen ip-bg-page flex items-center justify-center p-4 md:p-6">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div className="ip-card max-w-md w-full text-center">
           <div className="ip-card-body py-10 flex flex-col gap-4">
             <div className="text-5xl">✅</div>
@@ -114,7 +114,7 @@ export default function JoinInterviewPage() {
 
   /* ready state — show session info and start button */
   return (
-    <div className="min-h-screen ip-bg-page flex items-center justify-center p-4 md:p-6">
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
       <div className="w-full max-w-lg flex flex-col gap-6">
 

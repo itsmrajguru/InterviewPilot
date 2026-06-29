@@ -63,7 +63,7 @@ export default function InterviewReportPage() {
   /* loading state */
   if (loading) {
     return (
-      <div className="min-h-screen ip-bg-page flex items-center justify-center">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div className="text-center">
           <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="ip-text-secondary text-[14px]">Loading your report...</p>
@@ -75,7 +75,7 @@ export default function InterviewReportPage() {
   /* error state */
   if (error) {
     return (
-      <div className="min-h-screen ip-bg-page flex items-center justify-center p-6">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div className="ip-card max-w-md w-full text-center">
           <div className="ip-card-body py-10 flex flex-col gap-4">
             <div className="text-5xl">⚠️</div>
@@ -88,7 +88,7 @@ export default function InterviewReportPage() {
   }
 
   return (
-    <div className="min-h-screen ip-bg-page">
+    <div style={{ minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
       {/* top navigation bar */}
       <nav className="ip-navbar sticky top-0 z-10">

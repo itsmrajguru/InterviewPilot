@@ -39,146 +39,128 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row ip-bg-page">
-
-      {/*added new 40-60 view
-and this is the left side 60 panel*/}
-      <div className="hidden lg:flex lg:flex-[0.6] ip-auth-left shadow-[inset_-20px_0_40px_rgba(0,0,0,0.1)]">
-
-        {/* this diaplays the content on the left panel with 
-carrersync logo and the text below it
-we have also added the return to home page here*/}
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px]" />
-        <div className="relative z-10 w-full max-w-[440px] text-center">
-          {/* careersync logo */}
-          <img
-            src="/logo.svg"
-            alt="InterviewPilot Logo"
-            className="w-32 h-32 mx-auto mb-6 shadow-2xl rounded-[32px] border border-white/10 p-2"
-            style={{ filter: "drop-shadow(0 0 50px rgba(0, 199, 183, 0.3))" }}
-          />
-          <h2 className="text-[52px] font-display font-black text-white leading-[0.9] tracking-[-3px] mb-3">
-            Build your <span className="text-primary-400">future.</span>
-          </h2>
-          <p className="text-[17px] text-white/60 font-medium leading-relaxed mb-4 mx-auto max-w-[380px]">
-            The unified network for professional growth. Join thousands of candidates and companies building the next generation of career infrastructure.
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div className="w-full max-w-md p-6 md:p-8">
+        
+        {/* logo and header */}
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div onClick={() => navigate("/")} className="cursor-pointer mb-4 flex items-center justify-center w-12 h-12 rounded-xl" style={{ background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: "var(--text)" }}>
+            Create Account
+          </h1>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            Join the unified network for careers
           </p>
         </div>
-      </div>
 
-      {/* added new 40-60 view
-      and this is the right side 40 panel*/}
-      <div className="flex-1 lg:flex-[0.4] ip-auth-right relative z-10 px-4 md:px-6 lg:px-8">
-        <div className="w-full max-w-[320px] flex flex-col gap-4">
-
-          {/* mobile logo - only visible on small screens */}
-          <div className="lg:hidden flex justify-center mb-2" onClick={() => navigate("/")}>
-            <img src="/logo.svg" alt="Logo" className="w-14 h-14 rounded-2xl shadow-lg ip-border" />
-          </div>
-
-          {/* Hero section */}
-          <div className="text-left">
-            <h1 className="text-[26px] font-display font-black ip-text-primary tracking-[-1.5px] leading-tight mb-0.5">
-              Create Account.
-            </h1>
-            <p className="ip-text-secondary text-[12px] font-medium leading-tight">
-              Join the unified network for careers.
-            </p>
-          </div>
-
-          {/* Error Message */}
+        {/* auth card */}
+        <div className="ip-card p-6 md:p-8">
           {error && (
-            <div className="ip-alert ip-alert-danger animate-fade-up">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5" />
+            <div className="mb-6 flex items-center gap-2 text-sm px-4 py-3 rounded" style={{ background: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "1px solid var(--color-danger-border)" }}>
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          {/*through this form, we will take the email and password
-from the user and log them in directly  */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-
-            {/* Role Selector...
-from here we shift the user credentials among student and company
-depending upon the type of user */}
-            <div className="ip-form-group">
-              <label className="ip-label">Identity</label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-1 p-0.5 ip-bg-subtle rounded-lg">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Identity</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1 p-0.5 rounded-lg" style={{ background: "var(--bg-subtle)" }}>
                 <button
                   type="button"
                   onClick={() => setRole("student")}
-                  className={`py-1 rounded-md text-[10px] font-bold transition-all ${role === "student" ? "bg-white ip-text-primary shadow-sm" : "ip-text-secondary"}`}
-                >Candidate
+                  className="py-1.5 rounded-md text-[11px] font-bold transition-all"
+                  style={{
+                    background: role === "student" ? "var(--bg-card)" : "transparent",
+                    color: role === "student" ? "var(--text)" : "var(--text-secondary)",
+                    boxShadow: role === "student" ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
+                  }}
+                >
+                  Candidate
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole("company")}
-                  className={`py-1 rounded-md text-[10px] font-bold transition-all ${role === "company" ? "bg-white ip-text-primary shadow-sm" : "ip-text-secondary"}`}
-                >Employer
+                  className="py-1.5 rounded-md text-[11px] font-bold transition-all"
+                  style={{
+                    background: role === "company" ? "var(--bg-card)" : "transparent",
+                    color: role === "company" ? "var(--text)" : "var(--text-secondary)",
+                    boxShadow: role === "company" ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
+                  }}
+                >
+                  Employer
                 </button>
               </div>
             </div>
 
-            <div className="ip-form-group">
-              <label className="ip-label">Email address</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Email address</label>
               <input
                 type="email"
                 name="email"
-                className="ip-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="name@company.com"
+                placeholder="name@example.com"
+                className="px-3 py-2 rounded-lg text-sm w-full outline-none transition-all"
+                style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
               />
             </div>
 
-            <div className="ip-form-group">
-              <label className="ip-label">Password</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  className="ip-input pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
                   minLength={6}
+                  className="px-3 py-2 pr-10 rounded-lg text-sm w-full outline-none transition-all"
+                  style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)", color: "var(--text)" }}
                 />
-                {/* the eye button that display , and undisplay the password 
-to show and hide it for the user */}
                 <button
                   type="button"
                   onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 ip-text-muted hover:text-black transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                  style={{ color: "var(--text-muted)" }}
                   tabIndex={-1}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
                   ) : (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                   )}
                 </button>
               </div>
             </div>
 
-            {/* submit button */}
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-2.5 mt-0.5"
+              className="btn-primary w-full py-2.5 mt-2"
             >
               {loading ? "Creating account..." : "Sign Up"}
             </button>
           </form>
 
-          <div className="text-center text-[11px] ip-text-secondary font-medium border-t ip-border-top pt-4">
-            Already have an account?{" "}
-            <Link to="/login" className="ip-text-primary hover:text-primary-500 font-black transition-colors underline decoration-primary-500/20 hover:decoration-primary-500">
-              Sign in
-            </Link>
+          <div className="mt-6 pt-5 flex flex-col gap-2 text-center text-xs" style={{ borderTop: "1px solid var(--border)", color: "var(--text-secondary)" }}>
+            <div>
+              Already have an account? <Link to="/login" className="font-bold" style={{ color: "var(--text)" }}>Sign in</Link>
+            </div>
           </div>
+        </div>
+        
+        {/* footer */}
+        <div className="mt-8 text-center flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+          <span>&copy; 2026 InterviewPilot</span>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/legal">Legal</Link>
         </div>
       </div>
     </div>
