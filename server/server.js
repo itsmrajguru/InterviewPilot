@@ -56,6 +56,11 @@ app.get('/', (req, res) => {
     res.send("<h1><i>InterviewPilot's Server is Started</i></h1>");
 })
 
+app.use((err, req, res, next) => {
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({ success: false, message: err.message || 'Internal Server Error' });
+})
+
 
 //listening to the server
 const PORT = process.env.PORT

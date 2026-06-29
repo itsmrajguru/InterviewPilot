@@ -13,14 +13,20 @@ const GEMINI_KEYS = [
 
 let keyIndex = 0
 
-/* helper: returns a new Gemini client using the next available key */
-const getClient = () => {
+const callWithFallback = async (fn) => {
     if (GEMINI_KEYS.length === 0) {
         throw new Error('No Gemini API keys found. Add GEMINI_API_KEY_1 to your .env')
     }
-    const key = GEMINI_KEYS[keyIndex % GEMINI_KEYS.length]
-    keyIndex++
-    return new GoogleGenerativeAI(key)
+    let lastError
+    for (let i = 0; i < GEMINI_KEYS.length; i++) {
+        try {
+            const client = new GoogleGenerativeAI(GEMINI_KEYS[i])
+            return await fn(client)
+        } catch (e) {
+            lastError = e
+        }
+    }
+    throw lastError
 }
 
 /* helper: strips markdown fences that Gemini sometimes wraps around its JSON responses */
@@ -34,8 +40,6 @@ const stripFences = (text) => {
 
 /* generateInterviewQuestions service */
 const generateInterviewQuestions = async (role, difficulty, resumeText = '') => {
-    const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build the prompt to tell Gemini exactly what JSON shape we want */
     const prompt = `
@@ -62,7 +66,7 @@ Return ONLY a valid JSON array — no markdown, no extra text:
 `
 
     try {
-        const result = await model.generateContent(prompt)
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const questions = JSON.parse(cleaned)
@@ -80,8 +84,6 @@ Return ONLY a valid JSON array — no markdown, no extra text:
 
 /* evaluateAnswer service */
 const evaluateAnswer = async (question, answer) => {
-    const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build the prompt */
     const prompt = `
@@ -99,7 +101,7 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 `
 
     try {
-        const result = await model.generateContent(prompt)
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const evaluation = JSON.parse(cleaned)
@@ -115,8 +117,6 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 
 /* evaluateCode service */
 const evaluateCode = async (problemDescription, code, language, testResults) => {
-    const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :summarise test results so the prompt stays short */
     const passed = testResults.filter(t => t.passed).length
@@ -145,7 +145,7 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 `
 
     try {
-        const result = await model.generateContent(prompt)
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const evaluation = JSON.parse(cleaned)
@@ -161,8 +161,6 @@ Return ONLY a valid JSON object — no markdown, no extra text:
 
 /* evaluateCommunication service */
 const evaluateCommunication = async (question, transcript) => {
-    const client = getClient()
-    const model  = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build the evaluation prompt */
     const prompt = `
@@ -190,7 +188,7 @@ Return ONLY valid JSON — no markdown, no extra text:
 `
 
     try {
-        const result  = await model.generateContent(prompt)
+        const result  = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
         const cleaned = stripFences(result.response.text())
         const parsed  = JSON.parse(cleaned)
         return {
@@ -214,8 +212,6 @@ Return ONLY valid JSON — no markdown, no extra text:
 
 /* generateReport service */
 const generateReport = async (sessionData) => {
-    const client = getClient()
-    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
     /* step 1 :build a compact summary of all answers and scores */
     const answerSummary = (sessionData.answers || [])
@@ -248,7 +244,7 @@ Write a comprehensive performance report. Return ONLY a valid JSON object:
 `
 
     try {
-        const result = await model.generateContent(prompt)
+        const result = await callWithFallback(c => c.getGenerativeModel({ model: 'gemini-2.0-flash' }).generateContent(prompt))
         const text = result.response.text()
         const cleaned = stripFences(text)
         const report = JSON.parse(cleaned)

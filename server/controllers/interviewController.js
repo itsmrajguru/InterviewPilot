@@ -132,7 +132,7 @@ const createSession = async (req, res) => {
         `
 
         /* send the invite email without blocking the response */
-        setTimeout(async () => {
+        ;(async () => {
             try {
                 const plainText = studentTempPassword
                     ? `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nYour InterviewPilot account:\nEmail: ${studentEmail}\nTemporary Password: ${studentTempPassword}\n\nLog in after the interview to view your report: ${loginURL}`
@@ -151,7 +151,7 @@ const createSession = async (req, res) => {
             } catch (e) {
                 console.log('Email Send Error :', e);
             }
-        }, 0)
+        })()
 
         return res.status(201).json({
             success: true,
@@ -473,7 +473,7 @@ const completeSession = async (req, res) => {
         await session.save()
 
         /* step 4.5: send an email to the candidate that their interview is completed */
-        setTimeout(async () => {
+        ;(async () => {
             try {
                 const reportUrl = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/${session._id}/report`
                 const html = `
@@ -503,7 +503,7 @@ const completeSession = async (req, res) => {
             } catch (e) {
                 console.log('Completion Email Send Error :', e);
             }
-        }, 0)
+        })()
 
         /* step 5 :if this session was triggered by CareerSync, send results back (non-blocking) */
         if (session.csApplicationId) {

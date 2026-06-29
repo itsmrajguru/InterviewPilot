@@ -107,7 +107,7 @@ const signup = async (req, res) => {
 
             /* step 4.4 :Send the OTP email to the user via Resend */
 
-            setTimeout(async () => {
+            ;(async () => {
                 try {
                     const emailSent = await sendEmail({
                         to: email,
@@ -123,7 +123,7 @@ const signup = async (req, res) => {
                 } catch (e) {
                     console.log('Email Send Error :', e);
                 }
-            }, 0);
+            })()
 
             return res.status(200).json({
                 success: true,
@@ -394,7 +394,7 @@ const forgotPassword = async (req, res) => {
 
             const msg = `You requested a password reset.\n\nReset your password here (valid 15 mins):\n\n${resetURL}\n\nIgnore this email if you didn't request it.`
 
-            setTimeout(async () => {
+            ;(async () => {
                 try {
                     const emailSent = await sendEmail({
                         to: getUser.email,
@@ -407,7 +407,7 @@ const forgotPassword = async (req, res) => {
                 } catch (e) {
                     console.log('Reset Email Send Error:', e);
                 }
-            }, 0);
+            })()
             return res.status(200).json({
                 success: true,
                 message: 'If this email is registered, a reset link has been sent.'
