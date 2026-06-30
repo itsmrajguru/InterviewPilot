@@ -7,8 +7,8 @@ import { getStudentDashboard } from "../../services/interviewService";
 
 const S = {
   metric: {
-    background: "#ffffff",
-    border: "0.5px solid #dde1e8",
+    background: "var(--bg-card)",
+    border: "1px solid var(--border)",
     borderRadius: 12,
     padding: "18px 20px",
     position: "relative",
@@ -40,8 +40,8 @@ const S = {
     gap: 4,
   },
   card: {
-    background: "#ffffff",
-    border: "0.5px solid #dde1e8",
+    background: "var(--bg-card)",
+    border: "1px solid var(--border)",
     borderRadius: 12,
     overflow: "hidden",
     boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
@@ -87,17 +87,17 @@ const IconFlame = () => (
   </svg>
 );
 const IconMessages = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d9e75" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
   </svg>
 );
 const IconBolt = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d9e75" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
   </svg>
 );
 const IconTarget = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d9e75" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
   </svg>
 );
@@ -107,23 +107,23 @@ const IconArrowRight = () => (
   </svg>
 );
 const IconVideo = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
   </svg>
 );
 const IconTerminal = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
   </svg>
 );
 const IconChartBar = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
     <line x1="6" y1="20" x2="6" y2="14"/>
   </svg>
 );
 const IconUpload = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
     <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
   </svg>
@@ -151,8 +151,8 @@ function ScoreRing({ score }) {
   const offset = circ * (1 - score / 100);
   return (
     <svg style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)" }} width="44" height="44" viewBox="0 0 44 44">
-      <circle cx="22" cy="22" r={r} fill="none" stroke="#1e2530" strokeWidth="4"/>
-      <circle cx="22" cy="22" r={r} fill="none" stroke="#1d9e75" strokeWidth="4"
+      <circle cx="22" cy="22" r={r} fill="none" stroke="var(--border-input)" strokeWidth="4"/>
+      <circle cx="22" cy="22" r={r} fill="none" stroke="var(--accent)" strokeWidth="4"
         strokeDasharray={circ.toFixed(1)} strokeDashoffset={offset.toFixed(1)}
         strokeLinecap="round" transform="rotate(-90 22 22)" opacity="0.6"/>
     </svg>
@@ -220,19 +220,19 @@ export default function StudentDashboard() {
   ];
 
   const skillRows = skillBreakdown ? [
-    { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "var(--color-primary-500)" },
+    { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "var(--accent)" },
     { label: "Technical", pct: skillBreakdown.tech, color: "var(--text-secondary)" },
     { label: "Coding", pct: skillBreakdown.code, color: "var(--text-muted)" },
-    { label: "Communication", pct: skillBreakdown.comm, color: "var(--color-primary-500)" },
+    { label: "Communication", pct: skillBreakdown.comm, color: "var(--accent)" },
   ] : [
-    { label: "HR / Behavioural", pct: null, color: "var(--color-primary-500)" },
+    { label: "HR / Behavioural", pct: null, color: "var(--accent)" },
     { label: "Technical", pct: null, color: "var(--text-secondary)" },
     { label: "Coding", pct: null, color: "var(--text-muted)" },
-    { label: "Communication", pct: null, color: "var(--color-primary-500)" },
+    { label: "Communication", pct: null, color: "var(--accent)" },
   ];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="student" pendingCount={pending.length} />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -257,7 +257,7 @@ export default function StudentDashboard() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-            <div style={{ ...S.metric, borderLeft: "2px solid #1d9e75" }}>
+            <div style={{ ...S.metric, borderLeft: "2px solid var(--accent)" }}>
               <div style={S.metricLabel}><IconClock /> Pending</div>
               <div style={S.metricValue}>{loading ? "—" : pending.length}</div>
               <div style={{ ...S.metricSub, color: "var(--text-muted)" }}>
@@ -269,7 +269,7 @@ export default function StudentDashboard() {
               <div style={S.metricLabel}><IconCircleCheck /> Completed</div>
               <div style={S.metricValue}>{loading ? "—" : completed.length}</div>
               {completed.length > 0 ? (
-                <div style={{ ...S.metricSub, color: "#1d9e75" }}>
+                <div style={{ ...S.metricSub, color: "var(--accent)" }}>
                   <IconTrendUp /> +{completed.length} total
                 </div>
               ) : (
@@ -279,7 +279,7 @@ export default function StudentDashboard() {
 
             <div style={S.metric}>
               <div style={S.metricLabel}><IconStar /> Avg. score</div>
-              <div style={{ ...S.metricValue, color: avgScore !== null ? "#1d9e75" : "var(--text-primary)" }}>
+              <div style={{ ...S.metricValue, color: avgScore !== null ? "var(--accent)" : "var(--text-primary)" }}>
                 {loading ? "—" : avgScore !== null ? avgScore : "—"}
               </div>
               <div style={S.metricSub}>{avgScore !== null ? "out of 100" : "No interviews yet"}</div>
@@ -298,7 +298,7 @@ export default function StudentDashboard() {
               <div style={S.cardHeader}>
                 <span style={S.cardTitle}><IconMessages /> Recent interviews</span>
                 {completed.length > 0 && (
-                  <Link to="/student/interviews" style={{ fontSize: 12, color: "#1d9e75", display: "flex", alignItems: "center", gap: 3, textDecoration: "none" }}>
+                  <Link to="/student/interviews" style={{ fontSize: 12, color: "var(--accent)", display: "flex", alignItems: "center", gap: 3, textDecoration: "none" }}>
                     View all <IconArrowRight />
                   </Link>
                 )}
@@ -318,7 +318,7 @@ export default function StudentDashboard() {
                         <div style={{
                           width: 34, height: 34, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 15,
                           background: iv.status === "completed" ? "#e1f5ee" : iv.status === "pending" ? "#faeeda" : "var(--surface-1)",
-                          color: iv.status === "completed" ? "#0f6e56" : iv.status === "pending" ? "#854f0b" : "var(--text-muted)",
+                          color: iv.status === "completed" ? "var(--accent-hover)" : iv.status === "pending" ? "#854f0b" : "var(--text-muted)",
                         }}>
                           {iv.status === "completed" ? (
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
@@ -336,7 +336,7 @@ export default function StudentDashboard() {
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                           {iv.report?.overallScore !== undefined && (
-                            <span style={{ fontSize: 12, fontWeight: 500, color: "#0f6e56", background: "#e1f5ee", padding: "3px 10px", borderRadius: 20 }}>
+                            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--accent-hover)", background: "#e1f5ee", padding: "3px 10px", borderRadius: 20 }}>
                               {iv.report.overallScore}/100
                             </span>
                           )}
@@ -351,7 +351,7 @@ export default function StudentDashboard() {
                           {iv.status === "pending" && (
                             <button
                               onClick={() => navigate(`/interview/${iv._id}`)}
-                              style={{ fontSize: 12, color: "#0f6e56", background: "#e1f5ee", border: "none", borderRadius: "var(--radius)", padding: "4px 10px", cursor: "pointer", fontWeight: 500 }}
+                              style={{ fontSize: 12, color: "var(--accent-hover)", background: "#e1f5ee", border: "none", borderRadius: "var(--radius)", padding: "4px 10px", cursor: "pointer", fontWeight: 500 }}
                             >
                               Join
                             </button>
@@ -390,7 +390,7 @@ export default function StudentDashboard() {
                         key={a.label}
                         onClick={a.onClick}
                         style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#1d9e75"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "var(--text-primary)"); }}
                       >
                         <div style={{ width: 32, height: 32, borderRadius: 8, background: "#e1f5ee", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -409,7 +409,7 @@ export default function StudentDashboard() {
               <div style={S.card}>
                 <div style={S.cardHeader}>
                   <span style={S.cardTitle}><IconTarget /> Skill breakdown</span>
-                  <span style={{ fontSize: 12, color: "#1d9e75", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
+                  <span style={{ fontSize: 12, color: "var(--accent)", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
                     onClick={() => navigate("/student/reports")}>
                     Improve ↗
                   </span>

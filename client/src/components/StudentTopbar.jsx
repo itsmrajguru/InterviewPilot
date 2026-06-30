@@ -1,13 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 /* icons */
-const IconBell = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-  </svg>
-);
-
 const IconHome = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/>
@@ -45,7 +38,7 @@ export default function StudentTopbar({ title, sub }) {
     padding: "7px 16px",
     borderRadius: "var(--radius)",
     border: "none",
-    background: "#1d9e75",
+    background: "var(--accent)",
     color: "#fff",
     fontSize: 13,
     cursor: "pointer",
@@ -82,13 +75,6 @@ export default function StudentTopbar({ title, sub }) {
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <button
-          style={ghostBtn}
-          onMouseEnter={e => e.currentTarget.style.background = "var(--surface-1)"}
-          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-        >
-          <IconBell />
-        </button>
-        <button
           onClick={() => navigate("/student/dashboard")}
           style={ghostBtn}
           onMouseEnter={e => e.currentTarget.style.background = "var(--surface-1)"}
@@ -99,8 +85,8 @@ export default function StudentTopbar({ title, sub }) {
         <button
           onClick={() => navigate("/student/practice")}
           style={primaryBtn}
-          onMouseEnter={e => e.currentTarget.style.background = "#0f6e56"}
-          onMouseLeave={e => e.currentTarget.style.background = "#1d9e75"}
+          onMouseEnter={e => e.currentTarget.style.background = "var(--accent-hover)"}
+          onMouseLeave={e => e.currentTarget.style.background = "var(--accent)"}
         >
           <IconPlay /> Start practice
         </button>

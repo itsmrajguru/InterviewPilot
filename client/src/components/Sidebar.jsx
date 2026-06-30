@@ -139,10 +139,10 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
     padding: "9px 12px",
     borderRadius: 8,
     cursor: "pointer",
-    color: isActive ? "#5dcaa5" : "#7a8a99",
+    color: isActive ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
     fontSize: 13,
     textDecoration: "none",
-    background: isActive ? "#0f2620" : "transparent",
+    background: isActive ? "var(--sidebar-active-bg)" : "transparent",
     transition: "all 0.15s",
     whiteSpace: "nowrap",
   });
@@ -152,10 +152,10 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
       style={{
         width: 228,
         minWidth: 228,
-        background: "#0d1117",
+        background: "var(--sidebar-bg)",
         display: "flex",
         flexDirection: "column",
-        borderRight: "0.5px solid #1e2530",
+        borderRight: "1px solid var(--sidebar-active-bg)",
         minHeight: "100vh",
         flexShrink: 0,
         fontFamily: "var(--font-sans)",
@@ -165,7 +165,7 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
       <div
         style={{
           padding: "20px 20px 16px",
-          borderBottom: "0.5px solid #1e2530",
+          borderBottom: "1px solid var(--sidebar-active-bg)",
           display: "flex",
           alignItems: "center",
           gap: 10,
@@ -176,7 +176,7 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
             width: 34,
             height: 34,
             borderRadius: 8,
-            background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)",
+            background: "linear-gradient(135deg, var(--accent) 0%, #ff6b6b 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -189,8 +189,8 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
           </svg>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ color: "#e8edf2", fontSize: 14, fontWeight: 500, letterSpacing: "0.01em" }}>InterviewPilot</span>
-          <span style={{ color: "#5dcaa5", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 1 }}>AI Interviews</span>
+          <span style={{ color: "#ffffff", fontSize: 14, fontWeight: 500, letterSpacing: "0.01em" }}>InterviewPilot</span>
+          <span style={{ color: "var(--accent)", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 1 }}>AI Interviews</span>
         </div>
       </div>
 
@@ -206,13 +206,13 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
               key={link.path}
               to={link.path}
               style={navItemStyle(isActive)}
-              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "#161d26"; e.currentTarget.style.color = "#c8d6e0"; } }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#7a8a99"; } }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--sidebar-active-bg)"; e.currentTarget.style.color = "var(--sidebar-active-text)"; } }}
+              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--sidebar-text)"; } }}
             >
               {link.icon}
               {link.name}
               {link.badge ? (
-                <span style={{ marginLeft: "auto", background: "#0f2620", color: "#5dcaa5", fontSize: 10, padding: "2px 7px", borderRadius: 20, fontWeight: 500 }}>
+                <span style={{ marginLeft: "auto", background: "var(--accent-light)", color: "var(--accent)", fontSize: 10, padding: "2px 7px", borderRadius: 20, fontWeight: 500 }}>
                   {link.badge}
                 </span>
               ) : null}
@@ -222,7 +222,7 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
 
         {accountLinks.length > 0 && (
           <>
-            <span style={{ fontSize: 10, letterSpacing: "0.1em", color: "#3d4f5e", textTransform: "uppercase", padding: "8px 10px 6px", marginTop: 8 }}>
+            <span style={{ fontSize: 10, letterSpacing: "0.1em", color: "var(--sidebar-text)", textTransform: "uppercase", padding: "8px 10px 6px", marginTop: 8 }}>
               Account
             </span>
             {accountLinks.map((link) => {
@@ -232,8 +232,8 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
                   key={link.path}
                   to={link.path}
                   style={navItemStyle(isActive)}
-                  onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "#161d26"; e.currentTarget.style.color = "#c8d6e0"; } }}
-                  onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#7a8a99"; } }}
+                  onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--sidebar-active-bg)"; e.currentTarget.style.color = "var(--sidebar-active-text)"; } }}
+                  onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--sidebar-text)"; } }}
                 >
                   {link.icon}
                   {link.name}
@@ -247,7 +247,7 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
       <div
         style={{
           padding: "14px 16px",
-          borderTop: "0.5px solid #1e2530",
+          borderTop: "1px solid var(--sidebar-active-bg)",
           display: "flex",
           alignItems: "center",
           gap: 10,
@@ -258,11 +258,11 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
             width: 32,
             height: 32,
             borderRadius: "50%",
-            background: "linear-gradient(135deg, #0f2620 0%, #0f6e56 100%)",
+            background: "var(--accent-light)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#5dcaa5",
+            color: "var(--accent)",
             fontSize: 12,
             fontWeight: 500,
             flexShrink: 0,
@@ -271,17 +271,17 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
           {initials}
         </div>
         <div style={{ flex: 1, overflow: "hidden" }}>
-          <div style={{ color: "#c8d6e0", fontSize: 12, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <div style={{ color: "var(--sidebar-active-text)", fontSize: 12, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {displayName}
           </div>
-          <div style={{ color: "#3d4f5e", fontSize: 11 }}>
+          <div style={{ color: "var(--sidebar-text)", fontSize: 11 }}>
             {role === "student" ? "Student" : "Recruiter"}
           </div>
         </div>
         <button
           onClick={handleLogout}
           title="Logout"
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#3d4f5e", padding: 2, display: "flex", alignItems: "center" }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--sidebar-text)", padding: 2, display: "flex", alignItems: "center" }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>

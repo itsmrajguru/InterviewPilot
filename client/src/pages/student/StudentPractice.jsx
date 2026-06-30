@@ -97,13 +97,13 @@ export default function StudentPractice() {
         @keyframes sp-fade-up { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
         @keyframes sp-pulse { 0%,100% { opacity:1; } 50% { opacity:0.55; } }
         .sp-fade { animation: sp-fade-up 0.35s cubic-bezier(0.22,1,0.36,1) both; }
-        .sp-input:focus { border-color:#111827 !important; background:#ffffff !important; box-shadow:0 0 0 3px rgba(17,24,39,0.1) !important; }
-        .sp-diff-btn:hover:not(.active) { background:#ffffff !important; }
-        .sp-submit-btn:hover:not(:disabled) { background:#000000 !important; transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.15) !important; }
+        .sp-input:focus { border-color:var(--accent) !important; background:var(--bg-card) !important; box-shadow:0 0 0 3px rgba(17,24,39,0.1) !important; }
+        .sp-diff-btn:hover:not(.active) { background:var(--bg-card) !important; }
+        .sp-submit-btn:hover:not(:disabled) { background:var(--accent-hover) !important; transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.15) !important; }
         .sp-submit-btn { transition: all 0.18s ease !important; }
       `}</style>
 
-      <div style={{ display:"flex", minHeight:"100vh", background:"#e4e8ee", fontFamily:"var(--font-sans)", fontSize:14 }}>
+      <div style={{ display:"flex", minHeight:"100vh", background:"var(--bg)", fontFamily:"var(--font-sans)", fontSize:14 }}>
         <Sidebar role="student" />
 
         <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0 }}>
@@ -124,7 +124,7 @@ export default function StudentPractice() {
 
               {/* ══ LEFT: FORM ══ */}
               <div className="sp-fade" style={{
-                background:"#ffffff", borderRadius:12, border:"1px solid #dde1e8",
+                background:"var(--bg-card)", borderRadius:12, border:"1px solid var(--border)",
                 boxShadow:"0 1px 4px rgba(0,0,0,0.07)", overflow:"hidden"
               }}>
 
@@ -148,7 +148,7 @@ export default function StudentPractice() {
                       justifyContent:"center", padding:"56px 0", textAlign:"center", gap:18
                     }}>
                       <div style={{ position:"relative", width:56, height:56 }}>
-                        <div style={{ width:56, height:56, border:"3px solid #f1f5f9", borderTopColor:"#111827", borderRadius:"50%", animation:"sp-spin 0.8s linear infinite" }}/>
+                        <div style={{ width:56, height:56, border:"3px solid #f1f5f9", borderTopColor:"var(--accent)", borderRadius:"50%", animation:"sp-spin 0.8s linear infinite" }}/>
                         <span style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🤖</span>
                       </div>
                       <div>
@@ -254,7 +254,7 @@ export default function StudentPractice() {
                         className="sp-submit-btn"
                         style={{
                           display:"flex", alignItems:"center", justifyContent:"center", gap:9,
-                          fontSize:14.5, color:"#ffffff", background:"#111827", border:"none",
+                          fontSize:14.5, color:"var(--bg-card)", background:"var(--accent)", border:"none",
                           borderRadius:11, padding:"14px 18px", cursor:"pointer", fontWeight:600,
                           width:"100%", marginTop:4
                         }}
@@ -272,7 +272,7 @@ export default function StudentPractice() {
 
                   {/* selected difficulty preview */}
                   <div style={{
-                    background:"#ffffff", borderRadius:12, border:"1px solid #dde1e8",
+                    background:"var(--bg-card)", borderRadius:12, border:"1px solid var(--border)",
                     boxShadow:"0 1px 4px rgba(0,0,0,0.07)", padding:"18px 20px"
                   }}>
                     <p style={{ margin:"0 0 10px 0", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", color:"var(--text-muted)" }}>
@@ -295,7 +295,7 @@ export default function StudentPractice() {
 
                   {/* perks card */}
                   <div style={{
-                    background:"#ffffff", borderRadius:12, border:"1px solid #dde1e8",
+                    background:"var(--bg-card)", borderRadius:12, border:"1px solid var(--border)",
                     boxShadow:"0 1px 4px rgba(0,0,0,0.07)", padding:"18px 20px"
                   }}>
                     <p style={{ margin:"0 0 12px 0", fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", color:"var(--text-muted)" }}>

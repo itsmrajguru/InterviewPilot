@@ -3,7 +3,6 @@
 
 
 @theme {
-  /* Primary — Netlify Teal*/
   --color-primary-50: #effdfa;
   --color-primary-100: #d6faf4;
   --color-primary-200: #acf4e8;
@@ -108,39 +107,64 @@
 }
 
 :root {
-  --bg:            #e4e8ee;
+  /* CareerSync Redesign Core Colors */
+  --bg:            #f8faff;
   --bg-card:       #ffffff;
-  --bg-subtle:     #f1f4f7;
-  --bg-hover:      #f8fafc;
+  --bg-subtle:     #f1f5f9;
+  --bg-hover:      #f4f7fc;
 
-  --border:        #dde1e8;
+  --border:        #e5e7eb;
   --border-input:  #d1d5db;
   --border-strong: #9ca3af;
-  --border-focus:  #1d9e75;
+  --border-focus:  #c2542d;
 
-  --text:          #111827;
+  --text:          #0b132b;
   --text-secondary:#4b5563;
-  --text-muted:    #7a8a99;
+  --text-muted:    #6b7280;
   --text-placeholder: #9ca3af;
 
-  --accent:        #1d9e75;
-  --accent-hover:  #0f6e56;
-  --accent-light:  #e1f5ee;
-  --accent-border: rgba(29,158,117,0.25);
+  /* Primary accent — Terracotta/Clay */
+  --accent:         #c2542d;   /* burnt clay */
+  --accent-hover:   #a8451f;   /* deeper rust */
+  --accent-light:   #fdf1ec;   /* warm sand tint */
+  --accent-border:  rgba(194, 84, 45, 0.25);
 
-  --sidebar-bg:          #0d1117;
-  --sidebar-text:        #7a8a99;
-  --sidebar-active-bg:   #0f2620;
-  --sidebar-active-text: #5dcaa5;
+  /* Secondary accent — Warm Gold (progress, highlights, secondary actions) */
+  --accent-2:        #c8932a;   /* honey gold */
+  --accent-2-hover:  #a8761f;
+  --accent-2-light:  #fbf3e2;
+  --accent-2-border: rgba(200, 147, 42, 0.25);
 
-  --surface-0: #e4e8ee;
-  --surface-1: #f1f4f7;
+  --sidebar-bg:          #0b132b;
+  --sidebar-text:        #9ca3af;
+  --sidebar-active-bg:   #3a2417;   /* deep clay-brown, ties to accent */
+  --sidebar-active-text: #ffffff;
+
+  --surface-0: #f8faff;
+  --surface-1: #ffffff;
   --surface-2: #ffffff;
-  --text-primary: #111827;
+  --text-primary: #0b132b;
   --radius: 8px;
 
-  --code-bg: #f1f3f5;
-  --shadow: 0 1px 3px rgba(13, 17, 23, 0.06), 0 1px 2px rgba(13, 17, 23, 0.04);
+  --code-bg: #f1f5f9;
+  --shadow: 0 1px 3px rgba(11, 19, 43, 0.05), 0 1px 2px rgba(11, 19, 43, 0.03);
+
+  /* Semantic colors — independent, reserved strictly for real states */
+  --success-bg: #ecfdf5;
+  --success-text: #047857;
+  --success-border: #a7f3d0;
+
+  --warning-bg: #fffbeb;
+  --warning-text: #b45309;
+  --warning-border: #fde68a;
+
+  --danger-bg: #fef2f2;
+  --danger-text: #b91c1c;
+  --danger-border: #fecaca;
+
+  --info-bg: #eff6ff;
+  --info-text: #1d4ed8;
+  --info-border: #bfdbfe;
 
   --sans: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
   --mono: 'JetBrains Mono', monospace;

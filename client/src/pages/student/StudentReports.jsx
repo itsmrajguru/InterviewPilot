@@ -6,8 +6,8 @@ import { getStudentDashboard } from "../../services/interviewService";
 
 const S = {
   metric: {
-    background: "#ffffff",
-    border: "0.5px solid #dde1e8",
+    background: "var(--bg-card)",
+    border: "0.5px solid var(--border)",
     borderRadius: 12,
     padding: "18px 20px",
     position: "relative",
@@ -39,8 +39,8 @@ const S = {
     gap: 4,
   },
   card: {
-    background: "#ffffff",
-    border: "0.5px solid #dde1e8",
+    background: "var(--bg-card)",
+    border: "0.5px solid var(--border)",
     borderRadius: 12,
     overflow: "hidden",
     boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
@@ -133,7 +133,7 @@ const ScoreBadge = ({ score }) => {
 const StrengthPill = ({ text }) => (
   <span style={{
     fontSize: 11, fontWeight: 600, padding: "3px 9px", borderRadius: 20,
-    background: "#e1f5ee", color: "#0f6e56", border: "1px solid #a7dfc9",
+    background: "var(--accent-light)", color: "var(--accent-hover)", border: "1px solid var(--accent-border)",
     whiteSpace: "nowrap"
   }}>+ {text}</span>
 );
@@ -232,10 +232,10 @@ export default function StudentReports() {
         .sr-card { transition: box-shadow 0.18s, transform 0.18s; }
         .sr-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important; transform: translateY(-2px); }
         .sr-filter-btn:hover { background: #f1f4f7 !important; }
-        .sr-report-btn:hover { background: #000000 !important; }
+        .sr-report-btn:hover { background: var(--accent-hover) !important; }
       `}</style>
 
-      <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <Sidebar role="student" />
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
@@ -268,26 +268,26 @@ export default function StudentReports() {
             {/* ── LOADING ── */}
             {loading ? (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0" }}>
-                <div style={{ width: 28, height: 28, border: "3px solid #111827", borderTopColor: "transparent", borderRadius: "50%", animation: "sr-spin 0.7s linear infinite" }}/>
+                <div style={{ width: 28, height: 28, border: "3px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "sr-spin 0.7s linear infinite" }}/>
               </div>
 
             ) : reports.length === 0 ? (
               /* ── EMPTY STATE ── */
               <div style={{
-                background: "#ffffff", borderRadius: 16, border: "1px solid #e5e7eb",
+                background: "var(--bg-card)", borderRadius: 16, border: "1px solid #e5e7eb",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
                 display: "flex", flexDirection: "column", alignItems: "center",
                 justifyContent: "center", padding: "72px 24px", textAlign: "center"
               }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: 16,
-                  background: "#e1f5ee", border: "1px solid #a7dfc9",
+                  background: "var(--accent-light)", border: "1px solid var(--accent-border)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: 16, color: "#111827"
+                  marginBottom: 16, color: "var(--accent)"
                 }}>
                   <IconTrophy />
                 </div>
-                <p style={{ fontSize: 16, fontWeight: 700, color: "#111827", margin: "0 0 6px 0" }}>No reports yet</p>
+                <p style={{ fontSize: 16, fontWeight: 700, color: "var(--accent)", margin: "0 0 6px 0" }}>No reports yet</p>
                 <p style={{ fontSize: 13, color: "#6b7280", maxWidth: 300, margin: "0 0 20px 0", lineHeight: 1.6 }}>
                   Complete a practice session or a company interview to see your detailed AI evaluation here.
                 </p>
@@ -297,7 +297,7 @@ export default function StudentReports() {
                     display: "flex", alignItems: "center", gap: 8,
                     padding: "8px 16px", borderRadius: 6, fontSize: 12,
                     fontWeight: 600, border: "none", cursor: "pointer",
-                    background: "#111827", color: "#ffffff"
+                    background: "var(--accent)", color: "var(--bg-card)"
                   }}
                 >
                   <IconPlay /> Start Practice Interview
@@ -332,8 +332,8 @@ export default function StudentReports() {
                           padding: "5px 14px", borderRadius: 6, fontSize: 12,
                           fontWeight: 700, border: "none", cursor: "pointer",
                           transition: "all 0.15s",
-                          background: filter === key ? "#ffffff" : "transparent",
-                          color: filter === key ? "#111827" : "#6b7280",
+                          background: filter === key ? "var(--bg-card)" : "transparent",
+                          color: filter === key ? "var(--accent)" : "#6b7280",
                           boxShadow: filter === key ? "0 1px 3px rgba(0,0,0,0.1)" : "none"
                         }}
                       >{label}</button>
@@ -446,7 +446,7 @@ export default function StudentReports() {
                           background: "#fafafa"
                         }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#111827" }}/>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)" }}/>
                             <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
                               Completed
                             </span>
@@ -458,7 +458,7 @@ export default function StudentReports() {
                               display: "flex", alignItems: "center", gap: 5,
                               padding: "5px 12px", borderRadius: 6, fontSize: 11,
                               fontWeight: 600, border: "none", cursor: "pointer",
-                              background: "#111827", color: "#ffffff",
+                              background: "var(--accent)", color: "var(--bg-card)",
                               transition: "background 0.15s",
                               whiteSpace: "nowrap"
                             }}
