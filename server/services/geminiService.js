@@ -77,6 +77,17 @@ Return ONLY a valid JSON array — no markdown, no extra text:
         const text = result.response.text()
         const cleaned = stripFences(text)
         const questions = JSON.parse(cleaned)
+        
+        // Coerce testCases to strings to prevent Mongoose CastErrors
+        questions.forEach(q => {
+            if (q.testCases) {
+                q.testCases = q.testCases.map(tc => ({
+                    input: typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input),
+                    expectedOutput: typeof tc.expectedOutput === 'object' ? JSON.stringify(tc.expectedOutput) : String(tc.expectedOutput)
+                }));
+            }
+        });
+
         return questions
     } catch (e) {
         /* inform to the developer */

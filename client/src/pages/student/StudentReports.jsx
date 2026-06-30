@@ -459,7 +459,8 @@ export default function StudentReports() {
                               padding: "5px 12px", borderRadius: 6, fontSize: 11,
                               fontWeight: 600, border: "none", cursor: "pointer",
                               background: "#111827", color: "#ffffff",
-                              transition: "background 0.15s"
+                              transition: "background 0.15s",
+                              whiteSpace: "nowrap"
                             }}
                           >
                             <IconReport />

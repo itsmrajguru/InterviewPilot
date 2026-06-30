@@ -12,6 +12,7 @@ import StudentInterviews from "./pages/student/StudentInterviews";
 import StudentPractice from "./pages/student/StudentPractice";
 import StudentReports from "./pages/student/StudentReports";
 import StudentProfile from "./pages/student/StudentProfile";
+import StudentSettings from "./pages/student/StudentSettings";
 
 /* company / recruiter pages */
 import CompanyDashboard from "./pages/company/CompanyDashboard";
@@ -46,6 +47,7 @@ function App() {
         <Route path="/student/practice" element={<StudentPractice />} />
         <Route path="/student/reports" element={<StudentReports />} />
         <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/settings" element={<StudentSettings />} />
 
         {/* company / recruiter routes */}
         <Route path="/company/dashboard" element={<CompanyDashboard />} />

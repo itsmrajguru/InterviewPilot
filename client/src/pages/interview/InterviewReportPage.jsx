@@ -1,310 +1,530 @@
-//creating InterviewReportPage
-
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import { getReport } from "../../services/interviewService";
+
+const IconCheck = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+);
+const IconX = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+);
+const IconMap = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+);
+const IconList = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+);
+const IconMic = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+);
+const IconArrowLeft = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+);
+const IconPlay = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+);
+const IconSpin = () => (
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ animation: "irp-spin 0.8s linear infinite" }}>
+    <circle cx="16" cy="16" r="12" stroke="#e5e7eb" strokeWidth="3"/>
+    <path d="M16 4a12 12 0 0 1 12 12" stroke="#111827" strokeWidth="3" strokeLinecap="round"/>
+  </svg>
+);
+
+const scoreColor = (s, max = 100) => {
+  const p = s / max;
+  if (p >= 0.75) return { text: "#1d9e75", bg: "#e1f5ee", border: "#a7dfc9", track: "#dcfce7" };
+  if (p >= 0.5)  return { text: "#d97706", bg: "#fffbeb", border: "#fde68a", track: "#fef3c7" };
+  return              { text: "#dc2626", bg: "#fef2f2", border: "#fecaca", track: "#fee2e2" };
+};
+
+const BigScoreRing = ({ score }) => {
+  const sc = scoreColor(score);
+  const r = 54, cx = 64, cy = 64;
+  const circ = 2 * Math.PI * r;
+  const fill = (score / 100) * circ;
+  return (
+    <svg width="128" height="128" viewBox="0 0 128 128">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={sc.track} strokeWidth="8"/>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={sc.text} strokeWidth="8"
+        strokeLinecap="round"
+        strokeDasharray={`${fill} ${circ}`}
+        strokeDashoffset={circ / 4}
+        style={{ transition: "stroke-dasharray 1s cubic-bezier(0.22,1,0.36,1)" }}/>
+      <text x={cx} y={cy - 6} textAnchor="middle" fontSize="28" fontWeight="900" fill={sc.text}>{score}</text>
+      <text x={cx} y={cy + 14} textAnchor="middle" fontSize="11" fontWeight="600" fill="#9ca3af">/ 100</text>
+    </svg>
+  );
+};
+
+const SmallRing = ({ score, max = 10, size = 52 }) => {
+  const sc = scoreColor(score, max);
+  const r = 20, cx = 26, cy = 26;
+  const circ = 2 * Math.PI * r;
+  const fill = (score / max) * circ;
+  return (
+    <svg width={size} height={size} viewBox="0 0 52 52">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={sc.track} strokeWidth="4"/>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={sc.text} strokeWidth="4"
+        strokeLinecap="round"
+        strokeDasharray={`${fill} ${circ}`}
+        strokeDashoffset={circ / 4}
+        style={{ transition: "stroke-dasharray 0.8s ease" }}/>
+      <text x={cx} y={cy + 4} textAnchor="middle" fontSize="11" fontWeight="800" fill={sc.text}>{score}</text>
+    </svg>
+  );
+};
+
+const TYPE_STYLE = {
+  hr:        { bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe", label: "HR" },
+  technical: { bg: "#fdf4ff", color: "#7c3aed", border: "#e9d5ff", label: "Technical" },
+  coding:    { bg: "#fff7ed", color: "#c2410c", border: "#fed7aa", label: "Coding" },
+};
+
+const SectionHeader = ({ icon, title, right }) => (
+  <div style={{
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    padding: "14px 22px", borderBottom: "1px solid #f1f4f7",
+    background: "#fafafa"
+  }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+      <span style={{ color: "#6b7280" }}>{icon}</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{title}</span>
+    </div>
+    {right}
+  </div>
+);
 
 export default function InterviewReportPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const savedSession = useMemo(() => {
-    return location.state?.session || JSON.parse(sessionStorage.getItem(`interview_session_${id}`) || "null");
-  }, [id, location.state]);
+  const savedSession = useMemo(() =>
+    location.state?.session || JSON.parse(sessionStorage.getItem(`interview_session_${id}`) || "null"),
+    [id, location.state]
+  );
   const savedReport = location.state?.report || savedSession?.report || null;
 
-  const [report, setReport] = useState(savedReport);
+  const [report, setReport]   = useState(savedReport);
   const [session, setSession] = useState(savedSession);
   const [loading, setLoading] = useState(!savedReport);
-  const [error, setError] = useState("");
+  const [error, setError]     = useState("");
 
-  /* step 1 :fetch the full report from the backend on mount */
   useEffect(() => {
-    if (savedReport) {
-      return;
-    }
-
-    const fetchReport = async () => {
+    if (savedReport) return;
+    (async () => {
       try {
         const data = await getReport(id);
-        if (data.success) {
-          setReport(data.session.report);
-          setSession(data.session);
-        } else {
-          setError(data.message || "Could not load the report.");
-        }
+        if (data.success) { setReport(data.session.report); setSession(data.session); }
+        else setError(data.message || "Could not load the report.");
       } catch (e) {
-        /* inform to the developer */
-        console.error("getReport error:", e);
-        /* inform to the user */
-        setError(e.response?.data?.message || "Failed to load report. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReport();
+        setError(e.response?.data?.message || "Failed to load report.");
+      } finally { setLoading(false); }
+    })();
   }, [id, savedReport]);
 
-  /* score color helper */
-  const scoreColor = (score) => {
-    if (score >= 75) return "text-green-400";
-    if (score >= 50) return "text-yellow-400";
-    return "text-red-400";
-  };
-
-  /* individual answer score color */
-  const answerScoreStyle = (score) => {
-    if (score >= 8) return { background: "#f0fdf4", color: "#15803d", border: "0.5px solid #bbf7d0" };
-    if (score >= 5) return { background: "#fefce8", color: "#a16207", border: "0.5px solid #fef08a" };
-    return { background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" };
-  };
-
-  /* loading state */
-  if (loading) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-          <div style={{ width: 40, height: 40, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-          <p style={{ fontSize: 14, color: "var(--text-secondary)" }}>Loading your report...</p>
-        </div>
-      </div>
-    );
-  }
-
-  /* error state */
-  if (error) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
-          borderRadius: 12,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-          padding: 40,
-          width: "100%",
-          maxWidth: 440,
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          alignItems: "center"
-        }}>
-          <div style={{ fontSize: 40 }}>⚠️</div>
-          <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>{error}</p>
-          <button onClick={() => navigate(-1)} style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }}>Go Back</button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-
-      {/* top navigation bar */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "#ffffff", borderBottom: "0.5px solid #dde1e8", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src="/logo.svg" alt="InterviewPilot" style={{ width: 28, height: 28, borderRadius: 8 }} />
-          <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>Interview Report</span>
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {/* back to dashboard */}
-          <Link to="/student/dashboard" style={{ fontSize: 12, color: "var(--text-secondary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: 8, padding: "8px 16px", textDecoration: "none", fontWeight: 500 }}>
-            ← Dashboard
-          </Link>
-        </div>
-      </nav>
-
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "32px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
-
-        {/* hero: overall score */}
-        <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
-          borderRadius: 12,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-          padding: 40,
-          textAlign: "center"
-        }}>
-          <div>
-            {/* role and date */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 16 }}>
-              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "#1d9e75", border: "0.5px solid #a7dfc9", textTransform: "capitalize" }}>{session?.role}</span>
-              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)", textTransform: "capitalize" }}>{session?.difficulty}</span>
-            </div>
-
-            {/* overall score — the big number */}
-            <div className={scoreColor(report?.overallScore)} style={{ fontSize: 72, fontWeight: 900, lineHeight: 1, marginBottom: 8, color: report?.overallScore >= 75 ? "#15803d" : (report?.overallScore >= 50 ? "#a16207" : "#b91c1c") }}>
-              {report?.overallScore}
-            </div>
-            <p style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-muted)", margin: 0, marginBottom: 16 }}>
-              Overall Score / 100
-            </p>
-
-            {/* summary paragraph */}
-            <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, maxWidth: 600, margin: "0 auto" }}>
-              {report?.summary}
-            </p>
-          </div>
-        </div>
-
-        {/* communication assessment section */}
-        {report?.communicationScore > 0 && (
-          <div style={{
-            background: "#ffffff",
-            border: "0.5px solid #dde1e8",
-            borderRadius: 12,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-            padding: 24
-          }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>Communication Assessment</span>
-              <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "#1d9e75", border: "0.5px solid #a7dfc9" }}>
-                {report.videoAnswersCount} video answer{report.videoAnswersCount !== 1 ? "s" : ""}
-              </span>
-            </div>
-            <div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12 }}>
-                {/* overall communication grade */}
-                <div style={{ background: "var(--surface-1)", padding: 16, borderRadius: 8 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4 }}>Overall Communication</div>
-                  <div style={{ fontSize: 24, fontWeight: 700, color: "#1d9e75" }}>
-                    {report.communicationScore}/10
-                  </div>
-                </div>
-
-                {/* per-answer communication breakdown */}
-                {session.answers
-                  .filter(a => a.communicationScore > 0)
-                  .slice(0, 3)
-                  .map((a, i) => (
-                    <div key={i} style={{ background: "var(--surface-1)", padding: 16, borderRadius: 8 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", marginBottom: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Q{a.questionIndex + 1} — {a.type}</div>
-                      <div style={{ fontWeight: 700, fontSize: 18, color: "var(--text-primary)" }}>
-                        {a.communicationScore}/10
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* two column: strengths + weaknesses */}
-
-        <div className="ip-grid-2">
-
-          {/* strengths */}
-          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-            <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>💪 Strengths</span>
-            </div>
-            <div style={{ padding: "16px 20px" }}>
-              {report?.strengths?.length > 0 ? (
-                <ul style={{ display: "flex", flexDirection: "column", gap: 8, margin: 0, padding: 0, listStyle: "none" }}>
-                  {report.strengths.map((s, i) => (
-                    <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                      <span style={{ fontSize: 13, color: "#10b981", marginTop: 2 }}>✓</span>
-                      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{s}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>No specific strengths identified.</p>
-              )}
-            </div>
-          </div>
-
-          {/* weaknesses */}
-          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-            <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>🎯 Areas to Improve</span>
-            </div>
-            <div style={{ padding: "16px 20px" }}>
-              {report?.weaknesses?.length > 0 ? (
-                <ul style={{ display: "flex", flexDirection: "column", gap: 8, margin: 0, padding: 0, listStyle: "none" }}>
-                  {report.weaknesses.map((w, i) => (
-                    <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                      <span style={{ fontSize: 13, color: "#f43f5e", marginTop: 2 }}>⨯</span>
-                      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{w}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>No specific weaknesses identified.</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* improvement roadmap */}
-        <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>🗺️ Improvement Roadmap</span>
-          </div>
-          <div style={{ padding: "16px 20px" }}>
-            <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, margin: 0 }}>
-              {report?.improvementRoadmap}
-            </p>
-          </div>
-        </div>
-
-        {/* per-question answer breakdown */}
-        <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-          <div style={{ padding: "16px 20px 14px", borderBottom: "0.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>📋 Answer Breakdown</span>
-            <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{session?.answers?.length} answers</span>
-          </div>
-          <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
-            {session?.answers?.map((a, i) => (
-              <div key={i} style={{ paddingBottom: 16, borderBottom: i < session.answers.length - 1 ? "0.5px solid var(--border)" : "none" }}>
-                {/* question header row */}
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 12 }}>
-                  <div style={{ flex: 1 }}>
-                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, fontWeight: 700, textTransform: "capitalize", background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)", display: "inline-block", marginBottom: 6 }}>{a.type}</span>
-                    <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>{a.question}</p>
-                  </div>
-                  <div style={{ ...answerScoreStyle(a.score), fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                    <span style={{ fontSize: 10 }}>Score:</span> {a.score}/10
-                  </div>
-                </div>
-
-                {/* detailed feedback content */}
-                {a.feedback ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    <p style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6, background: "var(--surface-1)", borderRadius: 8, padding: 12, margin: 0 }}>
-                      <strong style={{ display: "block", marginBottom: 4, color: "var(--text-primary)" }}>Your Answer:</strong>
-                      {a.answer}
-                    </p>
-                    <p style={{ fontSize: 12, color: "var(--text-muted)", fontStyle: "italic", margin: 0 }}>
-                      <strong style={{ color: "var(--text-secondary)", fontStyle: "normal" }}>AI Feedback: </strong>
-                      {a.feedback}
-                    </p>
-                  </div>
-                ) : (
-                  <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>No answer details available.</p>
-                )}
-              </div>
-            ))}
-
-            {/* fallback if no answers saved */}
-            {(!session?.answers || session.answers.length === 0) && (
-              <p className="ip-text-muted text-[13px]">No answer details available.</p>
-            )}
-          </div>
-        </div>
-
-        {/* footer cta */}
-        <div className="flex items-center justify-center gap-4 pb-8">
-          <Link to="/student/dashboard" className="btn-secondary">
-            ← Back to Dashboard
-          </Link>
-          <Link to="/practice" className="btn-primary">
-            Practice Again →
-          </Link>
-        </div>
+  if (loading) return (
+    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"#f1f4f7", fontFamily:"var(--sans)" }}>
+      <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:14 }}>
+        <IconSpin />
+        <p style={{ fontSize:14, color:"#6b7280", margin:0 }}>Generating your report…</p>
       </div>
     </div>
+  );
+
+  if (error) return (
+    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"#f1f4f7", padding:24, fontFamily:"var(--sans)" }}>
+      <div style={{ background:"#fff", borderRadius:16, border:"1px solid #e5e7eb", padding:40, maxWidth:420, width:"100%", textAlign:"center" }}>
+        <div style={{ fontSize:36, marginBottom:12 }}>⚠️</div>
+        <p style={{ fontSize:14, color:"#6b7280", margin:"0 0 20px 0", lineHeight:1.6 }}>{error}</p>
+        <button onClick={() => navigate(-1)} style={{ background:"#111827", color:"#fff", border:"none", borderRadius:9, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:"pointer" }}>Go Back</button>
+      </div>
+    </div>
+  );
+
+  const sc         = scoreColor(report?.overallScore || 0);
+  const answers    = session?.answers || [];
+  const strengths  = report?.strengths  || [];
+  const weaknesses = report?.weaknesses || [];
+  const hasComm    = report?.communicationScore > 0;
+
+  return (
+    <>
+      <style>{`
+        @keyframes irp-spin { to { transform: rotate(360deg); } }
+        @keyframes irp-fade-up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        .irp-fade { animation: irp-fade-up 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+        .irp-answer-row { transition: background 0.15s; }
+        .irp-answer-row:hover { background: #fafafa !important; }
+        .irp-btn-dash:hover { background: #f1f4f7 !important; }
+        .irp-btn-practice:hover { background: #0f6e56 !important; }
+      `}</style>
+
+      <div style={{ minHeight:"100vh", background:"#f1f4f7", fontFamily:"var(--sans)", fontSize:14 }}>
+
+        <nav style={{
+          position:"sticky", top:0, zIndex:50,
+          display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"0 28px", height:56,
+          background:"#ffffff", borderBottom:"1px solid #e5e7eb",
+          boxShadow:"0 1px 0 0 rgba(0,0,0,0.04)"
+        }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+            <img src="/logo.svg" alt="InterviewPilot" style={{ width:28, height:28, borderRadius:8 }}/>
+            <div>
+              <span style={{ fontWeight:700, fontSize:13, color:"#111827" }}>Interview Report</span>
+              {session?.role && (
+                <span style={{ fontSize:12, color:"#9ca3af", marginLeft:8 }}>— {session.role}</span>
+              )}
+            </div>
+          </div>
+          <Link to="/student/dashboard" style={{
+            display:"flex", alignItems:"center", gap:7,
+            fontSize:12, fontWeight:600, color:"#374151",
+            background:"#f8fafc", border:"1px solid #e5e7eb",
+            borderRadius:8, padding:"7px 14px", textDecoration:"none",
+            transition:"background 0.15s"
+          }} className="irp-btn-dash">
+            <IconArrowLeft /> Dashboard
+          </Link>
+        </nav>
+
+        <div style={{ maxWidth:860, margin:"0 auto", padding:"32px 24px", display:"flex", flexDirection:"column", gap:20 }}>
+
+          <div className="irp-fade" style={{
+            background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+            boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
+          }}>
+            
+            <div style={{ height:4, background:`linear-gradient(90deg, ${sc.text}, ${sc.text}66)` }}/>
+            <div style={{ padding:"36px 40px", display:"flex", alignItems:"center", gap:40, flexWrap:"wrap" }}>
+
+              <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8, flexShrink:0 }}>
+                <BigScoreRing score={report?.overallScore || 0} />
+                <span style={{
+                  fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em",
+                  padding:"3px 10px", borderRadius:20,
+                  background: sc.bg, color: sc.text, border:`1px solid ${sc.border}`
+                }}>
+                  {report?.overallScore >= 75 ? "Strong" : report?.overallScore >= 50 ? "Average" : "Needs Work"}
+                </span>
+              </div>
+
+              <div style={{ flex:1, minWidth:200 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12, flexWrap:"wrap" }}>
+                  <span style={{
+                    fontSize:12, fontWeight:700, padding:"4px 12px", borderRadius:20,
+                    background:"#f1f5f9", color:"#0f172a", border:"1px solid #e2e8f0",
+                    textTransform:"capitalize"
+                  }}>{session?.role}</span>
+                  <span style={{
+                    fontSize:12, fontWeight:600, padding:"4px 12px", borderRadius:20,
+                    background:"#f8fafc", color:"#6b7280", border:"1px solid #e5e7eb",
+                    textTransform:"capitalize"
+                  }}>{session?.difficulty}</span>
+                  {session?.createdAt && (
+                    <span style={{ fontSize:11, color:"#9ca3af" }}>
+                      {new Date(session.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}
+                    </span>
+                  )}
+                </div>
+                <p style={{ margin:"0 0 16px 0", fontSize:15, fontWeight:700, color:"#111827", letterSpacing:"-0.01em" }}>
+                  Overall Score / 100
+                </p>
+                {report?.summary ? (
+                  <p style={{ margin:0, fontSize:14, color:"#6b7280", lineHeight:1.7 }}>
+                    {report.summary}
+                  </p>
+                ) : (
+                  <p style={{ margin:0, fontSize:13, color:"#d1d5db", fontStyle:"italic" }}>
+                    No summary generated for this session.
+                  </p>
+                )}
+              </div>
+
+              <div style={{ display:"flex", flexDirection:"column", gap:10, flexShrink:0, minWidth:130 }}>
+                {[
+                  { label:"Questions", value: answers.length || session?.questions?.length || 0 },
+                  { label:"Answered",  value: answers.length },
+                  { label:"Session",   value: session?.status === "completed" ? "Done" : "—" },
+                ].map(({ label, value }) => (
+                  <div key={label} style={{ display:"flex", justifyContent:"space-between", gap:16, alignItems:"center" }}>
+                    <span style={{ fontSize:11, color:"#9ca3af", fontWeight:600 }}>{label}</span>
+                    <span style={{ fontSize:13, fontWeight:800, color:"#374151" }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {hasComm && (
+            <div className="irp-fade" style={{
+              animationDelay:"0.05s",
+              background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+              boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
+            }}>
+              <SectionHeader
+                icon={<IconMic />}
+                title="Communication Assessment"
+                right={
+                  <span style={{
+                    fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20,
+                    background:"#f1f5f9", color:"#0f172a", border:"1px solid #e2e8f0"
+                  }}>{report.videoAnswersCount} video answer{report.videoAnswersCount !== 1 ? "s" : ""}</span>
+                }
+              />
+              <div style={{ padding:"20px 22px", display:"flex", flexWrap:"wrap", gap:16, alignItems:"center" }}>
+                
+                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
+                  <SmallRing score={report.communicationScore} max={10} size={64} />
+                  <span style={{ fontSize:10, fontWeight:700, color:"#9ca3af", textTransform:"uppercase", letterSpacing:"0.06em" }}>Overall</span>
+                </div>
+                <div style={{ width:1, height:60, background:"#f1f4f7", flexShrink:0 }}/>
+                
+                {answers.filter(a => a.communicationScore > 0).slice(0, 4).map((a, i) => (
+                  <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
+                    <SmallRing score={a.communicationScore} max={10} size={52} />
+                    <span style={{ fontSize:10, fontWeight:600, color:"#9ca3af", textAlign:"center" }}>
+                      Q{a.questionIndex + 1} · {(TYPE_STYLE[a.type] || {}).label || a.type}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="irp-fade" style={{ animationDelay:"0.08s", display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+
+            <div style={{ background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
+              <SectionHeader icon={<span style={{ fontSize:14 }}>💪</span>} title="Strengths" />
+              <div style={{ padding:"18px 22px" }}>
+                {strengths.length > 0 ? (
+                  <ul style={{ margin:0, padding:0, listStyle:"none", display:"flex", flexDirection:"column", gap:10 }}>
+                    {strengths.map((s, i) => (
+                      <li key={i} style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
+                        <span style={{
+                          width:20, height:20, borderRadius:"50%", flexShrink:0, marginTop:1,
+                          display:"flex", alignItems:"center", justifyContent:"center",
+                          background:"#dcfce7", color:"#15803d"
+                        }}><IconCheck /></span>
+                        <span style={{ fontSize:13, color:"#374151", lineHeight:1.55 }}>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"16px 0", textAlign:"center", gap:6 }}>
+                    <span style={{ fontSize:20 }}>🔍</span>
+                    <p style={{ margin:0, fontSize:12, color:"#9ca3af" }}>No specific strengths identified.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div style={{ background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
+              <SectionHeader icon={<span style={{ fontSize:14 }}>🎯</span>} title="Areas to Improve" />
+              <div style={{ padding:"18px 22px" }}>
+                {weaknesses.length > 0 ? (
+                  <ul style={{ margin:0, padding:0, listStyle:"none", display:"flex", flexDirection:"column", gap:10 }}>
+                    {weaknesses.map((w, i) => (
+                      <li key={i} style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
+                        <span style={{
+                          width:20, height:20, borderRadius:"50%", flexShrink:0, marginTop:1,
+                          display:"flex", alignItems:"center", justifyContent:"center",
+                          background:"#fee2e2", color:"#dc2626"
+                        }}><IconX /></span>
+                        <span style={{ fontSize:13, color:"#374151", lineHeight:1.55 }}>{w}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"16px 0", textAlign:"center", gap:6 }}>
+                    <span style={{ fontSize:20 }}>✨</span>
+                    <p style={{ margin:0, fontSize:12, color:"#9ca3af" }}>No specific weaknesses identified.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {report?.improvementRoadmap && (
+            <div className="irp-fade" style={{
+              animationDelay:"0.11s",
+              background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+              boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
+            }}>
+              <SectionHeader icon={<IconMap />} title="Improvement Roadmap" />
+              <div style={{ padding:"20px 22px" }}>
+                
+                {report.improvementRoadmap.split(/\.\s+/).filter(Boolean).length > 1 ? (
+                  <ol style={{ margin:0, padding:0, listStyle:"none", display:"flex", flexDirection:"column", gap:12 }}>
+                    {report.improvementRoadmap.split(/\.\s+/).filter(Boolean).map((step, i) => (
+                      <li key={i} style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+                        <span style={{
+                          width:22, height:22, borderRadius:"50%", flexShrink:0, marginTop:1,
+                          display:"flex", alignItems:"center", justifyContent:"center",
+                          background:"#f0fdf4", color:"#15803d",
+                          fontSize:11, fontWeight:800
+                        }}>{i + 1}</span>
+                        <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.65 }}>
+                          {step}{!step.endsWith(".") ? "." : ""}
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.7 }}>
+                    {report.improvementRoadmap}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {answers.length > 0 && (
+            <div className="irp-fade" style={{
+              animationDelay:"0.14s",
+              background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+              boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
+            }}>
+              <SectionHeader
+                icon={<IconList />}
+                title="Answer Breakdown"
+                right={
+                  <span style={{
+                    fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20,
+                    background:"#f1f4f7", color:"#6b7280", border:"1px solid #e5e7eb"
+                  }}>{answers.length} answer{answers.length !== 1 ? "s" : ""}</span>
+                }
+              />
+
+              <div style={{ display:"flex", flexDirection:"column" }}>
+                {answers.map((a, i) => {
+                  const ts    = TYPE_STYLE[a.type] || TYPE_STYLE.hr;
+                  const asc   = scoreColor(a.score, 10);
+                  const isLast = i === answers.length - 1;
+                  return (
+                    <div
+                      key={i}
+                      className="irp-answer-row"
+                      style={{
+                        padding:"20px 22px",
+                        borderBottom: isLast ? "none" : "1px solid #f1f4f7"
+                      }}
+                    >
+                      
+                      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:16, marginBottom:14 }}>
+                        <div style={{ display:"flex", alignItems:"flex-start", gap:10, minWidth:0 }}>
+                          
+                          <span style={{
+                            width:24, height:24, borderRadius:6, flexShrink:0, marginTop:1,
+                            display:"flex", alignItems:"center", justifyContent:"center",
+                            background:"#f1f4f7", color:"#6b7280",
+                            fontSize:11, fontWeight:800
+                          }}>Q{i + 1}</span>
+                          <div style={{ minWidth:0 }}>
+                            <span style={{
+                              display:"inline-block", fontSize:10, fontWeight:700, textTransform:"uppercase",
+                              letterSpacing:"0.06em", padding:"2px 8px", borderRadius:20, marginBottom:6,
+                              background: ts.bg, color: ts.color, border:`1px solid ${ts.border}`
+                            }}>{ts.label}</span>
+                            <p style={{ margin:0, fontSize:14, fontWeight:600, color:"#111827", lineHeight:1.55 }}>
+                              {a.question}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div style={{ flexShrink:0, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+                          <SmallRing score={a.score} max={10} size={48} />
+                          <span style={{ fontSize:9, fontWeight:700, color:"#9ca3af", textTransform:"uppercase" }}>Score</span>
+                        </div>
+                      </div>
+
+                      <div style={{ display:"flex", flexDirection:"column", gap:10, marginLeft:34 }}>
+                        
+                        {(a.answer || a.transcript) && (
+                          <div style={{
+                            background:"#f8fafc", borderRadius:10, border:"1px solid #e5e7eb",
+                            padding:"12px 16px"
+                          }}>
+                            <p style={{ margin:"0 0 6px 0", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:"#9ca3af" }}>
+                              {a.videoUrl ? "Transcript" : "Your Answer"}
+                            </p>
+                            <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.65 }}>
+                              {a.answer || a.transcript || <span style={{ color:"#d1d5db", fontStyle:"italic" }}>No answer recorded.</span>}
+                            </p>
+                          </div>
+                        )}
+
+                        {a.feedback && (
+                          <div style={{
+                            display:"flex", gap:10, padding:"12px 16px",
+                            background:"#f0fdf4", borderRadius:10, border:"1px solid #a7dfc9"
+                          }}>
+                            <span style={{ fontSize:14, flexShrink:0, marginTop:1 }}>🤖</span>
+                            <div>
+                              <p style={{ margin:"0 0 3px 0", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:"#0f6e56" }}>AI Feedback</p>
+                              <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.65 }}>{a.feedback}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {a.communicationScore > 0 && (
+                          <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+                            {[
+                              { label:"Clarity",    val: a.clarityScore },
+                              { label:"Vocabulary", val: a.vocabularyScore },
+                              { label:"Structure",  val: a.structureScore },
+                            ].map(({ label, val }) => val !== undefined && (
+                              <div key={label} style={{
+                                display:"flex", alignItems:"center", gap:7,
+                                padding:"6px 12px", borderRadius:8,
+                                background:"#f8fafc", border:"1px solid #e5e7eb"
+                              }}>
+                                <SmallRing score={val} max={10} size={32} />
+                                <span style={{ fontSize:11, fontWeight:600, color:"#6b7280" }}>{label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {!a.answer && !a.transcript && !a.feedback && (
+                          <p style={{ margin:0, fontSize:12, color:"#d1d5db", fontStyle:"italic" }}>No details recorded for this question.</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="irp-fade" style={{
+            animationDelay:"0.17s",
+            display:"flex", alignItems:"center", justifyContent:"center", gap:12,
+            padding:"8px 0 32px"
+          }}>
+            <Link to="/student/dashboard" style={{
+              display:"flex", alignItems:"center", gap:8,
+              padding:"11px 22px", borderRadius:10, fontSize:13,
+              fontWeight:700, border:"1px solid #e5e7eb",
+              background:"#ffffff", color:"#374151",
+              textDecoration:"none", transition:"background 0.15s"
+            }} className="irp-btn-dash">
+              <IconArrowLeft /> Back to Dashboard
+            </Link>
+            <Link to="/student/practice" style={{
+              display:"flex", alignItems:"center", gap:8,
+              padding:"11px 22px", borderRadius:10, fontSize:13,
+              fontWeight:700, border:"none",
+              background:"#111827", color:"#ffffff",
+              textDecoration:"none", transition:"background 0.15s"
+            }} className="irp-btn-practice">
+              <IconPlay /> Practice Again
+            </Link>
+          </div>
+
+        </div>
+      </div>
+    </>
   );
 }
