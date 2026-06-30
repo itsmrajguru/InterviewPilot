@@ -71,7 +71,7 @@ export default function JoinInterviewPage() {
   /* loading state */
   if (loading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div className="text-center">
           <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="ip-text-secondary text-[14px]">Validating your interview link...</p>
@@ -83,10 +83,10 @@ export default function JoinInterviewPage() {
   /* error state — expired / invalid link */
   if (error) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
+          background: "var(--bg-card)",
+          border: "0.5px solid var(--border)",
           borderRadius: 12,
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
           padding: 40,
@@ -111,10 +111,10 @@ export default function JoinInterviewPage() {
   /* already completed */
   if (session?.status === "completed") {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
+          background: "var(--bg-card)",
+          border: "0.5px solid var(--border)",
           borderRadius: 12,
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
           padding: 40,
@@ -135,7 +135,7 @@ export default function JoinInterviewPage() {
           </p>
           <button
             onClick={() => navigate(`/interview/${session._id}/report`)}
-            style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }}
+            style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }}
           >
             View My Report
           </button>
@@ -146,14 +146,14 @@ export default function JoinInterviewPage() {
 
   /* ready state — show session info and start button */
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
       <div style={{ width: "100%", maxWidth: 500, display: "flex", flexDirection: "column", gap: 24 }}>
 
         {/* header with logo */}
         <div style={{ textAlign: "center" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)", marginBottom: 12 }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)", marginBottom: 12 }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--bg-card)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
             Personalize Your Interview
@@ -165,8 +165,8 @@ export default function JoinInterviewPage() {
 
         {/* session info card — shows what the student is about to walk into */}
         <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
+          background: "var(--bg-card)",
+          border: "0.5px solid var(--border)",
           borderRadius: 12,
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
           padding: 32,
@@ -200,7 +200,7 @@ export default function JoinInterviewPage() {
                 fontSize: 13,
                 fontFamily: "var(--font-sans)",
                 resize: "vertical",
-                background: "#f8fafc",
+                background: "var(--bg-hover)",
                 outline: "none"
               }}
             />
@@ -213,7 +213,7 @@ export default function JoinInterviewPage() {
           <button
             onClick={handleStart}
             disabled={starting}
-            style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "12px 16px", cursor: starting ? "not-allowed" : "pointer", fontWeight: 500, width: "100%", marginTop: 4, opacity: starting ? 0.7 : 1 }}
+            style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "12px 16px", cursor: starting ? "not-allowed" : "pointer", fontWeight: 500, width: "100%", marginTop: 4, opacity: starting ? 0.7 : 1 }}
           >
             {starting ? "Generating your personalized interview..." : "Start Interview →"}
           </button>

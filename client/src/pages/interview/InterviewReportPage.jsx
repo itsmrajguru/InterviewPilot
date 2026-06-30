@@ -25,14 +25,14 @@ const IconPlay = () => (
 );
 const IconSpin = () => (
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ animation: "irp-spin 0.8s linear infinite" }}>
-    <circle cx="16" cy="16" r="12" stroke="#e5e7eb" strokeWidth="3"/>
-    <path d="M16 4a12 12 0 0 1 12 12" stroke="#111827" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="16" cy="16" r="12" stroke="var(--border)" strokeWidth="3"/>
+    <path d="M16 4a12 12 0 0 1 12 12" stroke="var(--text-primary)" strokeWidth="3" strokeLinecap="round"/>
   </svg>
 );
 
 const scoreColor = (s, max = 100) => {
   const p = s / max;
-  if (p >= 0.75) return { text: "#1d9e75", bg: "#e1f5ee", border: "#a7dfc9", track: "#dcfce7" };
+  if (p >= 0.75) return { text: "var(--accent)", bg: "var(--accent-light)", border: "var(--accent-border)", track: "#dcfce7" };
   if (p >= 0.5)  return { text: "#d97706", bg: "#fffbeb", border: "#fde68a", track: "#fef3c7" };
   return              { text: "#dc2626", bg: "#fef2f2", border: "#fecaca", track: "#fee2e2" };
 };
@@ -51,7 +51,7 @@ const BigScoreRing = ({ score }) => {
         strokeDashoffset={circ / 4}
         style={{ transition: "stroke-dasharray 1s cubic-bezier(0.22,1,0.36,1)" }}/>
       <text x={cx} y={cy - 6} textAnchor="middle" fontSize="28" fontWeight="900" fill={sc.text}>{score}</text>
-      <text x={cx} y={cy + 14} textAnchor="middle" fontSize="11" fontWeight="600" fill="#9ca3af">/ 100</text>
+      <text x={cx} y={cy + 14} textAnchor="middle" fontSize="11" fontWeight="600" fill="var(--text-placeholder)">/ 100</text>
     </svg>
   );
 };
@@ -83,12 +83,12 @@ const TYPE_STYLE = {
 const SectionHeader = ({ icon, title, right }) => (
   <div style={{
     display: "flex", alignItems: "center", justifyContent: "space-between",
-    padding: "14px 22px", borderBottom: "1px solid #f1f4f7",
+    padding: "14px 22px", borderBottom: "1px solid var(--bg-subtle)",
     background: "#fafafa"
   }}>
     <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-      <span style={{ color: "#6b7280" }}>{icon}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{title}</span>
+      <span style={{ color: "var(--text-muted)" }}>{icon}</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>{title}</span>
     </div>
     {right}
   </div>
@@ -124,20 +124,20 @@ export default function InterviewReportPage() {
   }, [id, savedReport]);
 
   if (loading) return (
-    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"#f1f4f7", fontFamily:"var(--sans)" }}>
+    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"var(--bg-subtle)", fontFamily:"var(--sans)" }}>
       <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:14 }}>
         <IconSpin />
-        <p style={{ fontSize:14, color:"#6b7280", margin:0 }}>Generating your report…</p>
+        <p style={{ fontSize:14, color:"var(--text-muted)", margin:0 }}>Generating your report…</p>
       </div>
     </div>
   );
 
   if (error) return (
-    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"#f1f4f7", padding:24, fontFamily:"var(--sans)" }}>
-      <div style={{ background:"#fff", borderRadius:16, border:"1px solid #e5e7eb", padding:40, maxWidth:420, width:"100%", textAlign:"center" }}>
+    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"var(--bg-subtle)", padding:24, fontFamily:"var(--sans)" }}>
+      <div style={{ background:"#fff", borderRadius:16, border:"1px solid var(--border)", padding:40, maxWidth:420, width:"100%", textAlign:"center" }}>
         <div style={{ fontSize:36, marginBottom:12 }}>⚠️</div>
-        <p style={{ fontSize:14, color:"#6b7280", margin:"0 0 20px 0", lineHeight:1.6 }}>{error}</p>
-        <button onClick={() => navigate(-1)} style={{ background:"#111827", color:"#fff", border:"none", borderRadius:9, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:"pointer" }}>Go Back</button>
+        <p style={{ fontSize:14, color:"var(--text-muted)", margin:"0 0 20px 0", lineHeight:1.6 }}>{error}</p>
+        <button onClick={() => navigate(-1)} style={{ background: "var(--accent)", color: "#ffffff", border:"none", borderRadius:9, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:"pointer" }}>Go Back</button>
       </div>
     </div>
   );
@@ -156,32 +156,32 @@ export default function InterviewReportPage() {
         .irp-fade { animation: irp-fade-up 0.35s cubic-bezier(0.22,1,0.36,1) both; }
         .irp-answer-row { transition: background 0.15s; }
         .irp-answer-row:hover { background: #fafafa !important; }
-        .irp-btn-dash:hover { background: #f1f4f7 !important; }
-        .irp-btn-practice:hover { background: #0f6e56 !important; }
+        .irp-btn-dash:hover { background: var(--bg-subtle) !important; }
+        .irp-btn-practice:hover { background: var(--accent-hover) !important; }
       `}</style>
 
-      <div style={{ minHeight:"100vh", background:"#f1f4f7", fontFamily:"var(--sans)", fontSize:14 }}>
+      <div style={{ minHeight:"100vh", background:"var(--bg-subtle)", fontFamily:"var(--sans)", fontSize:14 }}>
 
         <nav style={{
           position:"sticky", top:0, zIndex:50,
           display:"flex", alignItems:"center", justifyContent:"space-between",
           padding:"0 28px", height:56,
-          background:"#ffffff", borderBottom:"1px solid #e5e7eb",
+          background:"var(--bg-card)", borderBottom:"1px solid var(--border)",
           boxShadow:"0 1px 0 0 rgba(0,0,0,0.04)"
         }}>
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
             <img src="/logo.svg" alt="InterviewPilot" style={{ width:28, height:28, borderRadius:8 }}/>
             <div>
-              <span style={{ fontWeight:700, fontSize:13, color:"#111827" }}>Interview Report</span>
+              <span style={{ fontWeight:700, fontSize:13, color:"var(--text-primary)" }}>Interview Report</span>
               {session?.role && (
-                <span style={{ fontSize:12, color:"#9ca3af", marginLeft:8 }}>— {session.role}</span>
+                <span style={{ fontSize:12, color:"var(--text-placeholder)", marginLeft:8 }}>— {session.role}</span>
               )}
             </div>
           </div>
           <Link to="/student/dashboard" style={{
             display:"flex", alignItems:"center", gap:7,
             fontSize:12, fontWeight:600, color:"#374151",
-            background:"#f8fafc", border:"1px solid #e5e7eb",
+            background:"var(--bg-hover)", border:"1px solid var(--border)",
             borderRadius:8, padding:"7px 14px", textDecoration:"none",
             transition:"background 0.15s"
           }} className="irp-btn-dash">
@@ -192,7 +192,7 @@ export default function InterviewReportPage() {
         <div style={{ maxWidth:860, margin:"0 auto", padding:"32px 24px", display:"flex", flexDirection:"column", gap:20 }}>
 
           <div className="irp-fade" style={{
-            background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+            background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)",
             boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
           }}>
             
@@ -214,29 +214,29 @@ export default function InterviewReportPage() {
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12, flexWrap:"wrap" }}>
                   <span style={{
                     fontSize:12, fontWeight:700, padding:"4px 12px", borderRadius:20,
-                    background:"#f1f5f9", color:"#0f172a", border:"1px solid #e2e8f0",
+                    background:"var(--bg-subtle)", color:"#0f172a", border:"1px solid var(--border-input)",
                     textTransform:"capitalize"
                   }}>{session?.role}</span>
                   <span style={{
                     fontSize:12, fontWeight:600, padding:"4px 12px", borderRadius:20,
-                    background:"#f8fafc", color:"#6b7280", border:"1px solid #e5e7eb",
+                    background:"var(--bg-hover)", color:"var(--text-muted)", border:"1px solid var(--border)",
                     textTransform:"capitalize"
                   }}>{session?.difficulty}</span>
                   {session?.createdAt && (
-                    <span style={{ fontSize:11, color:"#9ca3af" }}>
+                    <span style={{ fontSize:11, color:"var(--text-placeholder)" }}>
                       {new Date(session.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}
                     </span>
                   )}
                 </div>
-                <p style={{ margin:"0 0 16px 0", fontSize:15, fontWeight:700, color:"#111827", letterSpacing:"-0.01em" }}>
+                <p style={{ margin:"0 0 16px 0", fontSize:15, fontWeight:700, color:"var(--text-primary)", letterSpacing:"-0.01em" }}>
                   Overall Score / 100
                 </p>
                 {report?.summary ? (
-                  <p style={{ margin:0, fontSize:14, color:"#6b7280", lineHeight:1.7 }}>
+                  <p style={{ margin:0, fontSize:14, color:"var(--text-muted)", lineHeight:1.7 }}>
                     {report.summary}
                   </p>
                 ) : (
-                  <p style={{ margin:0, fontSize:13, color:"#d1d5db", fontStyle:"italic" }}>
+                  <p style={{ margin:0, fontSize:13, color:"var(--border-input)", fontStyle:"italic" }}>
                     No summary generated for this session.
                   </p>
                 )}
@@ -249,7 +249,7 @@ export default function InterviewReportPage() {
                   { label:"Session",   value: session?.status === "completed" ? "Done" : "—" },
                 ].map(({ label, value }) => (
                   <div key={label} style={{ display:"flex", justifyContent:"space-between", gap:16, alignItems:"center" }}>
-                    <span style={{ fontSize:11, color:"#9ca3af", fontWeight:600 }}>{label}</span>
+                    <span style={{ fontSize:11, color:"var(--text-placeholder)", fontWeight:600 }}>{label}</span>
                     <span style={{ fontSize:13, fontWeight:800, color:"#374151" }}>{value}</span>
                   </div>
                 ))}
@@ -260,7 +260,7 @@ export default function InterviewReportPage() {
           {hasComm && (
             <div className="irp-fade" style={{
               animationDelay:"0.05s",
-              background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+              background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)",
               boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
             }}>
               <SectionHeader
@@ -269,7 +269,7 @@ export default function InterviewReportPage() {
                 right={
                   <span style={{
                     fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20,
-                    background:"#f1f5f9", color:"#0f172a", border:"1px solid #e2e8f0"
+                    background:"var(--bg-subtle)", color:"#0f172a", border:"1px solid var(--border-input)"
                   }}>{report.videoAnswersCount} video answer{report.videoAnswersCount !== 1 ? "s" : ""}</span>
                 }
               />
@@ -277,14 +277,14 @@ export default function InterviewReportPage() {
                 
                 <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
                   <SmallRing score={report.communicationScore} max={10} size={64} />
-                  <span style={{ fontSize:10, fontWeight:700, color:"#9ca3af", textTransform:"uppercase", letterSpacing:"0.06em" }}>Overall</span>
+                  <span style={{ fontSize:10, fontWeight:700, color:"var(--text-placeholder)", textTransform:"uppercase", letterSpacing:"0.06em" }}>Overall</span>
                 </div>
-                <div style={{ width:1, height:60, background:"#f1f4f7", flexShrink:0 }}/>
+                <div style={{ width:1, height:60, background:"var(--bg-subtle)", flexShrink:0 }}/>
                 
                 {answers.filter(a => a.communicationScore > 0).slice(0, 4).map((a, i) => (
                   <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
                     <SmallRing score={a.communicationScore} max={10} size={52} />
-                    <span style={{ fontSize:10, fontWeight:600, color:"#9ca3af", textAlign:"center" }}>
+                    <span style={{ fontSize:10, fontWeight:600, color:"var(--text-placeholder)", textAlign:"center" }}>
                       Q{a.questionIndex + 1} · {(TYPE_STYLE[a.type] || {}).label || a.type}
                     </span>
                   </div>
@@ -295,7 +295,7 @@ export default function InterviewReportPage() {
 
           <div className="irp-fade" style={{ animationDelay:"0.08s", display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
 
-            <div style={{ background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
+            <div style={{ background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
               <SectionHeader icon={<span style={{ fontSize:14 }}>💪</span>} title="Strengths" />
               <div style={{ padding:"18px 22px" }}>
                 {strengths.length > 0 ? (
@@ -314,13 +314,13 @@ export default function InterviewReportPage() {
                 ) : (
                   <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"16px 0", textAlign:"center", gap:6 }}>
                     <span style={{ fontSize:20 }}>🔍</span>
-                    <p style={{ margin:0, fontSize:12, color:"#9ca3af" }}>No specific strengths identified.</p>
+                    <p style={{ margin:0, fontSize:12, color:"var(--text-placeholder)" }}>No specific strengths identified.</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div style={{ background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
+            <div style={{ background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
               <SectionHeader icon={<span style={{ fontSize:14 }}>🎯</span>} title="Areas to Improve" />
               <div style={{ padding:"18px 22px" }}>
                 {weaknesses.length > 0 ? (
@@ -339,7 +339,7 @@ export default function InterviewReportPage() {
                 ) : (
                   <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"16px 0", textAlign:"center", gap:6 }}>
                     <span style={{ fontSize:20 }}>✨</span>
-                    <p style={{ margin:0, fontSize:12, color:"#9ca3af" }}>No specific weaknesses identified.</p>
+                    <p style={{ margin:0, fontSize:12, color:"var(--text-placeholder)" }}>No specific weaknesses identified.</p>
                   </div>
                 )}
               </div>
@@ -349,7 +349,7 @@ export default function InterviewReportPage() {
           {report?.improvementRoadmap && (
             <div className="irp-fade" style={{
               animationDelay:"0.11s",
-              background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+              background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)",
               boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
             }}>
               <SectionHeader icon={<IconMap />} title="Improvement Roadmap" />
@@ -383,7 +383,7 @@ export default function InterviewReportPage() {
           {answers.length > 0 && (
             <div className="irp-fade" style={{
               animationDelay:"0.14s",
-              background:"#ffffff", borderRadius:16, border:"1px solid #e5e7eb",
+              background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)",
               boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
             }}>
               <SectionHeader
@@ -392,7 +392,7 @@ export default function InterviewReportPage() {
                 right={
                   <span style={{
                     fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:20,
-                    background:"#f1f4f7", color:"#6b7280", border:"1px solid #e5e7eb"
+                    background:"var(--bg-subtle)", color:"var(--text-muted)", border:"1px solid var(--border)"
                   }}>{answers.length} answer{answers.length !== 1 ? "s" : ""}</span>
                 }
               />
@@ -408,7 +408,7 @@ export default function InterviewReportPage() {
                       className="irp-answer-row"
                       style={{
                         padding:"20px 22px",
-                        borderBottom: isLast ? "none" : "1px solid #f1f4f7"
+                        borderBottom: isLast ? "none" : "1px solid var(--bg-subtle)"
                       }}
                     >
                       
@@ -418,7 +418,7 @@ export default function InterviewReportPage() {
                           <span style={{
                             width:24, height:24, borderRadius:6, flexShrink:0, marginTop:1,
                             display:"flex", alignItems:"center", justifyContent:"center",
-                            background:"#f1f4f7", color:"#6b7280",
+                            background:"var(--bg-subtle)", color:"var(--text-muted)",
                             fontSize:11, fontWeight:800
                           }}>Q{i + 1}</span>
                           <div style={{ minWidth:0 }}>
@@ -427,7 +427,7 @@ export default function InterviewReportPage() {
                               letterSpacing:"0.06em", padding:"2px 8px", borderRadius:20, marginBottom:6,
                               background: ts.bg, color: ts.color, border:`1px solid ${ts.border}`
                             }}>{ts.label}</span>
-                            <p style={{ margin:0, fontSize:14, fontWeight:600, color:"#111827", lineHeight:1.55 }}>
+                            <p style={{ margin:0, fontSize:14, fontWeight:600, color:"var(--text-primary)", lineHeight:1.55 }}>
                               {a.question}
                             </p>
                           </div>
@@ -435,7 +435,7 @@ export default function InterviewReportPage() {
                         
                         <div style={{ flexShrink:0, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
                           <SmallRing score={a.score} max={10} size={48} />
-                          <span style={{ fontSize:9, fontWeight:700, color:"#9ca3af", textTransform:"uppercase" }}>Score</span>
+                          <span style={{ fontSize:9, fontWeight:700, color:"var(--text-placeholder)", textTransform:"uppercase" }}>Score</span>
                         </div>
                       </div>
 
@@ -443,14 +443,14 @@ export default function InterviewReportPage() {
                         
                         {(a.answer || a.transcript) && (
                           <div style={{
-                            background:"#f8fafc", borderRadius:10, border:"1px solid #e5e7eb",
+                            background:"var(--bg-hover)", borderRadius:10, border:"1px solid var(--border)",
                             padding:"12px 16px"
                           }}>
-                            <p style={{ margin:"0 0 6px 0", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:"#9ca3af" }}>
+                            <p style={{ margin:"0 0 6px 0", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:"var(--text-placeholder)" }}>
                               {a.videoUrl ? "Transcript" : "Your Answer"}
                             </p>
                             <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.65 }}>
-                              {a.answer || a.transcript || <span style={{ color:"#d1d5db", fontStyle:"italic" }}>No answer recorded.</span>}
+                              {a.answer || a.transcript || <span style={{ color:"var(--border-input)", fontStyle:"italic" }}>No answer recorded.</span>}
                             </p>
                           </div>
                         )}
@@ -458,11 +458,11 @@ export default function InterviewReportPage() {
                         {a.feedback && (
                           <div style={{
                             display:"flex", gap:10, padding:"12px 16px",
-                            background:"#f0fdf4", borderRadius:10, border:"1px solid #a7dfc9"
+                            background:"#f0fdf4", borderRadius:10, border:"1px solid var(--accent-border)"
                           }}>
                             <span style={{ fontSize:14, flexShrink:0, marginTop:1 }}>🤖</span>
                             <div>
-                              <p style={{ margin:"0 0 3px 0", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:"#0f6e56" }}>AI Feedback</p>
+                              <p style={{ margin:"0 0 3px 0", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:"var(--accent-hover)" }}>AI Feedback</p>
                               <p style={{ margin:0, fontSize:13, color:"#374151", lineHeight:1.65 }}>{a.feedback}</p>
                             </div>
                           </div>
@@ -478,17 +478,17 @@ export default function InterviewReportPage() {
                               <div key={label} style={{
                                 display:"flex", alignItems:"center", gap:7,
                                 padding:"6px 12px", borderRadius:8,
-                                background:"#f8fafc", border:"1px solid #e5e7eb"
+                                background:"var(--bg-hover)", border:"1px solid var(--border)"
                               }}>
                                 <SmallRing score={val} max={10} size={32} />
-                                <span style={{ fontSize:11, fontWeight:600, color:"#6b7280" }}>{label}</span>
+                                <span style={{ fontSize:11, fontWeight:600, color:"var(--text-muted)" }}>{label}</span>
                               </div>
                             ))}
                           </div>
                         )}
 
                         {!a.answer && !a.transcript && !a.feedback && (
-                          <p style={{ margin:0, fontSize:12, color:"#d1d5db", fontStyle:"italic" }}>No details recorded for this question.</p>
+                          <p style={{ margin:0, fontSize:12, color:"var(--border-input)", fontStyle:"italic" }}>No details recorded for this question.</p>
                         )}
                       </div>
                     </div>
@@ -506,8 +506,8 @@ export default function InterviewReportPage() {
             <Link to="/student/dashboard" style={{
               display:"flex", alignItems:"center", gap:8,
               padding:"11px 22px", borderRadius:10, fontSize:13,
-              fontWeight:700, border:"1px solid #e5e7eb",
-              background:"#ffffff", color:"#374151",
+              fontWeight:700, border:"1px solid var(--border)",
+              background:"var(--bg-card)", color:"#374151",
               textDecoration:"none", transition:"background 0.15s"
             }} className="irp-btn-dash">
               <IconArrowLeft /> Back to Dashboard
@@ -516,7 +516,7 @@ export default function InterviewReportPage() {
               display:"flex", alignItems:"center", gap:8,
               padding:"11px 22px", borderRadius:10, fontSize:13,
               fontWeight:700, border:"none",
-              background:"#111827", color:"#ffffff",
+              background: "var(--accent)", color:"var(--bg-card)",
               textDecoration:"none", transition:"background 0.15s"
             }} className="irp-btn-practice">
               <IconPlay /> Practice Again

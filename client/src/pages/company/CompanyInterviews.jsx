@@ -115,7 +115,7 @@ export default function CompanyInterviews() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="company" />
 
       {/* main content */}
@@ -126,8 +126,8 @@ export default function CompanyInterviews() {
           style={{
             padding: "0 28px",
             height: 56,
-            background: "#ffffff",
-            borderBottom: "0.5px solid #dde1e8",
+            background: "var(--bg-card)",
+            borderBottom: "0.5px solid var(--border)",
             position: "sticky",
             top: 0,
             zIndex: 40,
@@ -139,8 +139,8 @@ export default function CompanyInterviews() {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 11, color: "#7a8a99", letterSpacing: "0.04em", textTransform: "uppercase" }}>Recruiter workspace</span>
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#111827" }}>All Candidates</span>
+            <span style={{ fontSize: 11, color: "var(--text-muted)", letterSpacing: "0.04em", textTransform: "uppercase" }}>Recruiter workspace</span>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "var(--text-primary)" }}>All Candidates</span>
           </div>
           <button
             onClick={handleExportCSV}
@@ -177,7 +177,7 @@ export default function CompanyInterviews() {
                 placeholder="search by email or role..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                style={{ padding: "10px 12px 10px 36px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "#ffffff", border: "0.5px solid var(--border)", color: "var(--text-primary)", transition: "all 0.2s" }}
+                style={{ padding: "10px 12px 10px 36px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--bg-card)", border: "0.5px solid var(--border)", color: "var(--text-primary)", transition: "all 0.2s" }}
                 onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; }}
                 onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
               />
@@ -187,7 +187,7 @@ export default function CompanyInterviews() {
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "#ffffff", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
+              style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "var(--bg-card)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
             >
               <option value="all">all statuses</option>
               <option value="pending">pending</option>
@@ -200,7 +200,7 @@ export default function CompanyInterviews() {
             <select
               value={difficultyFilter}
               onChange={e => setDifficultyFilter(e.target.value)}
-              style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "#ffffff", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
+              style={{ padding: "10px 12px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "var(--bg-card)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
             >
               <option value="all">all difficulties</option>
               <option value="easy">easy</option>
@@ -210,7 +210,7 @@ export default function CompanyInterviews() {
           </div>
 
           {/* list card representation */}
-          <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+          <div style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "0.5px solid var(--border)" }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Talent Pipeline Registry</span>
               <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{filteredSessions.length} listed</span>
@@ -218,7 +218,7 @@ export default function CompanyInterviews() {
             <div style={{ padding: 0 }}>
               {loading ? (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 0" }}>
-                  <div style={{ width: 24, height: 24, border: "2px solid #1d9e75", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                  <div style={{ width: 24, height: 24, border: "2px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
                 </div>
               ) : filteredSessions.length === 0 ? (
                 <EmptyState

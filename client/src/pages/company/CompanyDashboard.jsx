@@ -42,8 +42,8 @@ const IconSend = () => (
 
 const S = {
   metric: {
-    background: "#ffffff",
-    border: "0.5px solid #dde1e8",
+    background: "var(--bg-card)",
+    border: "0.5px solid var(--border)",
     borderRadius: 12,
     padding: "18px 20px",
     position: "relative",
@@ -75,8 +75,8 @@ const S = {
     gap: 4,
   },
   card: {
-    background: "#ffffff",
-    border: "0.5px solid #dde1e8",
+    background: "var(--bg-card)",
+    border: "0.5px solid var(--border)",
     borderRadius: 12,
     overflow: "hidden",
     boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
@@ -104,10 +104,10 @@ const S = {
 /* stat card component */
 function StatCard({ label, value, sub, icon, accent, subIcon }) {
   return (
-    <div style={{ ...S.metric, borderLeft: accent ? "2px solid #1d9e75" : "0.5px solid #dde1e8" }}>
+    <div style={{ ...S.metric, borderLeft: accent ? "2px solid var(--accent)" : "0.5px solid var(--border)" }}>
       <div style={S.metricLabel}>{icon} {label}</div>
-      <div style={{ ...S.metricValue, color: accent ? "#1d9e75" : "var(--text-primary)" }}>{value}</div>
-      <div style={{ ...S.metricSub, color: accent ? "#1d9e75" : "var(--text-muted)" }}>
+      <div style={{ ...S.metricValue, color: accent ? "var(--accent)" : "var(--text-primary)" }}>{value}</div>
+      <div style={{ ...S.metricSub, color: accent ? "var(--accent)" : "var(--text-muted)" }}>
         {subIcon} {sub}
       </div>
     </div>
@@ -122,8 +122,8 @@ function CandidateRow({ session, onViewReport }) {
     <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: "0.5px solid var(--border)" }}>
       <div style={{
         width: 34, height: 34, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 15,
-        background: isCompleted ? "#e1f5ee" : isPending ? "#faeeda" : "var(--surface-1)",
-        color: isCompleted ? "#0f6e56" : isPending ? "#854f0b" : "var(--text-muted)",
+        background: isCompleted ? "var(--accent-light)" : isPending ? "#faeeda" : "var(--surface-1)",
+        color: isCompleted ? "var(--accent-hover)" : isPending ? "#854f0b" : "var(--text-muted)",
       }}>
         {isCompleted ? (
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
@@ -144,7 +144,7 @@ function CandidateRow({ session, onViewReport }) {
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
         {isCompleted && session.report?.overallScore !== undefined && (
-          <span style={{ fontSize: 12, fontWeight: 500, color: "#0f6e56", background: "#e1f5ee", padding: "3px 10px", borderRadius: 20 }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: "var(--accent-hover)", background: "var(--accent-light)", padding: "3px 10px", borderRadius: 20 }}>
             {session.report.overallScore}/100
           </span>
         )}
@@ -254,7 +254,7 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="company" />
 
       {/* Main content */}
@@ -265,8 +265,8 @@ export default function CompanyDashboard() {
           style={{
             padding: "0 28px",
             height: 56,
-            background: "#ffffff",
-            borderBottom: "0.5px solid #dde1e8",
+            background: "var(--bg-card)",
+            borderBottom: "0.5px solid var(--border)",
             position: "sticky",
             top: 0,
             zIndex: 40,
@@ -278,12 +278,12 @@ export default function CompanyDashboard() {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 11, color: "#7a8a99", letterSpacing: "0.04em", textTransform: "uppercase" }}>Recruiter workspace</span>
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#111827" }}>Dashboard</span>
+            <span style={{ fontSize: 11, color: "var(--text-muted)", letterSpacing: "0.04em", textTransform: "uppercase" }}>Recruiter workspace</span>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "var(--text-primary)" }}>Dashboard</span>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}
+            style={{ fontSize: 12, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}
           >
             <IconPlus /> Create Interview
           </button>
@@ -353,7 +353,7 @@ export default function CompanyDashboard() {
                       action={
                         <button
                           onClick={() => setShowCreateModal(true)}
-                          style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: "var(--radius)", padding: "6px 12px", cursor: "pointer", fontWeight: 500, marginTop: 8 }}
+                          style={{ fontSize: 12, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: "var(--radius)", padding: "6px 12px", cursor: "pointer", fontWeight: 500, marginTop: 8 }}
                         >
                           + Create First Interview
                         </button>
@@ -372,7 +372,7 @@ export default function CompanyDashboard() {
                         <div style={{ textAlign: "center", marginTop: 12 }}>
                           <Link
                             to="/company/interviews"
-                            style={{ fontSize: 12, color: "#1d9e75", display: "flex", alignItems: "center", justifyContent: "center", gap: 3, textDecoration: "none", fontWeight: 500 }}
+                            style={{ fontSize: 12, color: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", gap: 3, textDecoration: "none", fontWeight: 500 }}
                           >
                             View all candidates <IconArrow />
                           </Link>
@@ -396,10 +396,10 @@ export default function CompanyDashboard() {
                     <div
                       onClick={() => setShowCreateModal(true)}
                       style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = "#1d9e75"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "var(--accent-light)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "var(--text-primary)"); }}
                     >
-                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "#e1f5ee", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--accent-light)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         <IconPlus />
                       </div>
                       <div>
@@ -411,10 +411,10 @@ export default function CompanyDashboard() {
                     <div
                       onClick={() => navigate("/company/interviews")}
                       style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = "#1d9e75"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "var(--accent-light)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "var(--text-primary)"); }}
                     >
-                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "#e1f5ee", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--accent-light)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         <IconUsers />
                       </div>
                       <div>
@@ -463,7 +463,7 @@ export default function CompanyDashboard() {
           onClick={() => { setShowCreateModal(false); setCreateError(""); setCreateSuccess(""); }}
         >
           <div 
-            style={{ width: "100%", maxWidth: 448, borderRadius: 12, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)", overflow: "hidden", background: "#ffffff", border: "0.5px solid #dde1e8" }}
+            style={{ width: "100%", maxWidth: 448, borderRadius: 12, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)", overflow: "hidden", background: "var(--bg-card)", border: "0.5px solid var(--border)" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* modal header */}
@@ -531,7 +531,7 @@ export default function CompanyDashboard() {
                           onClick={() => setDifficulty(d)}
                           style={{
                             padding: "6px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: "capitalize", border: "none", cursor: "pointer", transition: "all 0.2s",
-                            background: difficulty === d ? "#ffffff" : "transparent",
+                            background: difficulty === d ? "var(--bg-card)" : "transparent",
                             color: difficulty === d ? "var(--text-primary)" : "var(--text-secondary)",
                             boxShadow: difficulty === d ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
                           }}
@@ -552,7 +552,7 @@ export default function CompanyDashboard() {
                   <button type="button" style={{ fontSize: 12, color: "var(--text-primary)", background: "transparent", border: "0.5px solid var(--border)", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }} onClick={() => setShowCreateModal(false)}>
                     Cancel
                   </button>
-                  <button type="submit" style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }} disabled={createLoading}>
+                  <button type="submit" style={{ fontSize: 12, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }} disabled={createLoading}>
                     {createLoading ? "Sending..." : <><IconSend /> Send Link</>}
                   </button>
                 </div>
@@ -561,7 +561,7 @@ export default function CompanyDashboard() {
 
             {createSuccess && (
               <div style={{ padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "flex-end", background: "var(--surface-1)", borderTop: "0.5px solid var(--border)" }}>
-                <button style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }} onClick={() => { setShowCreateModal(false); setCreateSuccess(""); }}>
+                <button style={{ fontSize: 12, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }} onClick={() => { setShowCreateModal(false); setCreateSuccess(""); }}>
                   Done
                 </button>
               </div>

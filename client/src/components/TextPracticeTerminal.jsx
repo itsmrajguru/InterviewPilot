@@ -125,7 +125,7 @@ export default function TextPracticeTerminal() {
   };
 
   return (
-    <div style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", overflow: "hidden" }}>
+    <div style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", overflow: "hidden" }}>
 
       {/* setup phase */}
       {phase === "setup" && (

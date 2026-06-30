@@ -179,7 +179,7 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
 
   return (
     <div
-      style={{ background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", overflow: "hidden" }}
+      style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", overflow: "hidden" }}
     >
       {/* idle state */}
       {phase === "idle" && (
@@ -302,7 +302,7 @@ export default function VideoRecorder({ sessionId, questionIndex, onSubmitted, d
               <button
                 onClick={handleStopRecording}
                 className="w-full py-2.5 text-sm font-semibold rounded-lg transition-all"
-                style={{ background: "#ef4444", color: "#fff", border: "none", cursor: "pointer" }}
+                style={{ background: "#ef4444", color: "#ffffff", border: "none", cursor: "pointer" }}
               >
                 ⏹ Stop &amp; Submit
               </button>

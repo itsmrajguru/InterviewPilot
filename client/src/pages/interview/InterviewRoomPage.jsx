@@ -137,10 +137,10 @@
 //   };
 
 //   return (
-//     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+//     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
 
 //       {/* top bar: progress and question counter */}
-//       <nav style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "#ffffff", borderBottom: "0.5px solid #dde1e8", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+//       <nav style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "var(--bg-card)", borderBottom: "0.5px solid var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
 //         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
 //           <img src="/logo.svg" alt="InterviewPilot" style={{ width: 28, height: 28, borderRadius: 8 }} />
 //           <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>
@@ -155,7 +155,7 @@
 //           {/* progress bar across all questions */}
 //           <div style={{ width: "100%", height: 6, background: "var(--surface-1)", borderRadius: 10, overflow: "hidden" }}>
 //             <div
-//               style={{ height: "100%", background: "#1d9e75", borderRadius: 10, transition: "all 0.5s", width: `${((currentIndex) / questions.length) * 100}%` }}
+//               style={{ height: "100%", background: "var(--accent)", borderRadius: 10, transition: "all 0.5s", width: `${((currentIndex) / questions.length) * 100}%` }}
 //             />
 //           </div>
 //         </div>
@@ -191,8 +191,8 @@
 //                 style={{
 //                   textAlign: "left", padding: "8px 12px", borderRadius: 8, fontSize: 11, fontWeight: 500, transition: "all 0.2s", cursor: isDisabled ? "not-allowed" : "pointer",
 //                   background: isActive ? "#e6f4ea" : "transparent",
-//                   color: isActive ? "#1d9e75" : (isAnswered ? "#0f6e56" : "var(--text-muted)"),
-//                   border: isActive ? "0.5px solid #a7dfc9" : "0.5px solid transparent",
+//                   color: isActive ? "var(--accent)" : (isAnswered ? "var(--accent-hover)" : "var(--text-muted)"),
+//                   border: isActive ? "0.5px solid var(--accent-border)" : "0.5px solid transparent",
 //                   opacity: isDisabled ? 0.5 : (isAnswered && !isActive ? 0.8 : 1)
 //                 }}
 //               >
@@ -212,8 +212,8 @@
 
 //           {/* question card */}
 //           <div style={{
-//             background: "#ffffff",
-//             border: "0.5px solid #dde1e8",
+//             background: "var(--bg-card)",
+//             border: "0.5px solid var(--border)",
 //             borderRadius: 12,
 //             boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
 //             padding: 24,
@@ -221,7 +221,7 @@
 //             <div>
 //               {/* question type badge */}
 //               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-//                 <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "#1d9e75", border: "0.5px solid #a7dfc9", textTransform: "capitalize" }}>{currentQuestion?.type}</span>
+//                 <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "#e6f4ea", color: "var(--accent)", border: "0.5px solid var(--accent-border)", textTransform: "capitalize" }}>{currentQuestion?.type}</span>
 //                 {currentQuestion?.topic && (
 //                   <span style={{ fontSize: 12, padding: "4px 10px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>{currentQuestion.topic}</span>
 //                 )}
@@ -244,7 +244,7 @@
 //                       <span style={{ color: "var(--text-primary)" }}>{tc.input || "(none)"}</span>
 //                       <br />
 //                       <span style={{ color: "var(--text-muted)" }}>Expected: </span>
-//                       <span style={{ color: "#1d9e75" }}>{tc.expectedOutput}</span>
+//                       <span style={{ color: "var(--accent)" }}>{tc.expectedOutput}</span>
 //                     </div>
 //                   ))}
 //                 </div>
@@ -268,8 +268,8 @@
 //           ) : (
 //             /* coding problem — language selector + code textarea */
 //             <div style={{
-//               background: "#ffffff",
-//               border: "0.5px solid #dde1e8",
+//               background: "var(--bg-card)",
+//               border: "0.5px solid var(--border)",
 //               borderRadius: 12,
 //               boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
 //               overflow: "hidden"
@@ -286,8 +286,8 @@
 //                       disabled={!!feedback || submitting}
 //                       style={{
 //                         padding: "4px 8px", borderRadius: 6, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", transition: "all 0.15s", border: "none", cursor: (!!feedback || submitting) ? "not-allowed" : "pointer",
-//                         background: language === lang ? "#1d9e75" : "var(--surface-1)",
-//                         color: language === lang ? "#ffffff" : "var(--text-muted)"
+//                         background: language === lang ? "var(--accent)" : "var(--surface-1)",
+//                         color: language === lang ? "var(--bg-card)" : "var(--text-muted)"
 //                       }}
 //                     >
 //                       {lang}
@@ -315,7 +315,7 @@
 //             </div>
 //           )}          {/* success message */}
 //           {feedback && !isCoding && (
-//              <div style={{ padding: 24, background: "#ffffff", border: "0.5px solid #dde1e8", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", marginTop: 16, textAlign: "center" }}>
+//              <div style={{ padding: 24, background: "var(--bg-card)", border: "0.5px solid var(--border)", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", marginTop: 16, textAlign: "center" }}>
 //                <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
 //                <h3 style={{ fontSize: 18, color: "var(--text-primary)", fontWeight: 500, margin: 0 }}>Answer Saved</h3>
 //                <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, marginTop: 4 }}>Your answer has been successfully recorded. Proceed to the next question.</p>
@@ -325,8 +325,8 @@
 //           {/* coding question test case results */}
 //           {feedback && isCoding && (
 //             <div style={{
-//               background: "#ffffff",
-//               border: "0.5px solid #dde1e8",
+//               background: "var(--bg-card)",
+//               border: "0.5px solid var(--border)",
 //               borderRadius: 12,
 //               boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
 //               padding: 24,
@@ -377,7 +377,7 @@
 //               <button
 //                 onClick={handleSubmitCode}
 //                 disabled={submitting || !code.trim()}
-//                 style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: (submitting || !code.trim()) ? "not-allowed" : "pointer", fontWeight: 500 }}
+//                 style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: (submitting || !code.trim()) ? "not-allowed" : "pointer", fontWeight: 500 }}
 //               >
 //                 {submitting ? "Running code..." : "Submit Code →"}
 //               </button>
@@ -389,7 +389,7 @@
 //                     <button
 //                       onClick={handleComplete}
 //                       disabled={completing}
-//                       style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: completing ? "not-allowed" : "pointer", fontWeight: 500 }}
+//                       style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: completing ? "not-allowed" : "pointer", fontWeight: 500 }}
 //                     >
 //                       {completing ? "Generating Report..." : "Finish Interview & Get Report →"}
 //                     </button>
@@ -397,7 +397,7 @@
 //                     <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 500 }}>Answer all questions to finish.</span>
 //                   )
 //                 ) : (
-//                   <button onClick={handleNext} style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500 }}>
+//                   <button onClick={handleNext} style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500 }}>
 //                     Next Question →
 //                   </button>
 //                 )
@@ -459,7 +459,7 @@ const TYPE_STYLES = {
 /* ─── score color helper ─── */
 const scoreColor = (score, max = 10) => {
   const pct = score / max;
-  if (pct >= 0.8) return "#1d9e75";
+  if (pct >= 0.8) return "var(--accent)";
   if (pct >= 0.5) return "#d97706";
   return "#dc2626";
 };
@@ -472,7 +472,7 @@ const ScoreRing = ({ score, max = 10, size = 56 }) => {
   const color = scoreColor(score, max);
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r={r} fill="none" stroke="#e5e7eb" strokeWidth="4"/>
+      <circle cx="24" cy="24" r={r} fill="none" stroke="var(--border)" strokeWidth="4"/>
       <circle cx="24" cy="24" r={r} fill="none" stroke={color} strokeWidth="4"
         strokeDasharray={`${fill} ${circ}`} strokeDashoffset={circ / 4}
         strokeLinecap="round" style={{ transition: "stroke-dasharray 0.6s ease" }}/>
@@ -486,11 +486,11 @@ const MetricTile = ({ label, score }) => (
   <div style={{
     display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
     padding: "14px 10px", borderRadius: 10,
-    background: "#f8fafc", border: "1px solid #e5e7eb",
+    background: "var(--bg-hover)", border: "1px solid var(--border)",
     minWidth: 80
   }}>
     <ScoreRing score={score} size={48} />
-    <span style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", textAlign: "center", lineHeight: 1.3 }}>{label}</span>
+    <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-muted)", textAlign: "center", lineHeight: 1.3 }}>{label}</span>
   </div>
 );
 
@@ -580,32 +580,32 @@ export default function InterviewRoomPage() {
         @keyframes ip-spin { to { transform: rotate(360deg); } }
         @keyframes ip-fade-up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         .ip-fade-up { animation: ip-fade-up 0.3s cubic-bezier(0.22,1,0.36,1) both; }
-        .ip-q-btn:hover:not(:disabled) { background: #f1f4f7 !important; }
-        .ip-lang-btn:hover:not(:disabled) { background: #e5e7eb !important; }
+        .ip-q-btn:hover:not(:disabled) { background: var(--bg-subtle) !important; }
+        .ip-lang-btn:hover:not(:disabled) { background: var(--border) !important; }
         .ip-action-btn:hover:not(:disabled) { filter: brightness(0.93); transform: translateY(-1px); }
         .ip-action-btn { transition: all 0.15s ease !important; }
-        .ip-skip-btn:hover { background: #f1f4f7 !important; }
+        .ip-skip-btn:hover { background: var(--bg-subtle) !important; }
       `}</style>
 
-      <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:"#f1f4f7", fontFamily:"var(--sans)" }}>
+      <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", background:"var(--bg-subtle)", fontFamily:"var(--sans)" }}>
 
         {/* ── TOP NAV ── */}
         <nav style={{
           position:"sticky", top:0, zIndex:50,
           display:"flex", alignItems:"center", justifyContent:"space-between",
           padding:"0 24px", height:56,
-          background:"#ffffff",
-          borderBottom:"1px solid #e5e7eb",
+          background:"var(--bg-card)",
+          borderBottom:"1px solid var(--border)",
           boxShadow:"0 1px 0 0 rgba(0,0,0,0.04)"
         }}>
           {/* left: logo + role + difficulty */}
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
             <img src="/logo.svg" alt="InterviewPilot" style={{ width:28, height:28, borderRadius:8 }} />
             <div style={{ display:"flex", flexDirection:"column", gap:1 }}>
-              <span style={{ fontWeight:700, fontSize:13, color:"#111827", lineHeight:1 }}>
+              <span style={{ fontWeight:700, fontSize:13, color:"var(--text-primary)", lineHeight:1 }}>
                 {session.role}
               </span>
-              <span style={{ fontSize:11, color:"#9ca3af", lineHeight:1, textTransform:"capitalize" }}>
+              <span style={{ fontSize:11, color:"var(--text-placeholder)", lineHeight:1, textTransform:"capitalize" }}>
                 {session.difficulty} difficulty
               </span>
             </div>
@@ -614,12 +614,12 @@ export default function InterviewRoomPage() {
           {/* center: progress bar */}
           <div style={{ flex:1, margin:"0 32px", maxWidth:480 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:5 }}>
-              <span style={{ fontSize:11, fontWeight:600, color:"#6b7280" }}>Progress</span>
-              <span style={{ fontSize:11, fontWeight:700, color:"#1d9e75" }}>{progressPct}%</span>
+              <span style={{ fontSize:11, fontWeight:600, color:"var(--text-muted)" }}>Progress</span>
+              <span style={{ fontSize:11, fontWeight:700, color:"var(--accent)" }}>{progressPct}%</span>
             </div>
-            <div style={{ width:"100%", height:5, background:"#e5e7eb", borderRadius:99, overflow:"hidden" }}>
+            <div style={{ width:"100%", height:5, background:"var(--border)", borderRadius:99, overflow:"hidden" }}>
               <div style={{
-                height:"100%", background:"#1d9e75", borderRadius:99,
+                height:"100%", background:"var(--accent)", borderRadius:99,
                 transition:"width 0.5s cubic-bezier(0.22,1,0.36,1)",
                 width:`${progressPct}%`
               }}/>
@@ -630,11 +630,11 @@ export default function InterviewRoomPage() {
           <div style={{
             display:"flex", alignItems:"center", gap:6,
             padding:"5px 12px", borderRadius:8,
-            background:"#f8fafc", border:"1px solid #e5e7eb"
+            background:"var(--bg-hover)", border:"1px solid var(--border)"
           }}>
-            <span style={{ fontSize:12, fontWeight:700, color:"#111827" }}>Q{currentIndex + 1}</span>
-            <span style={{ fontSize:12, color:"#d1d5db" }}>/</span>
-            <span style={{ fontSize:12, color:"#9ca3af", fontWeight:600 }}>{questions.length}</span>
+            <span style={{ fontSize:12, fontWeight:700, color:"var(--text-primary)" }}>Q{currentIndex + 1}</span>
+            <span style={{ fontSize:12, color:"var(--border-input)" }}>/</span>
+            <span style={{ fontSize:12, color:"var(--text-placeholder)", fontWeight:600 }}>{questions.length}</span>
           </div>
         </nav>
 
@@ -651,12 +651,12 @@ export default function InterviewRoomPage() {
             display:"flex", flexDirection:"column", gap:2
           }}>
             <div style={{
-              background:"#ffffff", borderRadius:12, border:"1px solid #e5e7eb",
+              background:"var(--bg-card)", borderRadius:12, border:"1px solid var(--border)",
               padding:"12px 8px", boxShadow:"0 1px 3px rgba(0,0,0,0.05)"
             }}>
               <p style={{
                 fontSize:10, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
-                color:"#9ca3af", margin:"0 0 10px 8px"
+                color:"var(--text-placeholder)", margin:"0 0 10px 8px"
               }}>Questions</p>
 
               {questions.map((q, i) => {
@@ -682,7 +682,7 @@ export default function InterviewRoomPage() {
                       fontSize:12, fontWeight:500,
                       cursor: isLocked ? "not-allowed" : "pointer",
                       border:"none",
-                      background: isActive ? "#e1f5ee" : "transparent",
+                      background: isActive ? "var(--accent-light)" : "transparent",
                       opacity: isLocked ? 0.4 : 1,
                       transition:"background 0.15s",
                       display:"flex", alignItems:"flex-start", gap:8
@@ -693,9 +693,9 @@ export default function InterviewRoomPage() {
                       width:20, height:20, borderRadius:"50%", flexShrink:0, marginTop:1,
                       display:"flex", alignItems:"center", justifyContent:"center",
                       fontSize:10, fontWeight:700,
-                      background: isDone ? "#1d9e75" : (isActive ? "#e1f5ee" : "#f1f4f7"),
-                      color: isDone ? "#fff" : (isActive ? "#1d9e75" : "#9ca3af"),
-                      border: isActive && !isDone ? "1.5px solid #1d9e75" : "none"
+                      background: isDone ? "var(--accent)" : (isActive ? "var(--accent-light)" : "var(--bg-subtle)"),
+                      color: isDone ? "#fff" : (isActive ? "var(--accent)" : "var(--text-placeholder)"),
+                      border: isActive && !isDone ? "1.5px solid var(--accent)" : "none"
                     }}>
                       {isDone ? <CheckIcon /> : i + 1}
                     </div>
@@ -709,7 +709,7 @@ export default function InterviewRoomPage() {
                       }}>{ts.label}</span>
                       <p style={{
                         margin:0, fontSize:11, lineHeight:1.4, fontWeight:500,
-                        color: isActive ? "#111827" : "#6b7280",
+                        color: isActive ? "var(--text-primary)" : "var(--text-muted)",
                         overflow:"hidden", textOverflow:"ellipsis",
                         display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical"
                       }}>
@@ -727,7 +727,7 @@ export default function InterviewRoomPage() {
 
             {/* ── QUESTION CARD ── */}
             <div className="ip-fade-up" style={{
-              background:"#ffffff", borderRadius:14, border:"1px solid #e5e7eb",
+              background:"var(--bg-card)", borderRadius:14, border:"1px solid var(--border)",
               boxShadow:"0 1px 3px rgba(0,0,0,0.05)",
               padding:28
             }}>
@@ -740,14 +740,14 @@ export default function InterviewRoomPage() {
                 {currentQuestion?.topic && (
                   <span style={{
                     fontSize:12, fontWeight:500, padding:"4px 12px", borderRadius:20,
-                    background:"#f8fafc", color:"#6b7280", border:"1px solid #e5e7eb"
+                    background:"var(--bg-hover)", color:"var(--text-muted)", border:"1px solid var(--border)"
                   }}>{currentQuestion.topic}</span>
                 )}
               </div>
 
               {/* question text */}
               <p style={{
-                fontSize:17, fontWeight:600, color:"#111827",
+                fontSize:17, fontWeight:600, color:"var(--text-primary)",
                 lineHeight:1.65, margin:0
               }}>
                 {currentQuestion?.question}
@@ -758,24 +758,24 @@ export default function InterviewRoomPage() {
                 <div style={{ marginTop:20 }}>
                   <p style={{
                     fontSize:11, fontWeight:700, textTransform:"uppercase",
-                    letterSpacing:"0.08em", color:"#9ca3af", margin:"0 0 10px 0"
+                    letterSpacing:"0.08em", color:"var(--text-placeholder)", margin:"0 0 10px 0"
                   }}>Sample Test Cases</p>
                   <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                     {currentQuestion.testCases.map((tc, i) => (
                       <div key={i} style={{
-                        background:"#f8fafc", borderRadius:8,
-                        border:"1px solid #e5e7eb",
+                        background:"var(--bg-hover)", borderRadius:8,
+                        border:"1px solid var(--border)",
                         padding:"10px 14px",
                         fontFamily:"var(--mono)", fontSize:12,
                         display:"grid", gridTemplateColumns:"1fr 1fr", gap:8
                       }}>
                         <div>
-                          <span style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", color:"#9ca3af", display:"block", marginBottom:3 }}>Input</span>
+                          <span style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", color:"var(--text-placeholder)", display:"block", marginBottom:3 }}>Input</span>
                           <span style={{ color:"#374151" }}>{tc.input || "(none)"}</span>
                         </div>
                         <div>
-                          <span style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", color:"#1d9e75", display:"block", marginBottom:3 }}>Expected Output</span>
-                          <span style={{ color:"#111827", fontWeight:600 }}>{tc.expectedOutput}</span>
+                          <span style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", color:"var(--accent)", display:"block", marginBottom:3 }}>Expected Output</span>
+                          <span style={{ color:"var(--text-primary)", fontWeight:600 }}>{tc.expectedOutput}</span>
                         </div>
                       </div>
                     ))}
@@ -800,25 +800,25 @@ export default function InterviewRoomPage() {
                 ) : (
                   /* CODE EDITOR */
                   <div style={{
-                    background:"#ffffff", borderRadius:14, border:"1px solid #e5e7eb",
+                    background:"var(--bg-card)", borderRadius:14, border:"1px solid var(--border)",
                     boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
                   }}>
                     {/* editor toolbar */}
                     <div style={{
                       display:"flex", alignItems:"center", justifyContent:"space-between",
                       padding:"12px 16px",
-                      background:"#f8fafc",
-                      borderBottom:"1px solid #e5e7eb"
+                      background:"var(--bg-hover)",
+                      borderBottom:"1px solid var(--border)"
                     }}>
                       <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                         <CodeIcon />
                         <span style={{ fontSize:13, fontWeight:700, color:"#374151" }}>Code Editor</span>
-                        <span style={{ fontSize:11, color:"#9ca3af" }}>— write & run your solution</span>
+                        <span style={{ fontSize:11, color:"var(--text-placeholder)" }}>— write & run your solution</span>
                       </div>
                       {/* language tabs */}
                       <div style={{
                         display:"flex", gap:2, padding:3,
-                        background:"#e5e7eb", borderRadius:8
+                        background:"var(--border)", borderRadius:8
                       }}>
                         {["javascript","python","cpp","java"].map(lang => (
                           <button
@@ -831,8 +831,8 @@ export default function InterviewRoomPage() {
                               fontWeight:700, letterSpacing:"0.04em",
                               border:"none", cursor: (!!feedback || submitting) ? "not-allowed" : "pointer",
                               transition:"all 0.15s",
-                              background: language === lang ? "#ffffff" : "transparent",
-                              color: language === lang ? "#1d9e75" : "#6b7280",
+                              background: language === lang ? "var(--bg-card)" : "transparent",
+                              color: language === lang ? "var(--accent)" : "var(--text-muted)",
                               boxShadow: language === lang ? "0 1px 3px rgba(0,0,0,0.1)" : "none"
                             }}
                           >{lang}</button>
@@ -861,9 +861,9 @@ export default function InterviewRoomPage() {
                     <div style={{
                       display:"flex", alignItems:"center", justifyContent:"space-between",
                       padding:"10px 16px",
-                      background:"#f8fafc", borderTop:"1px solid #e5e7eb"
+                      background:"var(--bg-hover)", borderTop:"1px solid var(--border)"
                     }}>
-                      <span style={{ fontSize:11, color:"#9ca3af" }}>
+                      <span style={{ fontSize:11, color:"var(--text-placeholder)" }}>
                         {language === "javascript" ? "JS" : language === "cpp" ? "C++" : language.charAt(0).toUpperCase() + language.slice(1)} · Judge0 execution
                       </span>
                       <button
@@ -874,8 +874,8 @@ export default function InterviewRoomPage() {
                           display:"flex", alignItems:"center", gap:8,
                           padding:"8px 18px", borderRadius:8, fontSize:13,
                           fontWeight:700, border:"none", cursor: (submitting || !code.trim()) ? "not-allowed" : "pointer",
-                          background: (submitting || !code.trim()) ? "#e5e7eb" : "#1d9e75",
-                          color: (submitting || !code.trim()) ? "#9ca3af" : "#ffffff",
+                          background: (submitting || !code.trim()) ? "var(--border)" : "var(--accent)",
+                          color: (submitting || !code.trim()) ? "var(--text-placeholder)" : "var(--bg-card)",
                           opacity: (submitting || !code.trim()) ? 0.7 : 1
                         }}
                       >
@@ -903,21 +903,21 @@ export default function InterviewRoomPage() {
             {/* ── FEEDBACK CARD (after answer) ── */}
             {feedback && (
               <div className="ip-fade-up" style={{
-                background:"#ffffff", borderRadius:14, border:"1px solid #e5e7eb",
+                background:"var(--bg-card)", borderRadius:14, border:"1px solid var(--border)",
                 boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
               }}>
                 {/* feedback header */}
                 <div style={{
                   padding:"16px 24px",
-                  borderBottom:"1px solid #f1f4f7",
+                  borderBottom:"1px solid var(--bg-subtle)",
                   background:"#fafafa",
                   display:"flex", alignItems:"center", gap:8
                 }}>
                   <div style={{
-                    width:8, height:8, borderRadius:"50%", background:"#1d9e75"
+                    width:8, height:8, borderRadius:"50%", background:"var(--accent)"
                   }}/>
-                  <span style={{ fontSize:13, fontWeight:700, color:"#111827" }}>AI Evaluation</span>
-                  <span style={{ fontSize:12, color:"#9ca3af", marginLeft:"auto" }}>Powered by Gemini</span>
+                  <span style={{ fontSize:13, fontWeight:700, color:"var(--text-primary)" }}>AI Evaluation</span>
+                  <span style={{ fontSize:12, color:"var(--text-placeholder)", marginLeft:"auto" }}>Powered by Gemini</span>
                 </div>
 
                 <div style={{ padding:24 }}>
@@ -949,7 +949,7 @@ export default function InterviewRoomPage() {
                   {feedback.feedback && (
                     <div style={{
                       padding:"14px 18px", borderRadius:10,
-                      background:"#f8fafc", border:"1px solid #e5e7eb",
+                      background:"var(--bg-hover)", border:"1px solid var(--border)",
                       marginBottom: codeResults ? 16 : 0
                     }}>
                       <p style={{ margin:0, fontSize:14, color:"#374151", lineHeight:1.65 }}>
@@ -967,12 +967,12 @@ export default function InterviewRoomPage() {
                       }}>
                         <p style={{
                           margin:0, fontSize:11, fontWeight:700, textTransform:"uppercase",
-                          letterSpacing:"0.08em", color:"#9ca3af"
+                          letterSpacing:"0.08em", color:"var(--text-placeholder)"
                         }}>Test Results</p>
                         <span style={{
                           fontSize:12, fontWeight:700, padding:"3px 10px", borderRadius:20,
-                          background: codeResults.filter(r=>r.passed).length === codeResults.length ? "#e1f5ee" : "#fef2f2",
-                          color: codeResults.filter(r=>r.passed).length === codeResults.length ? "#1d9e75" : "#dc2626"
+                          background: codeResults.filter(r=>r.passed).length === codeResults.length ? "var(--accent-light)" : "#fef2f2",
+                          color: codeResults.filter(r=>r.passed).length === codeResults.length ? "var(--accent)" : "#dc2626"
                         }}>
                           {codeResults.filter(r=>r.passed).length}/{codeResults.length} passed
                         </span>
@@ -986,20 +986,20 @@ export default function InterviewRoomPage() {
                             background: r.passed ? "#f0fdf4" : "#fef2f2",
                             border: `1px solid ${r.passed ? "#a7f3d0" : "#fecaca"}`
                           }}>
-                            <span style={{ color: r.passed ? "#1d9e75" : "#dc2626", fontWeight:700, fontSize:15 }}>
+                            <span style={{ color: r.passed ? "var(--accent)" : "#dc2626", fontWeight:700, fontSize:15 }}>
                               {r.passed ? "✓" : "✗"}
                             </span>
                             <div>
-                              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", color:"#9ca3af", display:"block" }}>Input</span>
+                              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", color:"var(--text-placeholder)", display:"block" }}>Input</span>
                               <span style={{ color:"#374151" }}>{r.input || "—"}</span>
                             </div>
                             <div>
-                              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", color:"#9ca3af", display:"block" }}>Expected</span>
+                              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", color:"var(--text-placeholder)", display:"block" }}>Expected</span>
                               <span style={{ color:"#374151" }}>{r.expectedOutput}</span>
                             </div>
                             <div>
-                              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", color:"#9ca3af", display:"block" }}>Got</span>
-                              <span style={{ color: r.passed ? "#1d9e75" : "#dc2626", fontWeight:600 }}>
+                              <span style={{ fontSize:9, fontWeight:700, textTransform:"uppercase", color:"var(--text-placeholder)", display:"block" }}>Got</span>
+                              <span style={{ color: r.passed ? "var(--accent)" : "#dc2626", fontWeight:600 }}>
                                 {r.actualOutput || r.error || "—"}
                               </span>
                             </div>
@@ -1016,7 +1016,7 @@ export default function InterviewRoomPage() {
             <div style={{
               display:"flex", alignItems:"center", justifyContent:"space-between",
               padding:"14px 20px", borderRadius:12,
-              background:"#ffffff", border:"1px solid #e5e7eb",
+              background:"var(--bg-card)", border:"1px solid var(--border)",
               boxShadow:"0 1px 3px rgba(0,0,0,0.05)"
             }}>
               {/* left side */}
@@ -1034,14 +1034,14 @@ export default function InterviewRoomPage() {
                           padding:"10px 22px", borderRadius:8, fontSize:14,
                           fontWeight:700, border:"none",
                           cursor: completing ? "not-allowed" : "pointer",
-                          background: completing ? "#e5e7eb" : "#1d9e75",
-                          color: completing ? "#9ca3af" : "#ffffff"
+                          background: completing ? "var(--border)" : "var(--accent)",
+                          color: completing ? "var(--text-placeholder)" : "var(--bg-card)"
                         }}
                       >
                         {completing ? <><SpinnerIcon /> Generating Report…</> : <>Finish Interview &amp; Get Report <ChevronRight /></>}
                       </button>
                     ) : (
-                      <span style={{ fontSize:13, color:"#9ca3af", fontWeight:500 }}>
+                      <span style={{ fontSize:13, color:"var(--text-placeholder)", fontWeight:500 }}>
                         Answer all questions to finish.
                       </span>
                     )
@@ -1053,7 +1053,7 @@ export default function InterviewRoomPage() {
                         display:"flex", alignItems:"center", gap:8,
                         padding:"10px 22px", borderRadius:8, fontSize:14,
                         fontWeight:700, border:"none", cursor:"pointer",
-                        background:"#1d9e75", color:"#ffffff"
+                        background:"var(--accent)", color:"var(--bg-card)"
                       }}
                     >
                       Next Question <ChevronRight />
@@ -1063,7 +1063,7 @@ export default function InterviewRoomPage() {
 
                 {/* coding submit in bottom bar too (mirror) */}
                 {!feedback && isCoding && (
-                  <span style={{ fontSize:12, color:"#9ca3af" }}>
+                  <span style={{ fontSize:12, color:"var(--text-placeholder)" }}>
                     Write your solution above and click Run &amp; Submit
                   </span>
                 )}
@@ -1078,8 +1078,8 @@ export default function InterviewRoomPage() {
                     display:"flex", alignItems:"center", gap:6,
                     padding:"8px 16px", borderRadius:8, fontSize:13,
                     fontWeight:600, cursor:"pointer",
-                    background:"transparent", color:"#9ca3af",
-                    border:"1px solid #e5e7eb",
+                    background:"transparent", color:"var(--text-placeholder)",
+                    border:"1px solid var(--border)",
                     transition:"background 0.15s"
                   }}
                 >
@@ -1098,8 +1098,8 @@ export default function InterviewRoomPage() {
                     padding:"10px 22px", borderRadius:8, fontSize:14,
                     fontWeight:700, border:"none",
                     cursor: completing ? "not-allowed" : "pointer",
-                    background: completing ? "#e5e7eb" : "#1d9e75",
-                    color: completing ? "#9ca3af" : "#ffffff"
+                    background: completing ? "var(--border)" : "var(--accent)",
+                    color: completing ? "var(--text-placeholder)" : "var(--bg-card)"
                   }}
                 >
                   {completing ? <><SpinnerIcon /> Generating Report…</> : <>Finish Interview <ChevronRight /></>}

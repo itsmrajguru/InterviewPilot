@@ -54,7 +54,7 @@ export default function CompanyProfile() {
                 </p>
                 <button 
                   onClick={handleRegister}
-                  style={{ background: "var(--primary-color)", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 8, fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all 0.2s" }}
+                  style={{ background: "var(--primary-color)", color: "#ffffff", border: "none", padding: "12px 24px", borderRadius: 8, fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all 0.2s" }}
                   onMouseOver={e => e.currentTarget.style.transform = "translateY(-1px)"}
                   onMouseOut={e => e.currentTarget.style.transform = "none"}
                 >

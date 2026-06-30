@@ -39,13 +39,13 @@ export default function SignupPage() {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#e4e8ee", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <div style={{ width: "100%", maxWidth: 440, padding: 24 }}>
         
         {/* logo and header */}
         <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div onClick={() => navigate("/")} style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, #0f6e56 0%, #1d9e75 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div onClick={() => navigate("/")} style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--bg-card)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
             Create Account
@@ -57,8 +57,8 @@ export default function SignupPage() {
 
         {/* auth card */}
         <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
+          background: "var(--bg-card)",
+          border: "0.5px solid var(--border)",
           borderRadius: 12,
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
           padding: 32,
@@ -81,7 +81,7 @@ export default function SignupPage() {
                   onClick={() => setRole("student")}
                   style={{
                     padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.15s",
-                    background: role === "student" ? "#ffffff" : "transparent",
+                    background: role === "student" ? "var(--bg-card)" : "transparent",
                     color: role === "student" ? "var(--text-primary)" : "var(--text-secondary)",
                     boxShadow: role === "student" ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
                   }}
@@ -93,7 +93,7 @@ export default function SignupPage() {
                   onClick={() => setRole("company")}
                   style={{
                     padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.15s",
-                    background: role === "company" ? "#ffffff" : "transparent",
+                    background: role === "company" ? "var(--bg-card)" : "transparent",
                     color: role === "company" ? "var(--text-primary)" : "var(--text-secondary)",
                     boxShadow: role === "company" ? "0 1px 2px rgba(0,0,0,0.05)" : "none"
                   }}
@@ -113,7 +113,7 @@ export default function SignupPage() {
                 required
                 placeholder="name@example.com"
                 style={{ padding: "10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
-                onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-card)"; }}
                 onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
               />
             </div>
@@ -130,7 +130,7 @@ export default function SignupPage() {
                   placeholder="••••••••"
                   minLength={6}
                   style={{ padding: "10px 38px 10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
-                  onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "#ffffff"; }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-card)"; }}
                   onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
                 />
                 <button
@@ -151,7 +151,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ fontSize: 14, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%", marginTop: 8 }}
+              style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%", marginTop: 8 }}
             >
               {loading ? "Creating account..." : "Sign Up"}
             </button>
