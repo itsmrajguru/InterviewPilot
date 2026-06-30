@@ -315,7 +315,7 @@ select {
 
 
 .btn-primary {
-  background: #1d9e75;
+  background: var(--accent);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-md);
@@ -329,15 +329,15 @@ select {
   justify-content: center;
   gap: 8px;
   letter-spacing: -0.01em;
-  box-shadow: 0 1px 3px rgba(29,158,117,0.25);
+  box-shadow: 0 1px 3px var(--accent-border);
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
   white-space: nowrap;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #0f6e56;
+  background: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(29, 158, 117, 0.35);
+  box-shadow: 0 8px 24px var(--accent-border);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -1128,8 +1128,8 @@ select {
 }
 
 .ip-spinner-dark {
-  border-color: rgba(29,158,117,0.2);
-  border-top-color: #1d9e75;
+  border-color: var(--accent-border);
+  border-top-color: var(--accent);
 }
 
 @keyframes spin {

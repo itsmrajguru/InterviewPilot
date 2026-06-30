@@ -30,7 +30,7 @@ export default function NotFoundPage() {
           <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>Error 404</span>
           
           <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-            Lost in <span style={{ color: "#1d9e75" }}>Space?</span>
+            Lost in <span style={{ color: "var(--accent)" }}>Space?</span>
           </h1>
           
           <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, lineHeight: 1.5, maxWidth: 280 }}>
@@ -46,7 +46,7 @@ export default function NotFoundPage() {
             </button>
             <button 
               onClick={() => navigate("/login")}
-              style={{ fontSize: 12, color: "#ffffff", background: "#1d9e75", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }}
+              style={{ fontSize: 12, color: "var(--bg-card)", background: "var(--accent)", border: "none", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontWeight: 500 }}
             >
               Go to Login
             </button>
