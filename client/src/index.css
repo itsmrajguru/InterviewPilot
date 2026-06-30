@@ -150,15 +150,15 @@
   --shadow: 0 1px 3px rgba(11, 19, 43, 0.05), 0 1px 2px rgba(11, 19, 43, 0.03);
 
   /* Semantic colors — independent, reserved strictly for real states */
-  --success-bg: #ecfdf5;
+  --success-bg: #d1fae5;
   --success-text: #047857;
   --success-border: #a7f3d0;
 
-  --warning-bg: #fffbeb;
+  --warning-bg: #fef3c7;
   --warning-text: #b45309;
   --warning-border: #fde68a;
 
-  --danger-bg: #fef2f2;
+  --danger-bg: #fee2e2;
   --danger-text: #b91c1c;
   --danger-border: #fecaca;
 

@@ -33,9 +33,9 @@ const IconCheck = () => (
 );
 
 const scoreColor = (s) => {
-  if (s >= 75) return { text: "var(--color-success-text)", bg: "var(--color-success-bg)", border: "var(--color-success-border)" };
-  if (s >= 50) return { text: "var(--text-secondary)", bg: "var(--bg-body)", border: "var(--border)" };
-  return { text: "var(--color-danger-text)", bg: "var(--color-danger-bg)", border: "var(--color-danger-border)" };
+  if (s >= 75) return { text: "var(--success-text)", bg: "var(--success-bg)", border: "var(--success-border)" };
+  if (s >= 50) return { text: "var(--text-secondary)", bg: "var(--bg-subtle)", border: "var(--border)" };
+  return { text: "var(--danger-text)", bg: "var(--danger-bg)", border: "var(--danger-border)" };
 };
 
 const ScoreBadge = ({ score }) => {
@@ -51,9 +51,9 @@ const ScoreBadge = ({ score }) => {
 
 const DiffBadge = ({ diff }) => {
   const map = {
-    easy:   { bg: "var(--color-success-bg)", color: "var(--color-success-text)", border: "var(--color-success-border)" },
-    medium: { bg: "var(--bg-body)", color: "var(--text-secondary)", border: "var(--border)" },
-    hard:   { bg: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "var(--color-danger-border)" },
+    easy:   { bg: "var(--success-bg)", color: "var(--success-text)", border: "var(--success-border)" },
+    medium: { bg: "var(--warning-bg)", color: "var(--warning-text)", border: "var(--warning-border)" },
+    hard:   { bg: "var(--danger-bg)", color: "var(--danger-text)", border: "var(--danger-border)" },
   };
   const s = map[diff] || map.medium;
   return (

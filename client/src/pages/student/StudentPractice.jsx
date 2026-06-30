@@ -37,9 +37,9 @@ const IconCheck = () => (
 );
 
 const DIFF_META = {
-  easy:   { label: "Easy",   desc: "Foundational concepts, guided pace",     color: "var(--color-success-text)", bg: "var(--color-success-bg)", border: "var(--color-success-border)" },
-  medium: { label: "Medium", desc: "Balanced mix, real interview pace",      color: "var(--text-secondary)", bg: "var(--bg-body)", border: "var(--border)" },
-  hard:   { label: "Hard",   desc: "Deep dives, tight time pressure",        color: "var(--color-danger-text)", bg: "var(--color-danger-bg)", border: "var(--color-danger-border)" },
+  easy:   { label: "Easy",   desc: "Foundational concepts, guided pace",     color: "var(--success-text)", bg: "var(--success-bg)", border: "var(--success-border)" },
+  medium: { label: "Medium", desc: "Balanced mix, real interview pace",      color: "var(--warning-text)", bg: "var(--warning-bg)", border: "var(--warning-border)" },
+  hard:   { label: "Hard",   desc: "Deep dives, tight time pressure",        color: "var(--danger-text)", bg: "var(--danger-bg)", border: "var(--danger-border)" },
 };
 
 const PERKS = [
