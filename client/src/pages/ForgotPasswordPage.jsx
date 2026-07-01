@@ -46,8 +46,7 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 {/* auth card */}
-                <div style={{
-                    background: "var(--bg-card)",
+                <div className="ip-auth-box" style={{ background: "var(--bg-card)",
                     border: "0.5px solid var(--border)",
                     borderRadius: 12,
                     boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
@@ -111,7 +110,7 @@ export default function ForgotPasswordPage() {
                 
                 {/* footer */}
                 <div style={{ marginTop: 32, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
-                    <span>&copy; 2026 InterviewPilot</span>
+                    <span>&copy; 2026 CareerSync</span>
                     <Link to="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
                     <Link to="/legal" style={{ color: "inherit", textDecoration: "none" }}>Legal</Link>
                 </div>

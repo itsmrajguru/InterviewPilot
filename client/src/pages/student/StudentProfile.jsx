@@ -30,7 +30,7 @@ export default function StudentProfile() {
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh", background: "var(--bg-body)" }}>
+    <div className="ip-app-wrapper" style={{ display: "flex", height: "100vh", background: "var(--bg-body)" }}>
       <Sidebar role="student" />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <StudentTopbar title="My Profile" />
@@ -75,7 +75,7 @@ export default function StudentProfile() {
                     {profile.email}
                   </p>
                   
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+                  <div className="ip-grid-2-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 24 }}>
                     <div style={{ padding: 20, background: "var(--bg-body)", borderRadius: 12, border: "1px solid var(--border)" }}>
                       <p style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)", margin: "0 0 8px", fontWeight: 600 }}>Role</p>
                       <p style={{ fontSize: 15, color: "var(--text-primary)", margin: 0, fontWeight: 500 }}>{profile.role || "Student"}</p>

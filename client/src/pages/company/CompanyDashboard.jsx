@@ -254,7 +254,7 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="company" />
 
       {/* Main content */}
@@ -293,7 +293,7 @@ export default function CompanyDashboard() {
         <div style={{ flex: 1, overflowY: "auto", padding: 28, display: "flex", flexDirection: "column", gap: 24 }}>
 
           {/* welcome banner */}
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+          <div className="ip-header-flex" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
             <div>
               <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)" }}>
                 Talent Pipeline
@@ -305,7 +305,7 @@ export default function CompanyDashboard() {
           </div>
 
           {/* stat cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+          <div className="ip-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
             <StatCard
               label="TOTAL INVITED"
               icon={<IconUsers />}
@@ -392,7 +392,7 @@ export default function CompanyDashboard() {
                   <span style={S.cardTitle}><IconStar /> Quick Actions</span>
                 </div>
                 <div style={{ ...S.cardBody, paddingTop: 12 }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div className="ip-stats-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                     <div
                       onClick={() => setShowCreateModal(true)}
                       style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
@@ -523,7 +523,7 @@ export default function CompanyDashboard() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Difficulty</label>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 4, padding: 4, borderRadius: 8, background: "var(--surface-1)" }}>
+                    <div className="ip-stats-row" style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap: 4, padding: 4, borderRadius: 8, background: "var(--surface-1)" }}>
                       {["easy", "medium", "hard"].map(d => (
                         <button
                           key={d}

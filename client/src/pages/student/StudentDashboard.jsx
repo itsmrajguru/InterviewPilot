@@ -232,7 +232,7 @@ export default function StudentDashboard() {
   ];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="student" pendingCount={pending.length} />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -246,7 +246,7 @@ export default function StudentDashboard() {
             </div>
           )}
 
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+          <div className="ip-header-flex" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
             <div>
               <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)" }}>Welcome back, {firstName} 👋</h1>
               <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>Here's a snapshot of your interview activity today.</p>
@@ -256,7 +256,7 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+          <div className="ip-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
             <div style={{ ...S.metric, borderLeft: "2px solid var(--accent)" }}>
               <div style={S.metricLabel}><IconClock /> Pending</div>
               <div style={S.metricValue}>{loading ? "—" : pending.length}</div>
@@ -293,7 +293,7 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="ip-grid-2-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 16 }}>
             <div style={S.card}>
               <div style={S.cardHeader}>
                 <span style={S.cardTitle}><IconMessages /> Recent interviews</span>
@@ -384,7 +384,7 @@ export default function StudentDashboard() {
                   <span style={S.cardTitle}><IconBolt /> Quick actions</span>
                 </div>
                 <div style={{ ...S.cardBody, paddingTop: 12 }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <div className="ip-stats-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 10 }}>
                     {qaActions.map((a) => (
                       <div
                         key={a.label}

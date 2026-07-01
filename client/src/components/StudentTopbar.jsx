@@ -47,7 +47,7 @@ export default function StudentTopbar({ title, sub }) {
   };
 
   return (
-    <div
+    <div className="ip-hidden-mobile"
       style={{
         padding: "0 28px",
         height: 56,

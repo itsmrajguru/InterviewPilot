@@ -7,11 +7,11 @@ export default function StudentSettings() {
   const [darkMode, setDarkMode] = useState(false);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="student" />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         <StudentTopbar title="Settings" sub="Manage your account preferences and configurations" />
-        <main style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
+        <main className="ip-main-container" style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
           <div style={{ marginBottom: 24 }}>
             <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
               Account Settings

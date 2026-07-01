@@ -152,8 +152,8 @@ export default function JoinInterviewPage() {
 
         {/* header with logo */}
         <div style={{ textAlign: "center" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)", marginBottom: 12 }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--bg-card)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 64, height: 64, borderRadius: "50%", background: "#fff", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", marginBottom: 16, overflow: "hidden" }}>
+            <img src="/logo.svg" alt="CareerSync" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
             Personalize Your Interview
@@ -221,7 +221,7 @@ export default function JoinInterviewPage() {
 
         {/* footer info */}
         <p style={{ textAlign: "center", fontSize: 11, color: "var(--text-muted)" }}>
-          © 2026 InterviewPilot · Powered by Gemini AI
+          © 2026 CareerSync · Powered by Gemini AI
         </p>
       </div>
     </div>

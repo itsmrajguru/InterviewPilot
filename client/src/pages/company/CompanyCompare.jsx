@@ -63,7 +63,7 @@ export default function CompanyCompare() {
   const candidate2 = completedSessions.find(s => s._id === slot2);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
       <Sidebar role="company" />
 
       {/* main content */}
@@ -124,7 +124,7 @@ export default function CompanyCompare() {
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               
               {/* slot selectors panel */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, padding: 16, borderRadius: 12, background: "var(--bg-card)", border: "0.5px solid var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
+              <div className="ip-grid-2-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 24, padding: 16, borderRadius: 12, background: "var(--bg-card)", border: "0.5px solid var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
                 
                 {/* slot 1 selector */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -167,7 +167,7 @@ export default function CompanyCompare() {
 
               {/* comparison metrics table card */}
               {candidate1 || candidate2 ? (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+                <div className="ip-grid-2-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 24 }}>
                   
                   {/* candidate a specs */}
                   <div style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)", borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.07)", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>

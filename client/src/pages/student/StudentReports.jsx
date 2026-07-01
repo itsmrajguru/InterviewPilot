@@ -176,9 +176,9 @@ const StatsBar = ({ reports }) => {
     { label: "Best Score",     value: best,              sub: "/ 100" },
   ];
   return (
-    <div style={{
+    <div className="ip-stats-row" style={{
       display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12,
-      marginBottom: 28
+      margin: "0 0 28px 0"
     }}>
       {items.map(({ label, value, sub }) => (
         <div key={label} style={S.metric}>
@@ -235,13 +235,13 @@ export default function StudentReports() {
         .sr-report-btn:hover { background: var(--accent-hover) !important; }
       `}</style>
 
-      <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <Sidebar role="student" />
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
           <StudentTopbar title="My Reports" sub="Review scores, feedback and improvement areas" />
 
-          <main style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
+          <main className="ip-main-container" style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
 
             {/* ── PAGE HEADER ── */}
             <div style={{ marginBottom: 24 }}>
@@ -342,7 +342,7 @@ export default function StudentReports() {
                 </div>
 
                 {/* ── REPORTS GRID ── */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+                <div className="ip-stats-row" style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap: 16 }}>
                   {filtered.map((session, idx) => {
                     const score    = session.report?.overallScore;
                     const hasScore = score !== undefined;

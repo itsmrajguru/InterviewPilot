@@ -1185,3 +1185,122 @@ select {
 .floating {
   animation: float 4s ease-in-out infinite;
 }
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT UTILITIES
+   ========================================================================== */
+
+/* TABLET (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .ip-grid-2-col {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .ip-sidebar-container {
+    width: 220px !important;
+  }
+}
+
+/* MOBILE (max-width: 768px) */
+@media (max-width: 768px) {
+  /* General Layout */
+  .ip-app-wrapper {
+    flex-direction: column !important;
+  }
+
+  .ip-sidebar-container {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 16px !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border) !important;
+    position: relative !important;
+    z-index: 10;
+  }
+
+  /* Hide sidebar links by default on mobile, show via hamburger menu */
+  .ip-sidebar-nav {
+    display: none !important;
+  }
+  .ip-sidebar-nav.open {
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 16px !important;
+  }
+  
+  .ip-sidebar-link {
+    justify-content: flex-start !important;
+  }
+  
+  /* Hide user profile block on small screens or adjust it */
+  .ip-sidebar-profile {
+    display: none !important;
+  }
+  .ip-sidebar-profile.open {
+    display: flex !important;
+  }
+  
+  .ip-hamburger-btn {
+    display: block !important;
+  }
+
+  .ip-main-container {
+    padding: 16px !important;
+  }
+
+  .ip-stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .ip-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .ip-responsive-flex-col {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .ip-diff-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Forms & Inputs */
+  .ip-auth-box {
+    width: 100% !important;
+    margin: 16px !important;
+    padding: 24px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .ip-header-flex {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  
+  .ip-hidden-mobile {
+    display: none !important;
+  }
+}
+
+/* SMALL MOBILE (max-width: 480px) */
+@media (max-width: 480px) {
+  .ip-main-container {
+    padding: 12px !important;
+  }
+  
+  .ip-auth-box {
+    padding: 20px !important;
+    margin: 12px !important;
+  }
+  
+  .btn-primary {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}

@@ -142,7 +142,7 @@
 //       {/* top bar: progress and question counter */}
 //       <nav style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "var(--bg-card)", borderBottom: "0.5px solid var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
 //         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-//           <img src="/logo.svg" alt="InterviewPilot" style={{ width: 28, height: 28, borderRadius: 8 }} />
+//           <img src="/logo.svg" alt="CareerSync" style={{ height: 28 }} />
 //           <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>
 //             {session.role} Interview
 //           </span>
@@ -419,6 +419,27 @@
 //     </div>
 //   );
 // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //creating InterviewRoomPage — redesigned for production SaaS quality
 
 import { useState, useEffect } from "react";
@@ -600,7 +621,7 @@ export default function InterviewRoomPage() {
         }}>
           {/* left: logo + role + difficulty */}
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <img src="/logo.svg" alt="InterviewPilot" style={{ width:28, height:28, borderRadius:8 }} />
+            <img src="/logo.svg" alt="CareerSync" style={{ height: 28 }} />
             <div style={{ display:"flex", flexDirection:"column", gap:1 }}>
               <span style={{ fontWeight:700, fontSize:13, color:"var(--text-primary)", lineHeight:1 }}>
                 {session.role}

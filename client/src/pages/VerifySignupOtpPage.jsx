@@ -49,8 +49,8 @@ export default function VerifySignupOtpPage() {
         
         {/* logo and header */}
         <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div onClick={() => navigate("/")} style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%)", boxShadow: "0 4px 12px rgba(29, 158, 117, 0.3)" }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--bg-card)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", cursor: "pointer", marginBottom: 16 }} onClick={() => navigate("/")}>
+            <img src="/logo.svg" alt="CareerSync" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
             Verify Email
@@ -61,8 +61,7 @@ export default function VerifySignupOtpPage() {
         </div>
 
         {/* auth card */}
-        <div style={{
-          background: "var(--bg-card)",
+        <div className="ip-auth-box" style={{ background: "var(--bg-card)",
           border: "0.5px solid var(--border)",
           borderRadius: 12,
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
@@ -121,7 +120,7 @@ export default function VerifySignupOtpPage() {
         
         {/* footer */}
         <div style={{ marginTop: 32, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
-          <span>&copy; 2026 InterviewPilot</span>
+          <span>&copy; 2026 CareerSync</span>
           <Link to="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
           <Link to="/legal" style={{ color: "inherit", textDecoration: "none" }}>Legal</Link>
         </div>

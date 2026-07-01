@@ -103,13 +103,13 @@ export default function StudentPractice() {
         .sp-submit-btn { transition: all 0.18s ease !important; }
       `}</style>
 
-      <div style={{ display:"flex", minHeight:"100vh", background:"var(--bg)", fontFamily:"var(--font-sans)", fontSize:14 }}>
+      <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background:"var(--bg)", fontFamily:"var(--font-sans)", fontSize:14 }}>
         <Sidebar role="student" />
 
         <div style={{ flex:1, display:"flex", flexDirection:"column", minWidth:0 }}>
           <StudentTopbar title="AI Practice Room" sub="Create a custom mock interview before the real round" />
 
-          <main style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
+          <main className="ip-main-container" style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
 
             <div style={{ marginBottom: 24 }}>
               <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
@@ -120,7 +120,7 @@ export default function StudentPractice() {
               </p>
             </div>
 
-            <div style={{ width:"100%", maxWidth:920, display:"grid", gridTemplateColumns: loading ? "1fr" : "1fr 320px", gap:24, alignItems:"start" }}>
+            <div className="ip-grid-2-col" style={{ width:"100%", maxWidth:920, display:"grid", gridTemplateColumns:"1fr 320px", gap:24, alignItems:"start" }}>
 
               {/* ══ LEFT: FORM ══ */}
               <div className="sp-fade" style={{
@@ -191,7 +191,7 @@ export default function StudentPractice() {
                           fontSize:11, fontWeight:700, textTransform:"uppercase",
                           letterSpacing:"0.06em", color:"var(--text-muted)"
                         }}><IconGauge /> Difficulty Level</label>
-                        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
+                        <div className="ip-diff-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
                           {Object.entries(DIFF_META).map(([key, meta]) => {
                             const active = difficulty === key;
                             return (

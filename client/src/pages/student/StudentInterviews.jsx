@@ -72,7 +72,7 @@ const StatsBar = ({ pending, completed, total }) => {
     { label: "Total Activity",  value: total,     sub: "all time interviews" },
   ];
   return (
-    <div style={{
+    <div className="ip-stats-row" style={{
       display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12,
       marginBottom: 32
     }}>
@@ -129,13 +129,13 @@ export default function StudentInterviews() {
         .sr-join-btn:hover { background: var(--accent-hover) !important; }
       `}</style>
 
-      <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
         <Sidebar role="student" />
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
           <StudentTopbar title="My Interviews" sub="Manage invitations and review past sessions" />
 
-          <main style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
+          <main className="ip-main-container" style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
 
             <div style={{ marginBottom: 24 }}>
               <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
@@ -202,7 +202,7 @@ export default function StudentInterviews() {
                   total={sessions.length} 
                 />
 
-                <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flexWrap: "wrap" }}>
+                <div className="ip-responsive-flex-col" style={{ display:"flex", gap:32, alignItems:"flex-start" }}>
                   
                   <div style={{ flex: "1 1 400px", minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
