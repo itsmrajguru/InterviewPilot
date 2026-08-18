@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { io } from "socket.io-client";
 import Sidebar from "../../components/Sidebar";
 import { createInterviewSession, getCompanySessions } from "../../services/interviewService";
 
@@ -218,6 +220,36 @@ export default function CompanyDashboard() {
     loadSessions();
   }, []);
 
+  useEffect(() => {
+    if (!sessions.length) return;
+    const SOCKET_URL = import.meta.env.VITE_API_BASE_URL
+      ? import.meta.env.VITE_API_BASE_URL.replace('/api/v1', '')
+      : 'http://localhost:7878';
+    const socket = io(SOCKET_URL, { withCredentials: true });
+
+    sessions.forEach(s => socket.emit('join:session', s._id));
+
+    socket.on('session:started', ({ sessionId }) => {
+      setSessions(prev => prev.map(s =>
+        s._id === sessionId ? { ...s, status: 'active' } : s
+      ));
+    });
+
+    socket.on('session:progress', ({ sessionId, answeredCount, totalQuestions }) => {
+      setSessions(prev => prev.map(s =>
+        s._id === sessionId ? { ...s, _answeredCount: answeredCount, _totalQuestions: totalQuestions } : s
+      ));
+    });
+
+    socket.on('session:completed', ({ sessionId, overallScore }) => {
+      setSessions(prev => prev.map(s =>
+        s._id === sessionId ? { ...s, status: 'completed', report: { overallScore } } : s
+      ));
+    });
+
+    return () => { socket.disconnect(); };
+  }, [sessions.length]);
+
   const totalInvited = sessions.length;
   const activeNow = sessions.filter(s => s.status === "active").length;
   const completed = sessions.filter(s => s.status === "completed").length;
@@ -254,7 +286,14 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="ip-app-wrapper"
+      style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}
+    >
       <Sidebar role="company" />
 
       {/* Main content */}
@@ -569,6 +608,6 @@ export default function CompanyDashboard() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

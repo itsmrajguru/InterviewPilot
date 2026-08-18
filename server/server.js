@@ -1,9 +1,12 @@
 //creating the server
 require('dotenv').config()
 const express = require('express')
+const http = require('http')
+const { Server } = require('socket.io')
 
 //creating an app that listens to the server
 const app = express()
+const httpServer = http.createServer(app)
 
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
@@ -35,24 +38,42 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
+const io = new Server(httpServer, {
+    cors: {
+        origin: allowedOrigins.filter(Boolean),
+        methods: ['GET', 'POST'],
+        credentials: true
+    }
+})
+
+const { setIO } = require('./utils/socketEmitter')
+setIO(io)
+
+io.on('connection', (socket) => {
+    socket.on('join:session', (sessionId) => {
+        socket.join(sessionId)
+    })
+
+    socket.on('leave:session', (sessionId) => {
+        socket.leave(sessionId)
+    })
+
+    socket.on('disconnect', () => {})
+})
 
 //lets connect the mondodb with the server
 const { connectToDB } = require('./database/db')
 connectToDB()
 
-
 //lets connect the router to the server
 const { authRouter } = require('./routes/authRoutes')
 app.use('/api/v1/auth', authRouter)
 
-/* interview router — handles session creation, joining, answering, code
-   submission and final report generation */
 const { interviewRouter } = require('./routes/interviewRoutes')
 app.use('/api/v1/interviews', interviewRouter)
 
 const careersyncRouter = require('./routes/careersyncRoutes')
 app.use('/api/v1/careersync', careersyncRouter)
-
 
 //creating a welcome route
 app.get('/', (req, res) => {
@@ -64,9 +85,8 @@ app.use((err, req, res, next) => {
     res.status(status).json({ success: false, message: err.message || 'Internal Server Error' });
 })
 
-
 //listening to the server
 const PORT = process.env.PORT
-app.listen(PORT, () => {
-    console.log(`server started at http://localhost:${PORT}`);
+httpServer.listen(PORT, () => {
+    console.log(`server started at http://localhost:${PORT}`)
 })

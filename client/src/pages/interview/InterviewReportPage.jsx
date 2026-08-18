@@ -1,6 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { getReport } from "../../services/interviewService";
+import api from "../../../api.js";
 
 const IconCheck = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -109,6 +112,7 @@ export default function InterviewReportPage() {
   const [session, setSession] = useState(savedSession);
   const [loading, setLoading] = useState(!savedReport);
   const [error, setError]     = useState("");
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   useEffect(() => {
     if (savedReport) return;
@@ -148,19 +152,59 @@ export default function InterviewReportPage() {
   const weaknesses = report?.weaknesses || [];
   const hasComm    = report?.communicationScore > 0;
 
+  const radarData = useMemo(() => {
+    if (!answers.length) return [];
+    const hrAnswers   = answers.filter(a => a.type === 'hr');
+    const techAnswers = answers.filter(a => a.type === 'technical');
+    const codeAnswers = answers.filter(a => a.type === 'coding');
+    const avg = (arr, key) => arr.length ? Math.round(arr.reduce((s, a) => s + (a[key] || 0), 0) / arr.length * 10) : 0;
+    const data = [
+      { subject: 'HR',          score: avg(hrAnswers, 'score') },
+      { subject: 'Technical',   score: avg(techAnswers, 'score') },
+      { subject: 'Coding',      score: avg(codeAnswers, 'score') },
+    ];
+    if (report?.communicationScore > 0) {
+      data.push({ subject: 'Communication', score: Math.round(report.communicationScore * 10) });
+    }
+    return data;
+  }, [answers, report]);
+
+  const handleDownloadPDF = async () => {
+    setPdfLoading(true);
+    try {
+      const response = await api.get(`interviews/${id}/report/pdf`, { responseType: 'blob' });
+      const blob = new Blob([response], { type: 'application/pdf' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `InterviewPilot_Report_${session?.role?.replace(/\s+/g,'_') || 'Report'}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('PDF download failed:', e);
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   return (
     <>
       <style>{`
         @keyframes irp-spin { to { transform: rotate(360deg); } }
-        @keyframes irp-fade-up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        .irp-fade { animation: irp-fade-up 0.35s cubic-bezier(0.22,1,0.36,1) both; }
         .irp-answer-row { transition: background 0.15s; }
         .irp-answer-row:hover { background: #fafafa !important; }
         .irp-btn-dash:hover { background: var(--bg-subtle) !important; }
         .irp-btn-practice:hover { background: var(--accent-hover) !important; }
+        .irp-btn-pdf:hover:not(:disabled) { filter: brightness(0.93); }
       `}</style>
 
-      <div style={{ minHeight:"100vh", background:"var(--bg-subtle)", fontFamily:"var(--sans)", fontSize:14 }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        style={{ minHeight:"100vh", background:"var(--bg-subtle)", fontFamily:"var(--sans)", fontSize:14 }}
+      >
 
         <nav style={{
           position:"sticky", top:0, zIndex:50,
@@ -170,7 +214,7 @@ export default function InterviewReportPage() {
           boxShadow:"0 1px 0 0 rgba(0,0,0,0.04)"
         }}>
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <img src="/logo.svg" alt="CareerSync" style={{ height: 28 }} />
+            <img src="/logo.svg" alt="InterviewPilot" style={{ height: 28 }} />
             <div>
               <span style={{ fontWeight:700, fontSize:13, color:"var(--text-primary)" }}>Interview Report</span>
               {session?.role && (
@@ -178,15 +222,31 @@ export default function InterviewReportPage() {
               )}
             </div>
           </div>
-          <Link to="/student/dashboard" style={{
-            display:"flex", alignItems:"center", gap:7,
-            fontSize:12, fontWeight:600, color:"#374151",
-            background:"var(--bg-hover)", border:"1px solid var(--border)",
-            borderRadius:8, padding:"7px 14px", textDecoration:"none",
-            transition:"background 0.15s"
-          }} className="irp-btn-dash">
-            <IconArrowLeft /> Dashboard
-          </Link>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <button
+              className="irp-btn-pdf"
+              onClick={handleDownloadPDF}
+              disabled={pdfLoading}
+              style={{
+                display:"flex", alignItems:"center", gap:7,
+                fontSize:12, fontWeight:600, color: pdfLoading ? "var(--text-placeholder)" : "var(--accent)",
+                background:"var(--accent-light)", border:"1px solid var(--accent-border)",
+                borderRadius:8, padding:"7px 14px", cursor: pdfLoading ? "not-allowed" : "pointer",
+                transition:"filter 0.15s"
+              }}
+            >
+              {pdfLoading ? "Generating…" : "⬇ Download PDF"}
+            </button>
+            <Link to="/student/dashboard" style={{
+              display:"flex", alignItems:"center", gap:7,
+              fontSize:12, fontWeight:600, color:"#374151",
+              background:"var(--bg-hover)", border:"1px solid var(--border)",
+              borderRadius:8, padding:"7px 14px", textDecoration:"none",
+              transition:"background 0.15s"
+            }} className="irp-btn-dash">
+              <IconArrowLeft /> Dashboard
+            </Link>
+          </div>
         </nav>
 
         <div style={{ maxWidth:860, margin:"0 auto", padding:"32px 24px", display:"flex", flexDirection:"column", gap:20 }}>
@@ -256,6 +316,33 @@ export default function InterviewReportPage() {
               </div>
             </div>
           </div>
+
+          {radarData.length >= 2 && (
+            <motion.div
+              initial={{ opacity:0, y:12 }}
+              animate={{ opacity:1, y:0 }}
+              transition={{ delay: 0.08, duration: 0.3 }}
+              style={{
+                background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)",
+                boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden"
+              }}
+            >
+              <SectionHeader icon={<span style={{ fontSize:14 }}>📊</span>} title="Performance Radar" />
+              <div style={{ padding:"16px 22px" }}>
+                <ResponsiveContainer width="100%" height={240}>
+                  <RadarChart data={radarData}>
+                    <PolarGrid stroke="var(--border)" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12, fill: "var(--text-muted)", fontWeight: 600 }} />
+                    <Tooltip
+                      formatter={(v) => [`${v}/100`, 'Score']}
+                      contentStyle={{ fontSize:12, borderRadius:8, border:'1px solid var(--border)', background:'var(--bg-card)' }}
+                    />
+                    <Radar name="Score" dataKey="score" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.15} strokeWidth={2} dot={{ r:4, fill:"var(--accent)" }} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+          )}
 
           {hasComm && (
             <div className="irp-fade" style={{
@@ -524,7 +611,7 @@ export default function InterviewReportPage() {
           </div>
 
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

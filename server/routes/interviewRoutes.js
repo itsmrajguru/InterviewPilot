@@ -20,6 +20,9 @@ const {
     handleTextPracticeChat
 } = require('../controllers/interviewController')
 
+const { generateSessionPDF } = require('../services/pdfService')
+const InterviewSession = require('../models/InterviewModel/InterviewSession')
+
 /* importing the auth middleware */
 const { protect } = require('../middleware/authMiddleware')
 
@@ -72,5 +75,24 @@ interviewRouter.post('/:id/complete', completeSession)
 
 /* fetch the full report — accessible to both the student and the recruiter */
 interviewRouter.get('/:id/report', protect, getReport)
+
+interviewRouter.get('/:id/report/pdf', protect, async (req, res) => {
+    try {
+        const session = await InterviewSession.findById(req.params.id)
+        if (!session) return res.status(404).json({ success: false, message: 'Session not found.' })
+        if (session.status !== 'completed') return res.status(400).json({ success: false, message: 'Interview not yet completed.' })
+
+        const pdfBuffer = await generateSessionPDF(session)
+        const filename = `InterviewPilot_Report_${session.role.replace(/\s+/g, '_')}_${session.studentEmail.split('@')[0]}.pdf`
+
+        res.setHeader('Content-Type', 'application/pdf')
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+        res.setHeader('Content-Length', pdfBuffer.length)
+        res.end(pdfBuffer)
+    } catch (e) {
+        console.log('PDF generation error:', e)
+        res.status(500).json({ success: false, message: 'PDF generation failed.' })
+    }
+})
 
 module.exports = { interviewRouter }

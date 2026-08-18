@@ -5,6 +5,7 @@ const InterviewSession = require('../models/InterviewModel/InterviewSession')
 const { generateInterviewQuestions, evaluateAnswer, evaluateCode, generateReport } = require('../services/geminiService')
 const { executeCode } = require('../services/judge0Service')
 const { sendEmail } = require('../services/emailService')
+const { emitToRoom } = require('../utils/socketEmitter')
 
 /* createSession controller*/
 const createSession = async (req, res) => {
@@ -274,6 +275,13 @@ const startSession = async (req, res) => {
         session.startedAt = new Date()
         await session.save()
 
+        emitToRoom(session._id.toString(), 'session:started', {
+            sessionId: session._id,
+            studentEmail: session.studentEmail,
+            role: session.role,
+            startedAt: session.startedAt
+        })
+
         return res.status(200).json({
             success: true,
             message: 'Interview started.',
@@ -345,6 +353,14 @@ const submitAnswer = async (req, res) => {
         session.currentQuestionIndex = Math.max(session.currentQuestionIndex, questionIndex + 1)
 
         await session.save()
+
+        emitToRoom(session._id.toString(), 'session:progress', {
+            sessionId: session._id,
+            questionIndex,
+            answeredCount: session.answers.length,
+            totalQuestions: session.questions.length,
+            currentQuestionIndex: session.currentQuestionIndex
+        })
 
         return res.status(200).json({
             success: true,
@@ -422,6 +438,14 @@ const submitCode = async (req, res) => {
         session.currentQuestionIndex = Math.max(session.currentQuestionIndex, questionIndex + 1)
 
         await session.save()
+
+        emitToRoom(session._id.toString(), 'session:progress', {
+            sessionId: session._id,
+            questionIndex,
+            answeredCount: session.answers.length,
+            totalQuestions: session.questions.length,
+            currentQuestionIndex: session.currentQuestionIndex
+        })
 
         return res.status(200).json({
             success: true,
@@ -545,6 +569,14 @@ const completeSession = async (req, res) => {
                 console.log('CareerSync callback failed (non-blocking) :', callbackErr.message)
             }
         }
+
+        emitToRoom(session._id.toString(), 'session:completed', {
+            sessionId: session._id,
+            studentEmail: session.studentEmail,
+            role: session.role,
+            overallScore: reportData.overallScore,
+            completedAt: session.completedAt
+        })
 
         return res.status(200).json({
             success: true,
@@ -738,6 +770,14 @@ const submitVideoAnswer = async (req, res) => {
 
         session.currentQuestionIndex = Math.max(session.currentQuestionIndex, questionIndex + 1)
         await session.save()
+
+        emitToRoom(session._id.toString(), 'session:progress', {
+            sessionId: session._id,
+            questionIndex,
+            answeredCount: session.answers.length,
+            totalQuestions: session.questions.length,
+            currentQuestionIndex: session.currentQuestionIndex
+        })
 
         return res.status(200).json({
             success:    true,

@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route, } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+
 import LoginPage from "./pages/LoginPage";
 import CompanyLoginPage from "./pages/CompanyLoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -27,11 +29,13 @@ import InterviewReportPage from "./pages/interview/InterviewReportPage";
 
 //Page Not Found Page
 import NotFoundPage from "./pages/NotFoundPage";
+import PrivateRoute from "./components/PrivateRoute";
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         {/* Public routes */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -42,27 +46,34 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* student routes */}
-        <Route path="/student/dashboard" element={<StudentDashboard />} />
-        <Route path="/student/interviews" element={<StudentInterviews />} />
-        <Route path="/student/practice" element={<StudentPractice />} />
-        <Route path="/student/reports" element={<StudentReports />} />
-        <Route path="/student/profile" element={<StudentProfile />} />
-        <Route path="/student/settings" element={<StudentSettings />} />
+        <Route path="/student/dashboard" element={<PrivateRoute role="student"><StudentDashboard /></PrivateRoute>} />
+        <Route path="/student/interviews" element={<PrivateRoute role="student"><StudentInterviews /></PrivateRoute>} />
+        <Route path="/student/practice" element={<PrivateRoute role="student"><StudentPractice /></PrivateRoute>} />
+        <Route path="/student/reports" element={<PrivateRoute role="student"><StudentReports /></PrivateRoute>} />
+        <Route path="/student/profile" element={<PrivateRoute role="student"><StudentProfile /></PrivateRoute>} />
+        <Route path="/student/settings" element={<PrivateRoute role="student"><StudentSettings /></PrivateRoute>} />
 
         {/* company / recruiter routes */}
-        <Route path="/company/dashboard" element={<CompanyDashboard />} />
-        <Route path="/company/interviews" element={<CompanyInterviews />} />
-        <Route path="/company/compare" element={<CompanyCompare />} />
-        <Route path="/company/profile" element={<CompanyProfile />} />
+        <Route path="/company/dashboard" element={<PrivateRoute role="company"><CompanyDashboard /></PrivateRoute>} />
+        <Route path="/company/interviews" element={<PrivateRoute role="company"><CompanyInterviews /></PrivateRoute>} />
+        <Route path="/company/compare" element={<PrivateRoute role="company"><CompanyCompare /></PrivateRoute>} />
+        <Route path="/company/profile" element={<PrivateRoute role="company"><CompanyProfile /></PrivateRoute>} />
 
         {/* Interview flow — public join link, protected room and report */}
         <Route path="/interview/join/:token" element={<JoinInterviewPage />} />
         <Route path="/interview/:id" element={<InterviewRoomPage />} />
         <Route path="/interview/:id/report" element={<InterviewReportPage />} />
 
-        {/* Catch-all route to display the premium 404 page... */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
     </BrowserRouter>
   );
 }

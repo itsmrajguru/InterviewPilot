@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
 import { getStudentDashboard } from "../../services/interviewService";
@@ -227,15 +229,20 @@ export default function StudentReports() {
     <>
       <style>{`
         @keyframes sr-spin { to { transform: rotate(360deg); } }
-        @keyframes sr-fade-up { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .sr-fade-up { animation: sr-fade-up 0.3s cubic-bezier(0.22,1,0.36,1) both; }
         .sr-card { transition: box-shadow 0.18s, transform 0.18s; }
         .sr-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important; transform: translateY(-2px); }
         .sr-filter-btn:hover { background: #f1f4f7 !important; }
         .sr-report-btn:hover { background: var(--accent-hover) !important; }
       `}</style>
 
-      <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="ip-app-wrapper"
+        style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}
+      >
         <Sidebar role="student" />
 
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
@@ -308,6 +315,37 @@ export default function StudentReports() {
               <>
                 {/* ── STATS BAR ── */}
                 <StatsBar reports={reports} />
+
+                {/* ── SCORE TREND CHART ── */}
+                {reports.length > 1 && (
+                  <div style={{
+                    background: "var(--bg-card)", borderRadius: 14, border: "1px solid var(--border)",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)", marginBottom: 24, overflow: "hidden"
+                  }}>
+                    <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Score Trend</span>
+                      <span style={{ fontSize: 11, color: "var(--text-muted)" }}>across your last {Math.min(reports.length, 10)} interviews</span>
+                    </div>
+                    <div style={{ padding: "16px 12px 8px" }}>
+                      <ResponsiveContainer width="100%" height={180}>
+                        <BarChart data={reports.slice(0, 10).reverse().map((r, i) => ({ name: `#${i+1} ${r.role?.split(' ')[0] || ''}`, score: r.report?.overallScore || 0 }))} barSize={28}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                          <XAxis dataKey="name" tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                          <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} width={32} />
+                          <Tooltip
+                            formatter={(v) => [`${v}/100`, 'Score']}
+                            contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-card)' }}
+                          />
+                          <Bar dataKey="score" radius={[6, 6, 0, 0]}>
+                            {reports.slice(0, 10).reverse().map((r, i) => (
+                              <Cell key={i} fill={(r.report?.overallScore || 0) >= 75 ? '#047857' : (r.report?.overallScore || 0) >= 50 ? '#c8932a' : '#b91c1c'} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
 
                 {/* ── FILTER ROW ── */}
                 <div style={{
@@ -476,7 +514,7 @@ export default function StudentReports() {
             )}
           </main>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
