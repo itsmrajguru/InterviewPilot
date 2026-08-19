@@ -102,50 +102,45 @@
 }
 
 :root {
-  /* CareerSync Redesign Core Colors (Mapped to SSMS Theme) */
-  --bg:            var(--color-bg-page);
-  --bg-card:       var(--color-bg-panel);
-  --bg-subtle:     var(--color-bg-panel-sunken);
-  --bg-hover:      var(--color-bg-panel-hover);
+  /* CareerSync Unified SaaS Design Tokens */
+  --bg:            #F8FAFC;
+  --bg-card:       #FFFFFF;
+  --bg-subtle:     #F1F5F9;
+  --bg-hover:      #F8FAFC;
 
-  --border:        var(--color-border-subtle);
-  --border-input:  var(--color-border-subtle);
-  --border-strong: var(--color-border-shadow);
-  --border-focus:  var(--color-primary-500);
+  --border:        #E2E8F0;
+  --border-input:  #E2E8F0;
+  --border-strong: #CBD5E1;
+  --border-focus:  #2563EB;
 
-  --text:          var(--color-text-primary);
-  --text-secondary:var(--color-text-secondary);
-  --text-muted:    var(--color-text-secondary);
-  --text-placeholder: var(--color-text-disabled);
+  --text:          #0F172A;
+  --text-secondary:#64748B;
+  --text-muted:    #94A3B8;
+  --text-placeholder: #94A3B8;
 
-  /* primary accent */
-  --accent:         var(--color-primary-500);
-  --accent-hover:   var(--color-primary-600);
-  --accent-light:   var(--color-primary-50);
-  --accent-border:  var(--color-primary-200);
+  /* Primary accent */
+  --accent:         #2563EB;
+  --accent-hover:   #1D4ED8;
+  --accent-light:   #EEF2FF;
+  --accent-border:  #C7D2FE;
 
-  /* secondary accent */
-  --accent-2:        var(--color-warning-icon);
-  --accent-2-hover:  #b38b3c;
-  --accent-2-light:  var(--color-warning-bg);
-  --accent-2-border: var(--color-warning-border);
-
-  --sidebar-bg:          var(--color-bg-panel);
-  --sidebar-text:        var(--color-text-secondary);
-  --sidebar-active-bg:   var(--color-primary-50);
-  --sidebar-active-text: var(--color-primary-500);
+  /* Sidebar Tokens */
+  --sidebar-bg:          #FFFFFF;
+  --sidebar-text:        #64748B;
+  --sidebar-active-bg:   #EEF2FF;
+  --sidebar-active-text: #2563EB;
 
   /* Surface tiers */
-  --color-bg-page: #F6F7FB;        /* page background */
+  --color-bg-page: #F8FAFC;        /* page background */
   --color-bg-panel: #FFFFFF;       /* card/panel surface */
   --color-bg-sidebar: #FFFFFF;
-  --color-bg-panel-hover: #F7F9FB; /* hovered row / nested surface inside a card */
-  --color-bg-panel-sunken: #EDF1F5;/* input fields, progress track backgrounds */
+  --color-bg-panel-hover: #F8FAFC; /* hovered row / nested surface inside a card */
+  --color-bg-panel-sunken: #F1F5F9;/* input fields, progress track backgrounds */
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(16,24,40,0.06);
-  --shadow-md: 0 1px 3px rgba(16,24,40,0.10), 0 1px 2px rgba(16,24,40,0.06);
-  --shadow-lg: 0 4px 8px rgba(16,24,40,0.12), 0 2px 4px rgba(16,24,40,0.08);
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md: 0 1px 3px rgba(15,23,42,0.08), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-lg: 0 4px 12px rgba(15,23,42,0.08);
 
   /* Spacing scale */
   --space-1: 4px;
@@ -216,6 +211,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -228,6 +228,29 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Stat Cards Responsive Grid */
+.ip-stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .ip-stat-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ip-stat-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
 
 h1,

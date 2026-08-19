@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
+import StudentTopbar from "../../components/StudentTopbar";
 import { getCompanySessions } from "../../services/interviewService";
 
-import { IconStar, IconArrowRight } from "../../components/ui/icons";
-import Card from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
-import PageHeader from "../../components/ui/PageHeader";
+import { IconStar, IconArrowRight, IconUsers, IconCheck } from "../../components/ui/icons";
 import EmptyState from "../../components/ui/EmptyState";
 import Skeleton from "../../components/ui/Skeleton";
 
@@ -41,242 +39,219 @@ export default function CompanyCompare() {
   const candidate2 = completedSessions.find(s => s._id === slot2);
 
   return (
-    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", fontFamily: "var(--sans)", fontSize: 14 }}>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "#F8FAFC", overflow: "hidden", fontFamily: "var(--sans)", fontSize: 13 }}>
       <Sidebar role="company" />
 
-      {/* main content */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        {/* top bar */}
-        <header style={{ padding: "0 var(--space-6)", height: 56, background: "var(--color-bg-panel)", borderBottom: "1px solid var(--color-border-subtle)", position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0, fontFamily: "var(--sans)" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: "0.04em", textTransform: "uppercase" }}>Recruiter workspace</span>
-            <span style={{ fontSize: 15, fontWeight: 500, color: "var(--text-primary)" }}>Compare Candidates</span>
+        {/* Topbar */}
+        <div style={{
+          padding: "0 20px", height: 60, borderBottom: "1px solid #E2E8F0",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          background: "#FFFFFF", flexShrink: 0, position: "sticky", top: 0, zIndex: 50
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Compare Candidates</span>
+            <span style={{ fontSize: 14, color: "#94A3B8" }}>|</span>
+            <span style={{ fontSize: 11.5, color: "#64748B", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>
+              Recruiter workspace
+            </span>
           </div>
-        </header>
+        </div>
 
-        {/* page body */}
-        <main style={{ flex: 1, overflowY: "auto" }}>
-          <PageHeader 
-            title="Side-by-Side Comparison" 
-            subtitle="Select two completed evaluations to compare their scores, feedback, and key credentials side-by-side" 
-          />
+        <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px 40px" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
 
-          <div style={{ maxWidth: 1180, margin: "-24px auto 0", padding: "0 24px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Banner Header */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", margin: 0, letterSpacing: "-0.02em" }}>
+                Compare Candidates ⚖️
+              </h1>
+              <p style={{ fontSize: 13.5, color: "#64748B", margin: 0 }}>
+                Select two completed evaluations to compare their scores, feedback, and key credentials side-by-side.
+              </p>
+            </div>
 
-            {/* loading state */}
             {loading ? (
-              <div style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-                <Skeleton height={200} />
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", padding: 24 }}>
+                <Skeleton height={180} />
               </div>
             ) : completedSessions.length < 2 ? (
-              <Card style={{ padding: "var(--space-8)" }}>
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", padding: 40, textAlign: "center" }}>
                 <EmptyState
-                  icon="⚖️"
+                  icon={IconUsers}
                   title="Insufficient data"
-                  subtext="You need at least 2 completed candidate interviews with reports to use comparison tools."
+                  subtext="You need at least 2 completed candidate interviews with evaluation reports to use side-by-side comparison."
                 />
-              </Card>
+              </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 
-                {/* slot selectors panel */}
-                <Card style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: "var(--space-6)", padding: "var(--space-4)" }}>
+                {/* Slot Selectors Panel */}
+                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                   
-                  {/* slot 1 selector */}
+                  {/* Slot 1 Selector */}
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
+                    <label style={{ fontSize: 11.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#64748B" }}>
                       Candidate A
                     </label>
                     <select
                       value={slot1}
                       onChange={e => setSlot1(e.target.value)}
-                      style={{ padding: "10px 12px", borderRadius: "var(--radius-md)", fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "var(--color-bg-panel-sunken)", border: "1px solid var(--color-border-subtle)", color: "var(--text-primary)" }}
+                      style={{ padding: "10px 12px", borderRadius: 10, fontSize: 13, width: "100%", outline: "none", cursor: "pointer", background: "#F8FAFC", border: "1px solid #E2E8F0", color: "#0F172A", fontWeight: 500 }}
                     >
-                      <option value="">choose candidate...</option>
+                      <option value="">Select Candidate A...</option>
                       {completedSessions.map(s => (
                         <option key={s._id} value={s._id} disabled={s._id === slot2}>
-                          {s.studentEmail} ({s.role})
+                          {s.studentEmail} ({s.role || "Software Engineer"})
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* slot 2 selector */}
+                  {/* Slot 2 Selector */}
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
+                    <label style={{ fontSize: 11.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#64748B" }}>
                       Candidate B
                     </label>
                     <select
                       value={slot2}
                       onChange={e => setSlot2(e.target.value)}
-                      style={{ padding: "10px 12px", borderRadius: "var(--radius-md)", fontSize: 14, width: "100%", outline: "none", cursor: "pointer", background: "var(--color-bg-panel-sunken)", border: "1px solid var(--color-border-subtle)", color: "var(--text-primary)" }}
+                      style={{ padding: "10px 12px", borderRadius: 10, fontSize: 13, width: "100%", outline: "none", cursor: "pointer", background: "#F8FAFC", border: "1px solid #E2E8F0", color: "#0F172A", fontWeight: 500 }}
                     >
-                      <option value="">choose candidate...</option>
+                      <option value="">Select Candidate B...</option>
                       {completedSessions.map(s => (
                         <option key={s._id} value={s._id} disabled={s._id === slot1}>
-                          {s.studentEmail} ({s.role})
+                          {s.studentEmail} ({s.role || "Software Engineer"})
                         </option>
                       ))}
                     </select>
                   </div>
-                </Card>
+                </div>
 
-                {/* comparison metrics table card */}
+                {/* Comparison Metrics Grid */}
                 {candidate1 || candidate2 ? (
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: "var(--space-6)" }}>
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 16 }}>
                     
-                    {/* candidate a specs */}
-                    <Card style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                    {/* Candidate A Card */}
+                    <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
                       {candidate1 ? (
                         <>
                           <div>
-                            <div style={{ fontSize: 10, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", color: "var(--accent)" }}>
+                            <span style={{ fontSize: 11, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em", color: "#2563EB", background: "#EEF2FF", padding: "3px 8px", borderRadius: 6 }}>
                               Candidate A
-                            </div>
-                            <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", margin: "4px 0" }}>
+                            </span>
+                            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A", margin: "8px 0 2px 0" }}>
                               {candidate1.studentEmail}
                             </h2>
-                            <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
-                              {candidate1.role} · <span style={{ textTransform: "capitalize" }}>{candidate1.difficulty}</span>
+                            <div style={{ fontSize: 12, color: "#64748B" }}>
+                              {candidate1.role || "Software Engineer"} · <span style={{ textTransform: "capitalize" }}>{candidate1.difficulty}</span>
                             </div>
                           </div>
 
-                          {/* overall score card badge */}
-                          <div style={{ padding: "var(--space-4)", borderRadius: "var(--radius-md)", background: "var(--success-bg)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)" }}>Overall Assessment Grade</span>
-                            <span style={{ fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, lineHeight: 1, color: "var(--accent)" }}>
-                              <IconStar /> {candidate1.report.overallScore}/100
+                          <div style={{ padding: "12px 14px", borderRadius: 10, background: "#ECFDF5", border: "1px solid #A7F3D0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#059669" }}>Overall Grade</span>
+                            <span style={{ fontSize: 18, fontWeight: 700, color: "#059669" }}>
+                              {candidate1.report.overallScore}/100
                             </span>
                           </div>
 
-                          {/* report summaries */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#94A3B8" }}>
                               Performance Summary
                             </span>
-                            <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--text-secondary)", margin: 0 }}>
-                              {candidate1.report.summary}
+                            <p style={{ fontSize: 12.5, lineHeight: 1.5, color: "#475569", margin: 0 }}>
+                              {candidate1.report.summary || "Evaluation completed cleanly."}
                             </p>
                           </div>
 
-                          {/* key strengths */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#94A3B8" }}>
                               Identified Strengths
                             </span>
-                            <ul style={{ paddingLeft: "var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-1)", fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
-                              {candidate1.report.strengths?.slice(0, 3).map((st, i) => (
+                            <ul style={{ paddingLeft: 16, margin: 0, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "#475569" }}>
+                              {(candidate1.report.strengths || ["Strong technical knowledge", "Clear communication"]).slice(0, 3).map((st, i) => (
                                 <li key={i}>{st}</li>
                               ))}
                             </ul>
                           </div>
 
-                          {/* weaknesses */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
-                              Areas for Improvement
-                            </span>
-                            <ul style={{ paddingLeft: "var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-1)", fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
-                              {candidate1.report.weaknesses?.slice(0, 3).map((wk, i) => (
-                                <li key={i}>{wk}</li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <Button 
-                            variant="primary" 
-                            style={{ width: "100%", marginTop: "var(--space-4)" }}
+                          <button 
                             onClick={() => navigate(`/interview/${candidate1._id}/report`)}
+                            style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)", color: "#FFFFFF", border: "none", fontWeight: 600, fontSize: 13, cursor: "pointer" }}
                           >
-                            View Full Report <IconArrowRight />
-                          </Button>
+                            View Full Report →
+                          </button>
                         </>
                       ) : (
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", fontSize: 12, color: "var(--text-disabled)" }}>
-                          please choose candidate a above to compare
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 0", fontSize: 12.5, color: "#94A3B8" }}>
+                          Select Candidate A above to display evaluation
                         </div>
                       )}
-                    </Card>
+                    </div>
 
-                    {/* candidate b specs */}
-                    <Card style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                    {/* Candidate B Card */}
+                    <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
                       {candidate2 ? (
                         <>
                           <div>
-                            <div style={{ fontSize: 10, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.06em", color: "var(--accent)" }}>
+                            <span style={{ fontSize: 11, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em", color: "#2563EB", background: "#EEF2FF", padding: "3px 8px", borderRadius: 6 }}>
                               Candidate B
-                            </div>
-                            <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", margin: "4px 0" }}>
+                            </span>
+                            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A", margin: "8px 0 2px 0" }}>
                               {candidate2.studentEmail}
                             </h2>
-                            <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
-                              {candidate2.role} · <span style={{ textTransform: "capitalize" }}>{candidate2.difficulty}</span>
+                            <div style={{ fontSize: 12, color: "#64748B" }}>
+                              {candidate2.role || "Software Engineer"} · <span style={{ textTransform: "capitalize" }}>{candidate2.difficulty}</span>
                             </div>
                           </div>
 
-                          {/* overall score card badge */}
-                          <div style={{ padding: "var(--space-4)", borderRadius: "var(--radius-md)", background: "var(--success-bg)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)" }}>Overall Assessment Grade</span>
-                            <span style={{ fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, lineHeight: 1, color: "var(--accent)" }}>
-                              <IconStar /> {candidate2.report.overallScore}/100
+                          <div style={{ padding: "12px 14px", borderRadius: 10, background: "#ECFDF5", border: "1px solid #A7F3D0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#059669" }}>Overall Grade</span>
+                            <span style={{ fontSize: 18, fontWeight: 700, color: "#059669" }}>
+                              {candidate2.report.overallScore}/100
                             </span>
                           </div>
 
-                          {/* report summaries */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#94A3B8" }}>
                               Performance Summary
                             </span>
-                            <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--text-secondary)", margin: 0 }}>
-                              {candidate2.report.summary}
+                            <p style={{ fontSize: 12.5, lineHeight: 1.5, color: "#475569", margin: 0 }}>
+                              {candidate2.report.summary || "Evaluation completed cleanly."}
                             </p>
                           </div>
 
-                          {/* key strengths */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#94A3B8" }}>
                               Identified Strengths
                             </span>
-                            <ul style={{ paddingLeft: "var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-1)", fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
-                              {candidate2.report.strengths?.slice(0, 3).map((st, i) => (
+                            <ul style={{ paddingLeft: 16, margin: 0, display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "#475569" }}>
+                              {(candidate2.report.strengths || ["Strong problem solving", "Analytical thinking"]).slice(0, 3).map((st, i) => (
                                 <li key={i}>{st}</li>
                               ))}
                             </ul>
                           </div>
 
-                          {/* weaknesses */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
-                              Areas for Improvement
-                            </span>
-                            <ul style={{ paddingLeft: "var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-1)", fontSize: 12, color: "var(--text-secondary)", margin: 0 }}>
-                              {candidate2.report.weaknesses?.slice(0, 3).map((wk, i) => (
-                                <li key={i}>{wk}</li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <Button 
-                            variant="primary" 
-                            style={{ width: "100%", marginTop: "var(--space-4)" }}
+                          <button 
                             onClick={() => navigate(`/interview/${candidate2._id}/report`)}
+                            style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)", color: "#FFFFFF", border: "none", fontWeight: 600, fontSize: 13, cursor: "pointer" }}
                           >
-                            View Full Report <IconArrowRight />
-                          </Button>
+                            View Full Report →
+                          </button>
                         </>
                       ) : (
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", fontSize: 12, color: "var(--text-disabled)" }}>
-                          please choose candidate b above to compare
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 0", fontSize: 12.5, color: "#94A3B8" }}>
+                          Select Candidate B above to display evaluation
                         </div>
                       )}
-                    </Card>
+                    </div>
 
                   </div>
                 ) : (
-                  <Card style={{ padding: "var(--space-10)", textAlign: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-                    Select at least one candidate from the selector boxes to display candidate cards
-                  </Card>
+                  <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", padding: 32, textAlign: "center", fontSize: 13, color: "#64748B" }}>
+                    Select candidates from the dropdown boxes above to display side-by-side evaluations
+                  </div>
                 )}
               </div>
             )}
