@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Button from "./ui/Button";
 
 /* icons */
 const IconHome = () => (
@@ -17,76 +18,53 @@ const IconPlay = () => (
 export default function StudentTopbar({ title, sub }) {
   const navigate = useNavigate();
 
-  const ghostBtn = {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    padding: "7px 14px",
-    borderRadius: "var(--radius)",
-    border: "0.5px solid var(--border-strong)",
-    background: "transparent",
-    color: "var(--text-secondary)",
-    fontSize: 13,
-    cursor: "pointer",
-    fontFamily: "var(--font-sans)",
-  };
-
-  const primaryBtn = {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    padding: "7px 16px",
-    borderRadius: "var(--radius)",
-    border: "none",
-    background: "var(--accent)",
-    color: "#fff",
-    fontSize: 13,
-    cursor: "pointer",
-    fontWeight: 500,
-    fontFamily: "var(--font-sans)",
-  };
-
   return (
     <div className="ip-hidden-mobile"
       style={{
-        padding: "0 28px",
+        padding: "0 var(--space-6)",
         height: 56,
-        borderBottom: "0.5px solid var(--border)",
+        borderBottom: "1px solid #E2E8F0",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "var(--surface-2)",
+        background: "#FFFFFF",
         flexShrink: 0,
         position: "sticky",
         top: 0,
         zIndex: 50,
-        fontFamily: "var(--font-sans)",
+        fontFamily: "var(--sans)",
         fontSize: 14,
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <span style={{ fontSize: 11, color: "var(--text-muted)", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-          Student workspace
-        </span>
-        <span style={{ fontSize: 15, fontWeight: 500, color: "var(--text-primary)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}>
           {title}
+        </span>
+        <span style={{ fontSize: 14, color: "#94A3B8" }}>|</span>
+        <span style={{ fontSize: 12, color: "#64748B", letterSpacing: "0.05em", textTransform: "uppercase", fontWeight: 600 }}>
+          Student workspace
         </span>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <button
-          onClick={() => navigate("/student/dashboard")}
-          style={ghostBtn}
-          onMouseEnter={e => e.currentTarget.style.background = "var(--surface-1)"}
-          onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-        >
-          <IconHome /> Dashboard
-        </button>
-        <button
           onClick={() => navigate("/student/practice")}
-          style={primaryBtn}
-          onMouseEnter={e => e.currentTarget.style.background = "var(--accent-hover)"}
-          onMouseLeave={e => e.currentTarget.style.background = "var(--accent)"}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "8px 16px",
+            borderRadius: "8px",
+            background: "#0284C7",
+            color: "#FFFFFF",
+            border: "none",
+            fontWeight: 600,
+            fontSize: 13,
+            cursor: "pointer",
+            transition: "background 0.15s"
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = "#0369A1"}
+          onMouseLeave={e => e.currentTarget.style.background = "#0284C7"}
         >
           <IconPlay /> Start practice
         </button>

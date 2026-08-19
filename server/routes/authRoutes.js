@@ -14,6 +14,6 @@ authRouter.post('/verify-otp', authController.verifySignupOtp)
 authRouter.post('/token/refresh', authController.refreshToken);
 authRouter.post('/forgot-password', authRateLimiter, authController.forgotPassword);
 authRouter.post('/reset-password', authRateLimiter, authController.resetPassword);
-authRouter.post('/logout', (req, res) => res.json({ success: true, message: 'Logged out' }));
+authRouter.post('/logout', authController.logout);
 
 module.exports = { authRouter }

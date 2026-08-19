@@ -39,12 +39,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--sans)", fontSize: 14 }}>
       <div style={{ width: "100%", maxWidth: 440, padding: 24 }}>
         
         {/* logo and header */}
         <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", cursor: "pointer", marginBottom: 16 }} onClick={() => navigate("/")}>
+          <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-card)", cursor: "pointer", marginBottom: 16 }} onClick={() => navigate("/")}>
             <img src="/logo.svg" alt="CareerSync" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
@@ -56,23 +56,23 @@ export default function LoginPage() {
         </div>
 
         {/* auth card */}
-        <div className="ip-auth-box" style={{ background: "var(--bg-card)",
-          border: "0.5px solid var(--border)",
-          borderRadius: 12,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
+        <div className="ip-auth-box" style={{ background: "var(--color-bg-panel)",
+          border: "1px solid var(--color-border-subtle)",
+          borderRadius: "var(--radius-lg)",
+          boxShadow: "var(--shadow-md)",
           padding: 32,
           width: "100%"
         }}>
           {error && (
-            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: 8, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
+            <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "12px 16px", borderRadius: "var(--radius-md)", background: "var(--danger-bg)", color: "var(--danger-text)", border: "1px solid var(--danger-border)" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--danger-text)", flexShrink: 0 }} />
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Email address</label>
+              <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>Email address</label>
               <input
                 type="email"
                 name="email"
@@ -80,15 +80,15 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@example.com"
-                style={{ padding: "10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
-                onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-card)"; }}
-                onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
+                style={{ padding: "10px 14px", borderRadius: "var(--radius-md)", fontSize: 14, width: "100%", outline: "none", background: "var(--color-bg-panel-sunken)", border: "1px solid var(--color-border-subtle)", color: "var(--text-primary)" }}
+                onFocus={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "var(--color-bg-panel)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "var(--color-border-subtle)"; e.currentTarget.style.background = "var(--color-bg-panel-sunken)"; }}
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>Password</label>
+                <label style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>Password</label>
                 <Link to="/forgot-password" style={{ fontSize: 11, fontWeight: 700, color: "var(--accent)", textDecoration: "none" }}>
                   Forgot Password?
                 </Link>
@@ -103,9 +103,9 @@ export default function LoginPage() {
                   required
                   placeholder="••••••••"
                   minLength={6}
-                  style={{ padding: "10px 38px 10px 14px", borderRadius: 8, fontSize: 14, width: "100%", outline: "none", background: "var(--surface-1)", border: "0.5px solid var(--border)", color: "var(--text-primary)" }}
-                  onFocus={e => { e.currentTarget.style.borderColor = "var(--text-primary)"; e.currentTarget.style.background = "var(--bg-card)"; }}
-                  onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; }}
+                  style={{ padding: "10px 38px 10px 14px", borderRadius: "var(--radius-md)", fontSize: 14, width: "100%", outline: "none", background: "var(--color-bg-panel-sunken)", border: "1px solid var(--color-border-subtle)", color: "var(--text-primary)" }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "var(--color-bg-panel)"; }}
+                  onBlur={e => { e.currentTarget.style.borderColor = "var(--color-border-subtle)"; e.currentTarget.style.background = "var(--color-bg-panel-sunken)"; }}
                 />
                 <button
                   type="button"
@@ -125,13 +125,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%", marginTop: 8 }}
+              style={{ fontSize: 14, color: "var(--color-bg-panel)", background: "var(--accent)", border: "none", borderRadius: "var(--radius-md)", padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%", marginTop: 8 }}
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <div style={{ marginTop: 24, paddingTop: 20, display: "flex", flexDirection: "column", gap: 8, textAlign: "center", fontSize: 12, borderTop: "0.5px solid var(--border)", color: "var(--text-secondary)" }}>
+          <div style={{ marginTop: 24, paddingTop: 20, display: "flex", flexDirection: "column", gap: 8, textAlign: "center", fontSize: 12, borderTop: "1px solid var(--color-border-subtle)", color: "var(--text-secondary)" }}>
             <div>
               New here? <Link to="/signup" style={{ fontWeight: 500, color: "var(--text-primary)", textDecoration: "none" }}>Create an account</Link>
             </div>
@@ -142,7 +142,7 @@ export default function LoginPage() {
         </div>
         
         {/* footer */}
-        <div style={{ marginTop: 32, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)" }}>
+        <div style={{ marginTop: 32, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 16, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-secondary)" }}>
           <span>&copy; 2026 CareerSync</span>
           <Link to="/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</Link>
           <Link to="/legal" style={{ color: "inherit", textDecoration: "none" }}>Legal</Link>
@@ -151,3 +151,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

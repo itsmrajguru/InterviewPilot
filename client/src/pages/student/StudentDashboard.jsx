@@ -2,148 +2,24 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
-import TextPracticeTerminal from "../../components/TextPracticeTerminal";
 import { getStudentDashboard } from "../../services/interviewService";
 
-const S = {
-  metric: {
-    background: "var(--bg-card)",
-    border: "1px solid var(--border)",
-    borderRadius: 12,
-    padding: "18px 20px",
-    position: "relative",
-    overflow: "hidden",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-  },
-  metricLabel: {
-    fontSize: 11,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    color: "var(--text-muted)",
-    marginBottom: 10,
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-  },
-  metricValue: {
-    fontSize: 28,
-    fontWeight: 500,
-    color: "var(--text-primary)",
-    lineHeight: 1,
-  },
-  metricSub: {
-    fontSize: 12,
-    color: "var(--text-muted)",
-    marginTop: 6,
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  },
-  card: {
-    background: "var(--bg-card)",
-    border: "1px solid var(--border)",
-    borderRadius: 12,
-    overflow: "hidden",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-  },
-  cardHeader: {
-    padding: "16px 20px 14px",
-    borderBottom: "0.5px solid var(--border)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  cardTitle: {
-    fontSize: 13,
-    fontWeight: 500,
-    color: "var(--text-primary)",
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  },
-  cardBody: {
-    padding: "16px 20px",
-  },
-};
+import {
+  IconClock, IconCircleCheck, IconStar, IconFlame,
+  IconMessages, IconBolt, IconTarget, IconArrowRight,
+  IconVideo, IconTerminal, IconChartBar, IconUpload,
+  IconCalendar, IconCheck, IconTrendUp, IconEmptyInbox
+} from "../../components/ui/icons";
 
-const IconClock = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-  </svg>
-);
-const IconCircleCheck = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>
-  </svg>
-);
-const IconStar = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-  </svg>
-);
-const IconFlame = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-  </svg>
-);
-const IconMessages = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-);
-const IconBolt = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-  </svg>
-);
-const IconTarget = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
-  </svg>
-);
-const IconArrowRight = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-  </svg>
-);
-const IconVideo = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-  </svg>
-);
-const IconTerminal = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
-  </svg>
-);
-const IconChartBar = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
-    <line x1="6" y1="20" x2="6" y2="14"/>
-  </svg>
-);
-const IconUpload = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-hover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
-    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-  </svg>
-);
-const IconCalendar = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-);
-const IconCheck = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-);
-const IconTrendUp = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
-  </svg>
-);
+import Card from "../../components/ui/Card";
+import StatCard from "../../components/ui/StatCard";
+import Button from "../../components/ui/Button";
+import Badge from "../../components/ui/Badge";
+import PageHeader from "../../components/ui/PageHeader";
+import EmptyState from "../../components/ui/EmptyState";
+import Skeleton from "../../components/ui/Skeleton";
+
+const capitalize = str => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
 
 function ScoreRing({ score }) {
   const r = 18;
@@ -151,7 +27,7 @@ function ScoreRing({ score }) {
   const offset = circ * (1 - score / 100);
   return (
     <svg style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)" }} width="44" height="44" viewBox="0 0 44 44">
-      <circle cx="22" cy="22" r={r} fill="none" stroke="var(--border-input)" strokeWidth="4"/>
+      <circle cx="22" cy="22" r={r} fill="none" stroke="var(--color-bg-panel-sunken)" strokeWidth="4"/>
       <circle cx="22" cy="22" r={r} fill="none" stroke="var(--accent)" strokeWidth="4"
         strokeDasharray={circ.toFixed(1)} strokeDashoffset={offset.toFixed(1)}
         strokeLinecap="round" transform="rotate(-90 22 22)" opacity="0.6"/>
@@ -165,12 +41,12 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  //get user from localstorage
   const user = (() => {
     try { return JSON.parse(localStorage.getItem("user") || "{}"); }
     catch { return {}; }
   })();
-  const firstName = user?.name?.split(" ")[0] || user?.email?.split("@")[0] || "there";
+  const rawName = user?.name || user?.email || "dev.msrajguru";
+  const firstName = rawName.includes("@") ? rawName.split("@")[0] : rawName.split(" ")[0];
 
   useEffect(() => {
     (async () => {
@@ -188,6 +64,16 @@ export default function StudentDashboard() {
   const pending   = data?.pendingInterviews   || [];
   const completed = data?.completedInterviews || [];
   const avgScore  = data?.avgScore ?? null;
+
+  const streak = useMemo(() => {
+    if (!completed.length) return 0;
+    const dates = new Set(completed.map(s => {
+      if (!s.createdAt) return null;
+      const d = new Date(s.createdAt);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }).filter(Boolean));
+    return dates.size;
+  }, [completed]);
 
   const skillBreakdown = useMemo(() => {
     if (!completed.length) return null;
@@ -213,224 +99,209 @@ export default function StudentDashboard() {
   const today = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 
   const qaActions = [
-    { icon: <IconVideo />, label: "Video practice", sub: "Mock round", onClick: () => navigate("/student/practice") },
-    { icon: <IconTerminal />, label: "Text practice", sub: "DSA + concepts", onClick: () => navigate("/student/practice") },
-    { icon: <IconChartBar />, label: "View reports", sub: "All sessions", onClick: () => navigate("/student/reports") },
-    { icon: <IconUpload />, label: "Upload resume", sub: "Update profile", onClick: () => navigate("/student/profile") },
+    { icon: <IconVideo />, label: "Video practice", sub: "Mock round", bg: "#EEF0FD", color: "#4F46E5", onClick: () => navigate("/student/practice") },
+    { icon: <IconTerminal />, label: "Text practice", sub: "DSA + concepts", bg: "#E6F7F5", color: "#0D9488", onClick: () => navigate("/student/practice") },
+    { icon: <IconChartBar />, label: "View reports", sub: "All sessions", bg: "#EEF6FD", color: "#0284C7", onClick: () => navigate("/student/reports") },
+    { icon: <IconUpload />, label: "Upload resume", sub: "Update profile", bg: "#FFF8EC", color: "#D97706", onClick: () => navigate("/student/profile") },
   ];
 
   const skillRows = skillBreakdown ? [
-    { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "var(--accent)" },
-    { label: "Technical", pct: skillBreakdown.tech, color: "var(--text-secondary)" },
-    { label: "Coding", pct: skillBreakdown.code, color: "var(--text-muted)" },
-    { label: "Communication", pct: skillBreakdown.comm, color: "var(--accent)" },
+    { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "#f59e0b" },
+    { label: "Technical", pct: skillBreakdown.tech, color: "#0ea5e9" },
+    { label: "Coding", pct: skillBreakdown.code, color: "#10b981" },
+    { label: "Communication", pct: skillBreakdown.comm, color: "#f43f5e" },
   ] : [
-    { label: "HR / Behavioural", pct: null, color: "var(--accent)" },
-    { label: "Technical", pct: null, color: "var(--text-secondary)" },
-    { label: "Coding", pct: null, color: "var(--text-muted)" },
-    { label: "Communication", pct: null, color: "var(--accent)" },
+    { label: "HR / Behavioural", pct: null, color: "#f59e0b" },
+    { label: "Technical", pct: null, color: "#0ea5e9" },
+    { label: "Coding", pct: null, color: "#10b981" },
+    { label: "Communication", pct: null, color: "#f43f5e" },
   ];
 
   return (
-    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "#F1F5F9", overflow: "hidden", fontFamily: "var(--sans)", fontSize: 13 }}>
       <Sidebar role="student" pendingCount={pending.length} />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <StudentTopbar title="Dashboard" sub="" />
 
-        <div style={{ flex: 1, overflowY: "auto", padding: 28, display: "flex", flexDirection: "column", gap: 24 }}>
+        <main style={{ flex: 1, overflowY: "auto" }}>
+          <PageHeader 
+            title={`Welcome back, ${firstName} 👋`} 
+            subtitle="Here's a snapshot of your interview activity..."
+          />
 
-          {error && (
-            <div style={{ padding: "10px 14px", borderRadius: 8, background: "var(--color-danger-bg)", color: "var(--color-danger-text)", fontSize: 13, border: "0.5px solid var(--color-danger-border)" }}>
-              {error}
-            </div>
-          )}
+          <div style={{ maxWidth: 1180, margin: "-24px auto 0", padding: "0 24px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
 
-          <div className="ip-header-flex" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-            <div>
-              <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)" }}>Welcome back, {firstName} 👋</h1>
-              <p style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4 }}>Here's a snapshot of your interview activity today.</p>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: "var(--radius)", padding: "6px 12px", fontSize: 12, color: "var(--text-secondary)", flexShrink: 0 }}>
-              <IconCalendar /> {today}
-            </div>
-          </div>
-
-          <div className="ip-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-            <div style={{ ...S.metric, borderLeft: "2px solid var(--accent)" }}>
-              <div style={S.metricLabel}><IconClock /> Pending</div>
-              <div style={S.metricValue}>{loading ? "—" : pending.length}</div>
-              <div style={{ ...S.metricSub, color: "var(--text-muted)" }}>
-                <IconCheck style={{ fontSize: 13 }} /> All clear
+            {error && (
+              <div style={{ padding: "10px 14px", borderRadius: "8px", background: "var(--danger-bg)", color: "var(--danger-text)", fontSize: 12, border: "1px solid var(--danger-border)" }}>
+                {error}
               </div>
+            )}
+
+            {/* 3 Top Stat Cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+              <StatCard 
+                label="PENDING" 
+                value={loading ? <Skeleton width={30} height={22} /> : pending.length}
+                sub={pending.length > 0 ? <><IconClock style={{ marginRight: 4 }}/> {pending.length} awaiting you</> : <><IconCheck style={{ marginRight: 4 }}/> All clear</>}
+                icon={IconClock}
+                hue="amber"
+                badge={
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 10, background: "#FEF3C7", color: "#B45309" }}>
+                    Action needed
+                  </span>
+                }
+              />
+              <StatCard 
+                label="COMPLETED" 
+                value={loading ? <Skeleton width={30} height={22} /> : completed.length}
+                sub={completed.length > 0 ? <><IconTrendUp style={{ marginRight: 4 }}/> +{completed.length} total</> : "Complete your first interview"}
+                icon={IconCircleCheck}
+                hue="emerald"
+                badge={
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 10, background: "#D1FAE5", color: "#047857" }}>
+                    No sessions
+                  </span>
+                }
+              />
+              <StatCard 
+                label="AVG. SCORE" 
+                value={loading ? <Skeleton width={30} height={22} /> : (avgScore !== null ? avgScore : "—")}
+                sub={avgScore !== null ? "out of 100" : "No interviews yet"}
+                icon={IconStar}
+                hue="sky"
+                badge={
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 10, background: "#E0F2FE", color: "#0369A1" }}>
+                    Benchmark
+                  </span>
+                }
+              />
             </div>
 
-            <div style={S.metric}>
-              <div style={S.metricLabel}><IconCircleCheck /> Completed</div>
-              <div style={S.metricValue}>{loading ? "—" : completed.length}</div>
-              {completed.length > 0 ? (
-                <div style={{ ...S.metricSub, color: "var(--accent)" }}>
-                  <IconTrendUp /> +{completed.length} total
+            {/* Main 2-column Section */}
+            <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 16, alignItems: "start" }}>
+              
+              {/* Left Column: Recent Interviews Card */}
+              <div style={{ background: "#FFFFFF", borderRadius: 12, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(0,0,0,0.03)", padding: 16, display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}>
+                    <IconMessages style={{ color: "#0284C7", width: 16, height: 16 }} /> Recent interviews
+                  </span>
                 </div>
-              ) : (
-                <div style={S.metricSub}>Complete your first interview</div>
-              )}
-            </div>
 
-            <div style={S.metric}>
-              <div style={S.metricLabel}><IconStar /> Avg. score</div>
-              <div style={{ ...S.metricValue, color: avgScore !== null ? "var(--accent)" : "var(--text-primary)" }}>
-                {loading ? "—" : avgScore !== null ? avgScore : "—"}
-              </div>
-              <div style={S.metricSub}>{avgScore !== null ? "out of 100" : "No interviews yet"}</div>
-              {!loading && avgScore !== null && <ScoreRing score={avgScore} />}
-            </div>
-
-            <div style={S.metric}>
-              <div style={S.metricLabel}><IconFlame /> Practice streak</div>
-              <div style={S.metricValue}>—</div>
-              <div style={S.metricSub}>Start today</div>
-            </div>
-          </div>
-
-          <div className="ip-grid-2-col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 16 }}>
-            <div style={S.card}>
-              <div style={S.cardHeader}>
-                <span style={S.cardTitle}><IconMessages /> Recent interviews</span>
-                {completed.length > 0 && (
-                  <Link to="/student/interviews" style={{ fontSize: 12, color: "var(--accent)", display: "flex", alignItems: "center", gap: 3, textDecoration: "none" }}>
-                    View all <IconArrowRight />
-                  </Link>
-                )}
-              </div>
-              <div style={{ padding: "8px 20px" }}>
-                {loading ? (
-                  <div style={{ textAlign: "center", padding: "20px 0", color: "var(--text-muted)", fontSize: 13 }}>Loading...</div>
-                ) : recentSessions.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "20px 0", color: "var(--text-muted)", fontSize: 13 }}>
-                    <div style={{ fontSize: 28, marginBottom: 8 }}>📋</div>
-                    No interviews yet
-                  </div>
-                ) : (
-                  <>
-                    {recentSessions.map((iv) => (
-                      <div key={iv._id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: "0.5px solid var(--border)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {loading ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {[1,2,3].map(i => (
+                        <Skeleton key={i} height={50} />
+                      ))}
+                    </div>
+                  ) : recentSessions.length === 0 ? (
+                    <EmptyState 
+                      icon={IconEmptyInbox} 
+                      title="No interviews yet"
+                    />
+                  ) : (
+                    recentSessions.map((iv) => (
+                      <div key={iv._id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 10, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
                         <div style={{
-                          width: 34, height: 34, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 15,
-                          background: iv.status === "completed" ? "#e1f5ee" : iv.status === "pending" ? "#faeeda" : "var(--surface-1)",
-                          color: iv.status === "completed" ? "var(--accent-hover)" : iv.status === "pending" ? "#854f0b" : "var(--text-muted)",
+                          width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                          background: "#FEF3C7", color: "#D97706",
                         }}>
-                          {iv.status === "completed" ? (
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
-                          ) : (
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                          )}
+                          <IconClock style={{ width: 16, height: 16 }} />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {iv.role || "Software Engineer"} interview
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {iv.role || "gfd interview"}
                           </div>
-                          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
-                            Company · {iv.difficulty || "Medium"} · {iv.createdAt ? new Date(iv.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—"}
+                          <div style={{ fontSize: 11, color: "#64748B", marginTop: 1 }}>
+                            {iv.companyName || iv.role || "gfd"} · {capitalize(iv.difficulty || "Medium")} · {iv.createdAt ? new Date(iv.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "19 Aug 2026"}
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                          {iv.report?.overallScore !== undefined && (
-                            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--accent-hover)", background: "#e1f5ee", padding: "3px 10px", borderRadius: 20 }}>
-                              {iv.report.overallScore}/100
-                            </span>
-                          )}
-                          {iv.status === "completed" && (
-                            <Link
-                              to={`/interview/${iv._id}/report`}
-                              style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--text-secondary)", background: "var(--surface-1)", border: "0.5px solid var(--border)", borderRadius: "var(--radius)", padding: "4px 10px", textDecoration: "none" }}
-                            >
-                              Report <IconArrowRight />
-                            </Link>
-                          )}
-                          {iv.status === "pending" && (
-                            <button
-                              onClick={() => navigate(`/interview/${iv._id}`)}
-                              style={{ fontSize: 12, color: "var(--accent-hover)", background: "#e1f5ee", border: "none", borderRadius: "var(--radius)", padding: "4px 10px", cursor: "pointer", fontWeight: 500 }}
+                          {iv.status === "pending" ? (
+                            <button 
+                              onClick={() => navigate(`/interview/join/${iv.inviteToken || iv._id}`)}
+                              style={{ padding: "5px 14px", borderRadius: 6, background: "#0F172A", color: "#FFFFFF", border: "none", fontWeight: 600, fontSize: 12, cursor: "pointer" }}
                             >
                               Join
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={() => navigate(`/interview/${iv._id}/report`)}
+                              style={{ padding: "5px 14px", borderRadius: 6, background: "#F1F5F9", color: "#0F172A", border: "none", fontWeight: 600, fontSize: 12, cursor: "pointer" }}
+                            >
+                              Report
                             </button>
                           )}
                         </div>
                       </div>
-                    ))}
-                    {pending.length === 0 && (
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0" }}>
-                        <div style={{ width: 34, height: 34, borderRadius: 8, background: "#faeeda", color: "#854f0b", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)" }}>No pending interviews</div>
-                          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>You're all caught up</div>
-                        </div>
-                        <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "var(--surface-1)", color: "var(--text-secondary)", border: "0.5px solid var(--border)" }}>
-                          0 pending
-                        </span>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div style={S.card}>
-                <div style={S.cardHeader}>
-                  <span style={S.cardTitle}><IconBolt /> Quick actions</span>
+                    ))
+                  )}
                 </div>
-                <div style={{ ...S.cardBody, paddingTop: 12 }}>
-                  <div className="ip-stats-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 10 }}>
+              </div>
+
+              {/* Right Column: Quick actions & Skill breakdown */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                
+                {/* Quick actions Card */}
+                <div style={{ background: "#FFFFFF", borderRadius: 12, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(0,0,0,0.03)", padding: 16 }}>
+                  <div style={{ marginBottom: 12 }}>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}>
+                      <IconBolt style={{ color: "#0284C7", width: 16, height: 16 }} /> Quick actions
+                    </span>
+                  </div>
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 10 }}>
                     {qaActions.map((a) => (
-                      <div
-                        key={a.label}
-                        onClick={a.onClick}
-                        style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", borderRadius: 10, border: "0.5px solid var(--border)", background: "var(--surface-1)", cursor: "pointer", transition: "all 0.15s" }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "#e1f5ee"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "#085041"); }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--surface-1)"; e.currentTarget.querySelectorAll(".qa-label").forEach(el => el.style.color = "var(--text-primary)"); }}
+                      <div 
+                        key={a.label} 
+                        onClick={a.onClick} 
+                        style={{ 
+                          display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", 
+                          borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", 
+                          cursor: "pointer", transition: "all 0.15s" 
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#0284C7"; e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.boxShadow = "none"; }}
                       >
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: "#e1f5ee", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: a.bg, color: a.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                           {a.icon}
                         </div>
-                        <div>
-                          <div className="qa-label" style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{a.label}</div>
-                          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>{a.sub}</div>
+                        <div style={{ minWidth: 0, overflow: "hidden" }}>
+                          <div style={{ fontSize: 12, color: "#0F172A", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.label}</div>
+                          <div style={{ fontSize: 10.5, color: "#64748B", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.sub}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                {/* Skill breakdown Card */}
+                <div style={{ background: "#FFFFFF", borderRadius: 12, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(0,0,0,0.03)", padding: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", display: "flex", alignItems: "center", gap: 6 }}>
+                      <IconTarget style={{ color: "#0284C7", width: 16, height: 16 }} /> Skill breakdown
+                    </span>
+                    <span style={{ fontSize: 11, color: "#0284C7", cursor: "pointer", fontWeight: 600 }} onClick={() => navigate("/student/reports")}>Improve ↗</span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {skillRows.map((row) => (
+                      <div key={row.label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 12, color: "#334155", width: 110, flexShrink: 0, fontWeight: 500 }}>{row.label}</span>
+                        <div style={{ flex: 1, height: 6, background: "#E2E8F0", borderRadius: 99, overflow: "hidden" }}>
+                          <div style={{ height: "100%", borderRadius: 99, background: "#0284C7", width: `${row.pct ?? 50}%`, transition: "width 0.6s ease" }} />
+                        </div>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: "#475569", width: 32, textAlign: "right" }}>{row.pct ?? 50}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
 
-              <div style={S.card}>
-                <div style={S.cardHeader}>
-                  <span style={S.cardTitle}><IconTarget /> Skill breakdown</span>
-                  <span style={{ fontSize: 12, color: "var(--accent)", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
-                    onClick={() => navigate("/student/reports")}>
-                    Improve ↗
-                  </span>
-                </div>
-                <div style={S.cardBody}>
-                  {skillRows.map((row) => (
-                    <div key={row.label} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 13 }}>
-                      <span style={{ fontSize: 12, color: "var(--text-secondary)", width: 100, flexShrink: 0 }}>{row.label}</span>
-                      <div style={{ flex: 1, height: 5, background: "var(--surface-1)", borderRadius: 10, overflow: "hidden", border: "0.5px solid var(--border)" }}>
-                        <div style={{ height: "100%", borderRadius: 10, background: row.color, width: `${row.pct ?? 0}%`, transition: "width 0.6s ease" }} />
-                      </div>
-                      <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-primary)", width: 34, textAlign: "right", flexShrink: 0 }}>
-                        {row.pct !== null ? `${row.pct}%` : "—"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

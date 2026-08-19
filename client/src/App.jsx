@@ -8,7 +8,7 @@ import VerifySignupOtpPage from "./pages/VerifySignupOtpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 
-/* student pages */
+// student pages
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentInterviews from "./pages/student/StudentInterviews";
 import StudentPractice from "./pages/student/StudentPractice";
@@ -16,14 +16,16 @@ import StudentReports from "./pages/student/StudentReports";
 import StudentProfile from "./pages/student/StudentProfile";
 import StudentSettings from "./pages/student/StudentSettings";
 
-/* company / recruiter pages */
+// company / recruiter pages
 import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyInterviews from "./pages/company/CompanyInterviews";
 import CompanyCompare from "./pages/company/CompanyCompare";
 import CompanyProfile from "./pages/company/CompanyProfile";
 
-/* Interview flow pages — join link → room → report */
+// interview flow pages
 import JoinInterviewPage from "./pages/interview/JoinInterviewPage";
+import SystemCheckPage from "./pages/interview/SystemCheckPage";
+import InterviewGuidelinesPage from "./pages/interview/InterviewGuidelinesPage";
 import InterviewRoomPage from "./pages/interview/InterviewRoomPage";
 import InterviewReportPage from "./pages/interview/InterviewReportPage";
 
@@ -36,7 +38,7 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public routes */}
+        {/* public routes */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/company-login" element={<CompanyLoginPage />} />
@@ -59,8 +61,10 @@ function AnimatedRoutes() {
         <Route path="/company/compare" element={<PrivateRoute role="company"><CompanyCompare /></PrivateRoute>} />
         <Route path="/company/profile" element={<PrivateRoute role="company"><CompanyProfile /></PrivateRoute>} />
 
-        {/* Interview flow — public join link, protected room and report */}
+        {/* interview flow routes */}
         <Route path="/interview/join/:token" element={<JoinInterviewPage />} />
+        <Route path="/interview/:id/check" element={<SystemCheckPage />} />
+        <Route path="/interview/:id/guidelines" element={<InterviewGuidelinesPage />} />
         <Route path="/interview/:id" element={<InterviewRoomPage />} />
         <Route path="/interview/:id/report" element={<InterviewReportPage />} />
 

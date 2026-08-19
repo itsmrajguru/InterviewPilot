@@ -236,13 +236,21 @@ const verifySignupOtp = async (req, res) => {
     /* step 1 :Extract email and entered otp from req.body */
     const { email, otp } = req.body
 
-    /* condition :If we did not get any of them,simply return a json reply*/
-    if (!email || !otp) {
+    /* validate the email and otp using joi */
+    const verifyOtpSchema = joi.object({
+        email: joi.string().email().required(),
+        otp: joi.string().required()
+    })
+
+    const { error } = verifyOtpSchema.validate({ email, otp })
+
+    if (error) {
         return res.status(400).json({
             success: false,
-            messgage: "Both Email and OTP are required"
+            message: error.details[0].message
         })
     }
+    
     try {
         /* step 2: verify the otp
             step 2.1 :Extract from the db
@@ -487,5 +495,20 @@ const resetPassword = async (req, res) => {
         }
     }
 }
+/* logout controller */
 
-module.exports = { signup, login, verifySignupOtp, refreshToken, forgotPassword, resetPassword }
+const logout = (req, res) => {
+    /* Clear the refreshToken cookie */
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Lax'
+    })
+    
+    return res.status(200).json({
+        success: true,
+        message: 'Logged out successfully'
+    })
+}
+
+module.exports = { signup, login, verifySignupOtp, refreshToken, forgotPassword, resetPassword, logout }

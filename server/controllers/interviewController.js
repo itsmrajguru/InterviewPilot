@@ -202,8 +202,24 @@ const joinSession = async (req, res) => {
         }
 
 
+        /* step 4 :Auto-login the user since they clicked a valid invite link */
+        const User = require('../models/AuthModel/UserModel')
+        const jwt = require('jsonwebtoken')
+        const user = await User.findOne({ email: session.studentEmail })
+        
+        let accessToken = null
+        if (user) {
+            accessToken = jwt.sign({ id: user._id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '15m' })
+            const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' })
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', maxAge: 24 * 60 * 60 * 1000
+            })
+        }
+
         return res.status(200).json({
             success: true,
+            accessToken,
+            user: user ? { _id: user._id, email: user.email, role: user.role } : null,
             session: {
                 _id: session._id,
                 role: session.role,
@@ -231,6 +247,11 @@ const startSession = async (req, res) => {
         const session = await InterviewSession.findById(id)
         if (!session) {
             return res.status(404).json({ success: false, message: 'Session not found.' })
+        }
+
+        /* condition :verify that the logged-in user owns this session */
+        if (req.user.role === 'student' && req.user.email !== session.studentEmail) {
+            return res.status(403).json({ success: false, message: 'Access denied to this session.' })
         }
 
         /* condition :if already active, return success so page reloads work gracefully */
@@ -317,6 +338,11 @@ const submitAnswer = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Session not found.' })
         }
 
+        /* condition :verify that the logged-in user owns this session */
+        if (req.user.role === 'student' && req.user.email !== session.studentEmail) {
+            return res.status(403).json({ success: false, message: 'Access denied to this session.' })
+        }
+
         if (session.status !== 'active') {
             return res.status(400).json({ success: false, message: 'Session is not active.' })
         }
@@ -388,6 +414,11 @@ const submitCode = async (req, res) => {
         const session = await InterviewSession.findById(id)
         if (!session) {
             return res.status(404).json({ success: false, message: 'Session not found.' })
+        }
+
+        /* condition :verify that the logged-in user owns this session */
+        if (req.user.role === 'student' && req.user.email !== session.studentEmail) {
+            return res.status(403).json({ success: false, message: 'Access denied to this session.' })
         }
 
         if (session.status !== 'active') {
@@ -470,6 +501,11 @@ const completeSession = async (req, res) => {
         const session = await InterviewSession.findById(id)
         if (!session) {
             return res.status(404).json({ success: false, message: 'Session not found.' })
+        }
+
+        /* condition :verify that the logged-in user owns this session */
+        if (req.user.role === 'student' && req.user.email !== session.studentEmail) {
+            return res.status(403).json({ success: false, message: 'Access denied to this session.' })
         }
 
         if (session.status !== 'active') {
@@ -733,6 +769,11 @@ const submitVideoAnswer = async (req, res) => {
         const session = await InterviewSession.findById(id)
         if (!session) {
             return res.status(404).json({ success: false, message: 'Session not found.' })
+        }
+
+        /* condition :verify that the logged-in user owns this session */
+        if (req.user.role === 'student' && req.user.email !== session.studentEmail) {
+            return res.status(403).json({ success: false, message: 'Access denied to this session.' })
         }
 
         if (session.status !== 'active') {
