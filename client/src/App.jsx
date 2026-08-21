@@ -21,6 +21,7 @@ import CompanyDashboard from "./pages/company/CompanyDashboard";
 import CompanyInterviews from "./pages/company/CompanyInterviews";
 import CompanyCompare from "./pages/company/CompanyCompare";
 import CompanyProfile from "./pages/company/CompanyProfile";
+import CompanySettings from "./pages/company/CompanySettings";
 
 // interview flow pages
 import JoinInterviewPage from "./pages/interview/JoinInterviewPage";
@@ -60,6 +61,7 @@ function AnimatedRoutes() {
         <Route path="/company/interviews" element={<PrivateRoute role="company"><CompanyInterviews /></PrivateRoute>} />
         <Route path="/company/compare" element={<PrivateRoute role="company"><CompanyCompare /></PrivateRoute>} />
         <Route path="/company/profile" element={<PrivateRoute role="company"><CompanyProfile /></PrivateRoute>} />
+        <Route path="/company/settings" element={<PrivateRoute role="company"><CompanySettings /></PrivateRoute>} />
 
         {/* interview flow routes */}
         <Route path="/interview/join/:token" element={<JoinInterviewPage />} />

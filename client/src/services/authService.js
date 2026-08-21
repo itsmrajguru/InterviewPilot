@@ -39,3 +39,11 @@ export async function forgotPassword(email) {
 export async function resetPassword(token, newPassword) {
   return api.post('auth/reset-password', { token, newPassword })
 }
+
+export async function changePassword(currentPassword, newPassword) {
+  return api.post('auth/change-password', { currentPassword, newPassword })
+}
+
+export async function deleteAccount(password) {
+  return api.delete('auth/delete-account', { data: { password } })
+}
