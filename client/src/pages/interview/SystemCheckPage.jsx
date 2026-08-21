@@ -54,7 +54,6 @@ const STEPS = [
   { id: "camera",    label: "Camera and microphone access", Icon: CamSvg   },
   { id: "mic",       label: "Microphone",                Icon: MicSvg   },
   { id: "speaker",   label: "Speakers",                  Icon: SpeakerSvg },
-  { id: "screen",    label: "Screen sharing",            Icon: ScreenSvg },
 ];
 
 /* status icon */
@@ -118,7 +117,6 @@ export default function SystemCheckPage() {
     camera:   "pending",
     mic:      "pending",
     speaker:  "pending",
-    screen:   "pending",
   });
   const [activeStep, setActiveStep]   = useState("internet");
   const [speedInfo,  setSpeedInfo]    = useState(null);  // { down, up }
@@ -204,38 +202,14 @@ export default function SystemCheckPage() {
       osc.start(); osc.stop(ctx.currentTime + 0.8);
       osc.onended = () => {
         setStatus("speaker", "pass");
-        advance("speaker", "screen");
+        setAllPassed(true);
       };
     } catch {
       setStatus("speaker", "fail");
     }
   };
 
-  /* test screen share */
-  const runScreenTest = async () => {
-    setStatus("screen", "running");
-    setActiveStep("screen");
-  };
 
-  const handleRequestScreen = async () => {
-    try {
-      const screen = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      // verify user shared entire screen (best-effort: check displaySurface)
-      const track = screen.getVideoTracks()[0];
-      const settings = track.getSettings();
-      if (settings.displaySurface && settings.displaySurface !== "monitor") {
-        // shared a window/tab, not entire screen
-        screen.getTracks().forEach(t => t.stop());
-        setStatus("screen", "fail");
-        return;
-      }
-      screen.getTracks().forEach(t => t.stop());
-      setStatus("screen", "pass");
-      setAllPassed(true);
-    } catch {
-      setStatus("screen", "fail");
-    }
-  };
 
   /* set status */
   const setStatus = (id, val) => {
@@ -255,7 +229,6 @@ export default function SystemCheckPage() {
     if (activeStep === "camera")  runCameraTest();
     if (activeStep === "mic")     runMicTest();
     if (activeStep === "speaker") runSpeakerTest();
-    if (activeStep === "screen")  runScreenTest();
   }, [activeStep]);
 
   /* cleanup camera stream */
@@ -328,26 +301,6 @@ export default function SystemCheckPage() {
                     <button className="idk-btn-white" onClick={handlePlayAudio} style={{ fontSize: 13, padding: "8px 20px" }}>
                       Play
                     </button>
-                  </div>
-                )}
-                {step.id === "screen" && (
-                  <div style={{ marginTop: 8 }}>
-                    {status === "running" || status === "fail" ? (
-                      <>
-                        <p style={{ fontSize: 13, color: "#b0b0b0", marginBottom: 10 }}>
-                          You must share your{" "}
-                          <strong style={{ color: "#facc15" }}>"Entire Screen"</strong>
-                          , not a window or tab.
-                        </p>
-                        <button
-                          className="idk-btn-white"
-                          onClick={handleRequestScreen}
-                          style={{ fontSize: 13, padding: "8px 20px" }}
-                        >
-                          {status === "fail" ? "Try again" : "Share screen"}
-                        </button>
-                      </>
-                    ) : null}
                   </div>
                 )}
                 {step.id === "internet" && status === "fail" && speedInfo && (
