@@ -6,6 +6,8 @@ import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
 import { getStudentDashboard } from "../../services/interviewService";
 import Skeleton from "../../components/ui/Skeleton";
+import StatCard from "../../components/ui/StatCard";
+import { IconReport, IconTrendUp, IconStar, IconTarget } from "../../components/ui/icons";
 
 /*tiny helpers*/
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -71,19 +73,6 @@ function EmptyReports() {
   );
 }
 
-
-function TopStat({ icon, label, value, sub, color }) {
-  return (
-    <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: "20px 24px", display: "flex", alignItems: "center", gap: 16 }}>
-      <div style={{ width: 46, height: 46, borderRadius: 14, background: `${color}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>{icon}</div>
-      <div>
-        <div style={{ fontSize: 24, fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>{value}</div>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginTop: 3 }}>{label}</div>
-        {sub && <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 1 }}>{sub}</div>}
-      </div>
-    </div>
-  );
-}
 
 export default function StudentReports() {
   const navigate = useNavigate();
@@ -169,10 +158,10 @@ export default function StudentReports() {
 
        
               <div className="ip-stat-cards-grid">
-                <TopStat icon="📋" label="Total Reports" value={reports.length} sub="completed" color="#2563EB" />
-                <TopStat icon="📊" label="Average Score" value={`${avgScore}`} sub="out of 100" color="#D97706" />
-                <TopStat icon="🏆" label="Best Score"    value={`${bestScore}`} sub="out of 100" color="#16A34A" />
-                <TopStat icon="🎯" label="Pass Rate"     value={`${passRate}%`} sub="score ≥ 50" color="#7C3AED" />
+                <StatCard icon={IconReport} label="Total Reports" value={reports.length} sub="completed" hue="blue" />
+                <StatCard icon={IconTrendUp} label="Average Score" value={`${avgScore}`} sub="out of 100" hue="amber" />
+                <StatCard icon={IconStar} label="Best Score" value={`${bestScore}`} sub="out of 100" hue="emerald" />
+                <StatCard icon={IconTarget} label="Pass Rate" value={`${passRate}%`} sub="score ≥ 50" hue="purple" />
               </div>
 
               {/* Chart */}

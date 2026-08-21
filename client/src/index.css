@@ -234,14 +234,14 @@ body {
 /* Stat Cards Responsive Grid */
 .ip-stat-cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   width: 100%;
 }
 
 @media (max-width: 1024px) {
   .ip-stat-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 }
@@ -267,38 +267,38 @@ body {
 /* Dashboard Responsive Layout Grids */
 .ip-grid-main {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: start;
 }
 .ip-grid-sub {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
 @media (max-width: 1024px) {
   .ip-grid-main {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 /* Application Responsive Layout Wrappers */
 @media (max-width: 600px) {
   .ip-grid-sub {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .ip-grid-2col {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 /* 2-column grid that only drops to 1 col on mobile */
 .ip-grid-2col-responsive {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -321,6 +321,12 @@ body {
   }
   .ip-hidden-mobile {
     display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ip-flex-col-mobile {
+    flex-direction: column !important;
   }
 }
 

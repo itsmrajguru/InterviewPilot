@@ -66,11 +66,11 @@ export default function StudentInterviews() {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <StudentTopbar title="My Interviews" sub="" />
 
-        <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
+        <main className="ip-main-pad" style={{ flex: 1, overflowY: "auto" }}>
           <div style={{ maxWidth: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
 
             {/* Welcome banner */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div className="ip-flex-wrap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
               <div>
                 <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", margin: "0 0 4px 0", letterSpacing: "-0.02em" }}>
                   My Interviews 🎯
@@ -137,7 +137,7 @@ export default function StudentInterviews() {
 
               {/* Left Column: Pending Invitations Card */}
               <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                   <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", display: "flex", alignItems: "center", gap: 8 }}>
                     <IconClock style={{ color: "#D97706", width: 18, height: 18 }} /> Pending Invitations
                   </span>
@@ -166,10 +166,10 @@ export default function StudentInterviews() {
                           {(session.role || "I").charAt(0).toUpperCase()}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", lineHeight: 1.3 }}>
                             {session.role || "Software Engineer"}
                           </div>
-                          <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
+                          <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {session.companyName || "Practice Round"} · {capitalize(session.difficulty || "Medium")} · {session.createdAt ? new Date(session.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "—"}
                           </div>
                         </div>
@@ -189,7 +189,7 @@ export default function StudentInterviews() {
 
               {/* Right Column: Completed History Card */}
               <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                   <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", display: "flex", alignItems: "center", gap: 8 }}>
                     <IconCircleCheck style={{ color: "#059669", width: 18, height: 18 }} /> Recent History
                   </span>
@@ -220,19 +220,14 @@ export default function StudentInterviews() {
                             {(session.role || "I").charAt(0).toUpperCase()}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", lineHeight: 1.3 }}>
                               {session.role || "Software Engineer"}
                             </div>
-                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
+                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {session.companyName || "Practice Round"} · {session.createdAt ? new Date(session.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "—"}
                             </div>
                           </div>
 
-                          {score !== undefined ? (
-                            <span style={{ fontSize: 12, fontWeight: 700, color: score >= 75 ? "#059669" : "#2563EB", background: score >= 75 ? "#ECFDF5" : "#EFF6FF", padding: "4px 8px", borderRadius: 8 }}>
-                              {score}/100
-                            </span>
-                          ) : null}
 
                           <button 
                             onClick={() => navigate(`/interview/${session._id}/report`, { state: { session } })}

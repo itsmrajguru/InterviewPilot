@@ -171,7 +171,7 @@ export default function StudentProfile() {
             ) : (
               <>
                 {/* Profile Hero Header Card */}
-                <div className="ip-flex-wrap" style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 24, display: "flex", alignItems: "center", gap: 20 }}>
+                <div className="ip-flex-wrap" style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 24, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20 }}>
                   
                   <div style={{
                     width: 80, height: 80, borderRadius: "50%", background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
@@ -181,7 +181,7 @@ export default function StudentProfile() {
                     {initials}
                   </div>
 
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ flex: 1, minWidth: 240 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
                       <h2 style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", margin: 0 }}>
                         {profile?.name || displayName}
