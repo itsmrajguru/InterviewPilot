@@ -81,12 +81,10 @@ export default function StudentDashboard() {
     const avg = (arr, key = "score") => arr.length ? Math.round(arr.reduce((s, a) => s + (a[key] || 0), 0) / arr.length * 10) : null;
     const hrA = allAnswers.filter(a => a.type === "hr");
     const techA = allAnswers.filter(a => a.type === "technical");
-    const codeA = allAnswers.filter(a => a.type === "coding");
     const commA = allAnswers.filter(a => a.communicationScore !== undefined);
     return {
       hr: avg(hrA),
       tech: avg(techA),
-      code: avg(codeA),
       comm: commA.length ? Math.round(commA.reduce((s, a) => s + (a.communicationScore || 0), 0) / commA.length * 10) : null,
     };
   }, [completed]);
@@ -108,12 +106,10 @@ export default function StudentDashboard() {
   const skillRows = skillBreakdown ? [
     { label: "HR / Behavioural", pct: skillBreakdown.hr, color: "#f59e0b" },
     { label: "Technical", pct: skillBreakdown.tech, color: "#0ea5e9" },
-    { label: "Coding", pct: skillBreakdown.code, color: "#10b981" },
     { label: "Communication", pct: skillBreakdown.comm, color: "#f43f5e" },
   ] : [
     { label: "HR / Behavioural", pct: null, color: "#f59e0b" },
     { label: "Technical", pct: null, color: "#0ea5e9" },
-    { label: "Coding", pct: null, color: "#10b981" },
     { label: "Communication", pct: null, color: "#f43f5e" },
   ];
 

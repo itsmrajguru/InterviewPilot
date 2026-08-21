@@ -57,17 +57,15 @@ Difficulty: ${difficulty}
 ${resumeText ? `Candidate Resume Summary:\n${resumeText.slice(0, 1500)}` : ''}
 
 Generate exactly 10 questions in this mix:
-- 2 HR / behavioural questions
-- 6 technical concept questions specific to the role
-- 2 coding problem descriptions (describe the problem clearly, include 2 sample test cases)
+- 3 HR / behavioural questions
+- 7 technical concept questions specific to the role
 
 Return ONLY a valid JSON array — no markdown, no extra text:
 [
   {
-    "type": "hr" | "technical" | "coding",
+    "type": "hr" | "technical",
     "question": "...",
-    "topic": "...",
-    "testCases": [{ "input": "...", "expectedOutput": "..." }]  // only for coding type
+    "topic": "..."
   }
 ]
 `
@@ -78,16 +76,6 @@ Return ONLY a valid JSON array — no markdown, no extra text:
         const cleaned = stripFences(text)
         const questions = JSON.parse(cleaned)
         
-        // Coerce testCases to strings to prevent Mongoose CastErrors
-        questions.forEach(q => {
-            if (q.testCases) {
-                q.testCases = q.testCases.map(tc => ({
-                    input: typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input),
-                    expectedOutput: typeof tc.expectedOutput === 'object' ? JSON.stringify(tc.expectedOutput) : String(tc.expectedOutput)
-                }));
-            }
-        });
-
         return questions
     } catch (e) {
         /* inform to the developer */
@@ -230,9 +218,6 @@ const generateReport = async (sessionData) => {
     /* step 1 :build a complete transcript of all questions and raw answers */
     const answerSummary = (sessionData.answers || [])
         .map((a, i) => {
-            if (a.type === 'coding') {
-                return `Q${i + 1} [coding]: ${a.question}\nCandidate Code:\n${a.answer}\nTest Results: Passed ${a.testsPassed || 0}/${a.testsTotal || 0}`;
-            }
             return `Q${i + 1} [${a.type}]: ${a.question}\nCandidate Transcript:\n${a.answer || '[No speech detected]'}`;
         })
         .join('\n\n')
@@ -252,10 +237,10 @@ Return ONLY a valid JSON object:
     {
       "questionIndex": <index of the question, 0 to N-1>,
       "score": <0-10>,
-      "communicationScore": <0-10 for spoken answers, null for coding>,
-      "clarityScore": <0-10 for spoken answers, null for coding>,
-      "vocabularyScore": <0-10 for spoken answers, null for coding>,
-      "structureScore": <0-10 for spoken answers, null for coding>,
+      "communicationScore": <0-10>,
+      "clarityScore": <0-10>,
+      "vocabularyScore": <0-10>,
+      "structureScore": <0-10>,
       "feedback": "<2-3 sentence constructive feedback on this specific answer>"
     }
   ],

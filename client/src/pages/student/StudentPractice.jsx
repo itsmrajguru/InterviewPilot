@@ -146,7 +146,7 @@ export default function StudentPractice() {
                 <style>{`@keyframes sp-spin { to { transform: rotate(360deg); } }`}</style>
                 <div>
                   <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", margin: "0 0 4px 0" }}>Preparing your custom AI interview...</h3>
-                  <p style={{ fontSize: 13, color: "#64748B", margin: 0 }}>Generating tailored questions & coding prompts for {jobRole || "your role"}</p>
+                  <p style={{ fontSize: 13, color: "#64748B", margin: 0 }}>Generating tailored technical questions for {jobRole || "your role"}</p>
                 </div>
               </div>
             ) : (

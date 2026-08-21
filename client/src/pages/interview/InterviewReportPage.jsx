@@ -79,8 +79,7 @@ const SmallRing = ({ score, max = 10, size = 52 }) => {
 
 const TYPE_STYLE = {
   hr:        { bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe", label: "HR" },
-  technical: { bg: "#fdf4ff", color: "#7c3aed", border: "#e9d5ff", label: "Technical" },
-  coding:    { bg: "#fff7ed", color: "#c2410c", border: "#fed7aa", label: "Coding" },
+  technical: { bg: "#fdf4ff", color: "#7c3aed", border: "#e9d5ff", label: "Technical" }
 };
 
 const SectionHeader = ({ icon, title, right }) => (
@@ -127,6 +126,27 @@ export default function InterviewReportPage() {
     })();
   }, [id, savedReport]);
 
+  const sc         = scoreColor(report?.overallScore || 0);
+  const answers    = session?.answers || [];
+  const strengths  = report?.strengths  || [];
+  const weaknesses = report?.weaknesses || [];
+  const hasComm    = report?.communicationScore > 0;
+
+  const radarData = useMemo(() => {
+    if (!answers.length) return [];
+    const hrAnswers   = answers.filter(a => a.type === 'hr');
+    const techAnswers = answers.filter(a => a.type === 'technical');
+    const avg = (arr, key) => arr.length ? Math.round(arr.reduce((s, a) => s + (a[key] || 0), 0) / arr.length * 10) : 0;
+    const data = [
+      { subject: 'HR',          score: avg(hrAnswers, 'score') },
+      { subject: 'Technical',   score: avg(techAnswers, 'score') },
+    ];
+    if (report?.communicationScore > 0) {
+      data.push({ subject: 'Communication', score: Math.round(report.communicationScore * 10) });
+    }
+    return data;
+  }, [answers, report]);
+
   if (loading) return (
     <div style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", background:"var(--bg-subtle)", fontFamily:"var(--sans)" }}>
       <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:14 }}>
@@ -145,29 +165,6 @@ export default function InterviewReportPage() {
       </div>
     </div>
   );
-
-  const sc         = scoreColor(report?.overallScore || 0);
-  const answers    = session?.answers || [];
-  const strengths  = report?.strengths  || [];
-  const weaknesses = report?.weaknesses || [];
-  const hasComm    = report?.communicationScore > 0;
-
-  const radarData = useMemo(() => {
-    if (!answers.length) return [];
-    const hrAnswers   = answers.filter(a => a.type === 'hr');
-    const techAnswers = answers.filter(a => a.type === 'technical');
-    const codeAnswers = answers.filter(a => a.type === 'coding');
-    const avg = (arr, key) => arr.length ? Math.round(arr.reduce((s, a) => s + (a[key] || 0), 0) / arr.length * 10) : 0;
-    const data = [
-      { subject: 'HR',          score: avg(hrAnswers, 'score') },
-      { subject: 'Technical',   score: avg(techAnswers, 'score') },
-      { subject: 'Coding',      score: avg(codeAnswers, 'score') },
-    ];
-    if (report?.communicationScore > 0) {
-      data.push({ subject: 'Communication', score: Math.round(report.communicationScore * 10) });
-    }
-    return data;
-  }, [answers, report]);
 
   const handleDownloadPDF = async () => {
     setPdfLoading(true);
@@ -196,6 +193,11 @@ export default function InterviewReportPage() {
         .irp-btn-dash:hover { background: var(--bg-subtle) !important; }
         .irp-btn-practice:hover { background: var(--accent-hover) !important; }
         .irp-btn-pdf:hover:not(:disabled) { filter: brightness(0.93); }
+        .irp-top-card { padding: 36px 40px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+        @media (max-width: 768px) {
+          .irp-top-card { padding: 24px 20px; gap: 24px; flex-direction: column; align-items: stretch; }
+          .irp-top-card > div:first-child { align-self: center; }
+        }
       `}</style>
 
       <motion.div
@@ -257,7 +259,7 @@ export default function InterviewReportPage() {
           }}>
             
             <div style={{ height:4, background:`linear-gradient(90deg, ${sc.text}, ${sc.text}66)` }}/>
-            <div style={{ padding:"36px 40px", display:"flex", alignItems:"center", gap:40, flexWrap:"wrap" }}>
+            <div className="irp-top-card">
 
               <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8, flexShrink:0 }}>
                 <BigScoreRing score={report?.overallScore || 0} />
@@ -380,7 +382,7 @@ export default function InterviewReportPage() {
             </div>
           )}
 
-          <div className="irp-fade" style={{ animationDelay:"0.08s", display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+          <div className="irp-fade ip-grid-main" style={{ animationDelay:"0.08s", gap:16 }}>
 
             <div style={{ background:"var(--bg-card)", borderRadius:16, border:"1px solid var(--border)", boxShadow:"0 1px 3px rgba(0,0,0,0.05)", overflow:"hidden" }}>
               <SectionHeader icon={<span style={{ fontSize:14 }}>💪</span>} title="Strengths" />
@@ -587,7 +589,7 @@ export default function InterviewReportPage() {
 
           <div className="irp-fade" style={{
             animationDelay:"0.17s",
-            display:"flex", alignItems:"center", justifyContent:"center", gap:12,
+            display:"flex", alignItems:"center", justifyContent:"center", gap:12, flexWrap: "wrap",
             padding:"8px 0 32px"
           }}>
             <Link to="/student/dashboard" style={{

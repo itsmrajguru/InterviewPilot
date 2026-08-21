@@ -399,97 +399,6 @@ const submitAnswer = async (req, res) => {
     }
 }
 
-/* submitCode controller */
-const submitCode = async (req, res) => {
-    /* step 1: extract id from req.params and code, language, questionIndex from req.body */
-    const { id } = req.params
-    const { code, language, questionIndex } = req.body
-
-    if (!code || !language || questionIndex === undefined) {
-        return res.status(400).json({ success: false, message: 'code, language and questionIndex are required.' })
-    }
-
-    try {
-        /* step 2 :load session from db */
-        const session = await InterviewSession.findById(id)
-        if (!session) {
-            return res.status(404).json({ success: false, message: 'Session not found.' })
-        }
-
-        /* condition :verify that the logged-in user owns this session */
-        if (req.user.role === 'student' && req.user.email !== session.studentEmail) {
-            return res.status(403).json({ success: false, message: 'Access denied to this session.' })
-        }
-
-        if (session.status !== 'active') {
-            return res.status(400).json({ success: false, message: 'Session is not active.' })
-        }
-
-        /* step 3 :get the coding question for its test cases */
-        const question = session.questions[questionIndex]
-        if (!question || question.type !== 'coding') {
-            return res.status(400).json({ success: false, message: 'Question is not a coding problem.' })
-        }
-
-        /* step 4 :run the code through Judge0 */
-        console.log('Executing code via Judge0...')
-        const testResults = await executeCode(code, language, question.testCases || [])
-
-        const testsPassed = testResults.filter(t => t.passed).length
-        const testsTotal = testResults.length
-
-        /* step 5 :save the code submission to the session in the db */
-        session.codeSubmission = {
-            problemDescription: question.question,
-            code,
-            language,
-            testResults,
-            testsPassed,
-            testsTotal,
-            submittedAt: new Date()
-        }
-
-        /* also save it as an answer entry so it counts in the report */
-        const answerDoc = {
-            questionIndex,
-            question: question.question,
-            type: 'coding',
-            answer: code,
-            testsPassed,
-            testsTotal,
-            submittedAt: new Date()
-        }
-        const existingIndex = session.answers.findIndex(a => a.questionIndex === questionIndex)
-        if (existingIndex !== -1) {
-            session.answers[existingIndex] = answerDoc
-        } else {
-            session.answers.push(answerDoc)
-        }
-
-        session.currentQuestionIndex = Math.max(session.currentQuestionIndex, questionIndex + 1)
-
-        await session.save()
-
-        emitToRoom(session._id.toString(), 'session:progress', {
-            sessionId: session._id,
-            questionIndex,
-            answeredCount: session.answers.length,
-            totalQuestions: session.questions.length,
-            currentQuestionIndex: session.currentQuestionIndex
-        })
-
-        return res.status(200).json({
-            success: true,
-            message: 'Code executed and saved.',
-            testResults,
-            testsPassed,
-            testsTotal
-        })
-    } catch (e) {
-        console.log(e);
-        return res.status(500).json({ success: false, message: 'Something went wrong ! Please try again' })
-    }
-}
 
 /* completeSession controller */
 const completeSession = async (req, res) => {
@@ -912,7 +821,6 @@ module.exports = {
     joinSession,
     startSession,
     submitAnswer,
-    submitCode,
     completeSession,
     getReport,
     getCompanySessions,

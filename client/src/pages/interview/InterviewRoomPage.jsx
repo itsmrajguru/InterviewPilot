@@ -5,20 +5,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import Editor from "@monaco-editor/react";
-import { submitCode, completeSession } from "../../services/interviewService";
-import { getVideoUploadParams, submitVideoAnswer } from "../../services/interviewService";
+import { submitVideoAnswer, getVideoUploadParams, completeSession } from "../../services/interviewService";
 import "../../interview-dark.css";
 
 // max recording duration is 120s
 const MAX_DURATION = 120;
-
-const LANG_MONACO_MAP = {
-  javascript: "javascript",
-  python: "python",
-  cpp: "cpp",
-  java: "java",
-};
 
 function Spinner({ size = 20, color = "#1e88e5" }) {
   return (
@@ -158,15 +149,11 @@ export default function InterviewRoomPage() {
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState("");
 
-  /* Coding state */
-  const [showCodeDrawer, setShowCodeDrawer] = useState(false);
-  const [code, setCode] = useState("// Write your solution here\n\n");
-  const [language, setLanguage] = useState("javascript");
-  const [submitting, setSubmitting] = useState(false);
-  const [codeResults, setCodeResults] = useState(null);
+
 
   /* Recording state */
-  const [recPhase, setRecPhase] = useState("idle"); // idle|ready|recording|uploading|evaluating
+  const [recPhase, setRecPhase] = useState("idle"); // idle|prep|recording|uploading|evaluating
+  const [prepCountdown, setPrepCountdown] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -198,15 +185,35 @@ export default function InterviewRoomPage() {
     setTranscript("");
     setCode("// Write your solution here\n\n");
     setShowCodeDrawer(false);
-    setRecPhase("idle"); setElapsed(0); setUploadProgress(0);
-  }, [currentIndex]);
+
+    // Calculate dynamic prep time
+    const qText = session?.questions?.[currentIndex]?.text || "";
+    const words = qText.split(" ").length;
+    const calculatedPrepTime = Math.min(Math.max(Math.ceil(words / 3), 5), 30);
+    setPrepCountdown(calculatedPrepTime);
+
+    setRecPhase("prep"); setElapsed(0); setUploadProgress(0);
+  }, [currentIndex, session]);
+
+  // auto-prep countdown
+  useEffect(() => {
+    if (recPhase === "prep") {
+      if (prepCountdown <= 0) {
+        startRecording();
+        return;
+      }
+      const t = setInterval(() => {
+        setPrepCountdown(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(t);
+    }
+  }, [recPhase, prepCountdown]);
 
   if (!session) return null;
 
   const questions = session.questions || [];
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
-  const isCoding = currentQuestion?.type === "coding";
   const allAnswered = questions.length > 0 && Object.keys(answered).length >= questions.length;
   const fullName = session.candidateName || "Candidate";
   const firstName = fullName.split(" ")[0];
@@ -278,34 +285,34 @@ export default function InterviewRoomPage() {
 
       // submit video url to backend
       setRecPhase("evaluating");
-      const result = await submitVideoAnswer({ sessionId: id, questionIndex: currentIndex, videoUrl: cloudUrl });
-      // save feedback and show evaluation panel
-      setFeedback(result.evaluation);
-      if (result.transcript) setTranscript(result.transcript);
+      await submitVideoAnswer({ sessionId: id, questionIndex: currentIndex, videoUrl: cloudUrl });
+      
       setAnswered(prev => ({ ...prev, [currentIndex]: true }));
       setRecPhase("done");
+
+      // Auto-navigate to next question or complete
+      if (currentIndex === session.questions.length - 1) {
+        setCompleting(true); setError("");
+        try {
+          const data = await completeSession(id);
+          if (data.success) {
+            const completedSession = { ...session, status: "completed", report: data.report };
+            sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(completedSession));
+            navigate(`/interview/${id}/report`, { state: { session: completedSession, report: data.report } });
+          } else { setError(data.message || "Could not complete interview."); setCompleting(false); }
+        } catch (e) {
+          setError(e.response?.data?.message || "Connection error. Please try again.");
+          setCompleting(false);
+        }
+      } else {
+        setCurrentIndex(prev => prev + 1);
+      }
     } catch (e) {
       // log error for developer
       console.error("VideoRecorder upload error :", e);
       setError(`Upload failed: ${e.message}`);
       setRecPhase("ready");
     }
-  };
-
-  // handle coding submission
-  const handleSubmitCode = async () => {
-    if (!code.trim()) return;
-    setSubmitting(true); setCodeResults(null); setFeedback(null); setError("");
-    try {
-      const data = await submitCode({ sessionId: id, code, language, questionIndex: currentIndex });
-      if (data.success) {
-        setCodeResults(data.testResults);
-        setFeedback(data.evaluation);
-        setAnswered(prev => ({ ...prev, [currentIndex]: true }));
-      } else setError(data.message || "Code execution failed.");
-    } catch (e) {
-      setError(e.response?.data?.message || "Connection error. Please try again.");
-    } finally { setSubmitting(false); }
   };
 
   // navigation handlers
@@ -446,65 +453,43 @@ export default function InterviewRoomPage() {
             )}
             {!transcript && (
               <p style={{ fontSize: 13, color: "#8a8a8a", marginTop: 6 }}>
-                {recPhase === "recording" ? "Listening to your answer…" :
+                {recPhase === "prep" ? `Get ready... recording starts in ${prepCountdown}s` :
+                  recPhase === "recording" ? "Listening to your answer…" :
                   recPhase === "uploading" ? `Uploading… ${uploadProgress}%` :
-                    recPhase === "evaluating" ? "Evaluating your answer…" :
-                      recPhase === "done" ? "Answer submitted." :
-                        isCoding ? "Open the code editor below to write your solution." :
-                          "Click 'Start Recording' to answer."}
+                  recPhase === "evaluating" ? "Saving your answer…" :
+                  recPhase === "done" ? "Answer submitted." : ""}
               </p>
             )}
           </div>
         </div>
 
-        {/* recording controls (non-coding questions) */}
-        {!isCoding && !feedback && recPhase !== "done" && (
+        {/* recording controls */}
+        {!feedback && recPhase !== "done" && (
           <div style={{ padding: "0 16px 16px", display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
-            {recPhase === "idle" && (
-              <button className="idk-btn-blue" onClick={startRecording} style={{ minWidth: 180 }}>
-                ● Start Recording
-              </button>
-            )}
-            {recPhase === "ready" && (
-              <button className="idk-btn-blue" onClick={startRecording} style={{ minWidth: 180 }}>
-                ● Start Recording
-              </button>
-            )}
-            {recPhase === "recording" && (
+            {(recPhase === "prep" || recPhase === "recording") && (
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <span style={{ fontSize: 13, color: "#ef4444", fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
-                  <div className="idk-rec-dot" style={{ position: "static" }} />
-                  {formatTime(elapsed)} / {formatTime(MAX_DURATION)}
+                <span style={{ fontSize: 13, color: recPhase === "recording" ? "#ef4444" : "#8a8a8a", fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
+                  {recPhase === "recording" && <div className="idk-rec-dot" style={{ position: "static" }} />}
+                  {recPhase === "prep" ? `Starting in ${prepCountdown}s` : `${formatTime(elapsed)} / ${formatTime(MAX_DURATION)}`}
                 </span>
-                <button
-                  onClick={stopRecording}
-                  style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 999, padding: "10px 28px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}
-                >
-                  ⏹ Stop & Submit
-                </button>
+                {recPhase === "recording" && (
+                  <button
+                    onClick={stopRecording}
+                    style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 999, padding: "10px 28px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}
+                  >
+                    ⏹ Finish Answer
+                  </button>
+                )}
               </div>
             )}
             {(recPhase === "uploading" || recPhase === "evaluating") && (
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <Spinner />
                 <span style={{ fontSize: 13, color: "#b0b0b0" }}>
-                  {recPhase === "uploading" ? `Uploading… ${uploadProgress}%` : "Evaluating your answer…"}
+                  {recPhase === "uploading" ? `Uploading… ${uploadProgress}%` : "Saving your answer…"}
                 </span>
               </div>
             )}
-          </div>
-        )}
-
-        {/* coding toggle button */}
-        {isCoding && !feedback && (
-          <div style={{ padding: "0 16px 16px", display: "flex", justifyContent: "center" }}>
-            <button
-              className="idk-btn-blue"
-              onClick={() => setShowCodeDrawer(!showCodeDrawer)}
-              style={{ minWidth: 200 }}
-            >
-              {showCodeDrawer ? "▼ Hide Code Editor" : "💻 Open Code Editor"}
-            </button>
           </div>
         )}
 
@@ -551,28 +536,6 @@ export default function InterviewRoomPage() {
                     <p style={{ margin: 0, fontSize: 14, color: "#b0b0b0", lineHeight: 1.7 }}>{feedback.feedback}</p>
                   </div>
                 )}
-                {codeResults && (
-                  <div style={{ marginTop: 16 }}>
-                    <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#8a8a8a", marginBottom: 10 }}>
-                      Test Results — {codeResults.filter(r => r.passed).length}/{codeResults.length} passed
-                    </p>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                      {codeResults.map((r, i) => (
-                        <div key={i} className="ip-flex-wrap" style={{
-                          display: "flex", gap: 10, alignItems: "center",
-                          padding: "10px 14px", borderRadius: 8, fontFamily: "var(--mono)", fontSize: 12,
-                          background: r.passed ? "#0d1f12" : "#1f0d0d",
-                          border: `1px solid ${r.passed ? "#22c55e" : "#ef4444"}`
-                        }}>
-                          <span style={{ color: r.passed ? "#22c55e" : "#ef4444", fontWeight: 700, fontSize: 16, width: 24, flexShrink: 0 }}>{r.passed ? "✓" : "✗"}</span>
-                          <div style={{ flex: 1, minWidth: 100 }}><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Input</div>{r.input || "—"}</div>
-                          <div style={{ flex: 1, minWidth: 100 }}><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Expected</div>{r.expectedOutput}</div>
-                          <div style={{ flex: 1, minWidth: 100 }}><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Got</div><span style={{ color: r.passed ? "#22c55e" : "#ef4444" }}>{r.actualOutput || r.error || "—"}</span></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Next / Finish buttons */}
@@ -603,7 +566,7 @@ export default function InterviewRoomPage() {
         </AnimatePresence>
 
         {/* skip button */}
-        {!feedback && !isLastQuestion && (
+        {!feedback && recPhase === "idle" && !isLastQuestion && (
           <div style={{ padding: "0 16px 24px", display: "flex", justifyContent: "flex-end" }}>
             <button
               onClick={handleNext}
@@ -633,84 +596,6 @@ export default function InterviewRoomPage() {
             </button>
           </div>
         )}
-
-
-        {/* code drawer (slide up) */}
-        <AnimatePresence>
-          {showCodeDrawer && (
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              style={{
-                position: "fixed", bottom: 0, left: 0, right: 0,
-                height: "55vh", zIndex: 150,
-                background: "#111", border: "1px solid #2e2e2e",
-                borderRadius: "16px 16px 0 0",
-                display: "flex", flexDirection: "column",
-                boxShadow: "0 -8px 40px rgba(0,0,0,0.6)"
-              }}
-            >
-              {/* Drawer header */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: "1px solid #2e2e2e" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>💻 Code Editor</span>
-                  <span style={{ fontSize: 11, color: "#8a8a8a" }}>Monaco · Judge0 execution</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {/* Language selector */}
-                  <div style={{ display: "flex", gap: 2, background: "#1c1c1c", borderRadius: 8, padding: 3 }}>
-                    {["javascript", "python", "cpp", "java"].map(lang => (
-                      <button
-                        key={lang}
-                        onClick={() => setLanguage(lang)}
-                        disabled={submitting}
-                        style={{
-                          padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700,
-                          border: "none", cursor: submitting ? "not-allowed" : "pointer", transition: "all 0.15s",
-                          background: language === lang ? "#1e88e5" : "transparent",
-                          color: language === lang ? "#fff" : "#8a8a8a",
-                          fontFamily: "inherit"
-                        }}
-                      >{lang}</button>
-                    ))}
-                  </div>
-                  {/* Run button */}
-                  <button
-                    className="idk-btn-blue"
-                    onClick={handleSubmitCode}
-                    disabled={submitting || !code.trim()}
-                    style={{ padding: "7px 18px", fontSize: 13 }}
-                  >
-                    {submitting ? <><Spinner size={14} color="#fff" /> Running…</> : "Run & Submit →"}
-                  </button>
-                  {/* Close */}
-                  <button onClick={() => setShowCodeDrawer(false)} style={{ background: "transparent", border: "none", color: "#8a8a8a", cursor: "pointer", padding: 4 }}>
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-                  </button>
-                </div>
-              </div>
-              {/* Monaco editor */}
-              <div style={{ flex: 1, overflow: "hidden" }}>
-                <Editor
-                  height="100%"
-                  language={LANG_MONACO_MAP[language]}
-                  value={code}
-                  onChange={val => setCode(val || "")}
-                  theme="vs-dark"
-                  options={{
-                    fontSize: 13, lineHeight: 22, minimap: { enabled: false },
-                    scrollBeyondLastLine: false, wordWrap: "on", automaticLayout: true,
-                    readOnly: submitting, fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                    padding: { top: 14, bottom: 14 }, renderLineHighlight: "all",
-                    smoothScrolling: true, cursorBlinking: "smooth",
-                  }}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* exit modal */}
         <AnimatePresence>

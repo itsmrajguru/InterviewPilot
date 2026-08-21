@@ -7,7 +7,7 @@ const answerSchema = new mongoose.Schema({
     questionIndex: { type: Number, required: true },
     question: { type: String, required: true },
 
-    type: { type: String, enum: ['hr', 'technical', 'coding'], required: true },
+    type: { type: String, enum: ['hr', 'technical'], required: true },
     answer: { type: String, default: '' },
 
     score: { type: Number, default: 0 },
@@ -106,19 +106,15 @@ const interviewSessionSchema = new mongoose.Schema(
 
         questions: [
             {
-                type: { type: String, enum: ['hr', 'technical', 'coding'] },
+                type: { type: String, enum: ['hr', 'technical'] },
                 question: String,
-                topic: String,
-                testCases: [{ input: String, expectedOutput: String }]
+                topic: String
             }
         ],
 
         currentQuestionIndex: { type: Number, default: 0 },
 
         answers: [answerSchema],
-
-        codeSubmission: { type: codeSubmissionSchema, default: null },
-
 
         report: { type: reportSchema, default: null }
     },

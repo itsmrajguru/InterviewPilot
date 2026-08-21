@@ -9,7 +9,6 @@ const {
     joinSession,
     startSession,
     submitAnswer,
-    submitCode,
     completeSession,
     getReport,
     getCompanySessions,
@@ -65,8 +64,6 @@ interviewRouter.post('/:id/answer', protect, submitAnswer)
 interviewRouter.get('/:id/video-upload-params', protect, getVideoUploadParams)
 interviewRouter.post('/:id/video-answer', protect, submitVideoAnswer)
 
-/* student submits code — Judge0 runs it, Gemini reviews quality */
-interviewRouter.post('/:id/code/submit', protect, submitCode)
 /* student finishes all questions — Gemini writes the final report */
 interviewRouter.post('/:id/complete', protect, completeSession)
 
