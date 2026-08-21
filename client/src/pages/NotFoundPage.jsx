@@ -13,8 +13,8 @@ export default function NotFoundPage() {
         designed this block to match the clean and modern card aesthetics 
         of the careersync platform */}
         <div style={{
-          background: "#ffffff",
-          border: "0.5px solid #dde1e8",
+          background: "var(--bg-card)",
+          border: "0.5px solid var(--border)",
           borderRadius: 12,
           boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
           width: "100%",
@@ -27,7 +27,7 @@ export default function NotFoundPage() {
           gap: 16
         }}>
           <div style={{ fontSize: 40, marginBottom: 8 }}>🔍</div>
-          <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "#fef2f2", color: "#b91c1c", border: "0.5px solid #fecaca" }}>Error 404</span>
+          <span style={{ fontSize: 11, padding: "3px 9px", borderRadius: 20, fontWeight: 500, background: "var(--danger-bg)", color: "var(--danger-text)", border: "0.5px solid var(--danger-border)" }}>Error 404</span>
           
           <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
             Lost in <span style={{ color: "var(--accent)" }}>Space?</span>

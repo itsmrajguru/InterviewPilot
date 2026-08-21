@@ -1,0 +1,384 @@
+/* =========================================================
+   interview-dark.css
+   Scoped dark theme for the candidate interview flow.
+   Apply the `.ip-dark` class to a wrapper div on each
+   interview-flow page — it will NOT affect dashboards or auth.
+   ========================================================= */
+
+.ip-dark {
+  --dark-bg: #0d0d0d;
+  --dark-bg-card: #1c1c1c;
+  --dark-bg-card-2: #232323;
+  --dark-border: #2e2e2e;
+  --dark-text: #ffffff;
+  --dark-text-secondary: #b0b0b0;
+  --dark-text-muted: #8a8a8a;
+  --accent-blue: #1e88e5;
+  --accent-blue-hover: #1670c2;
+  --success-green: #22c55e;
+  --warning-yellow: #facc15;
+  --danger-red: #ef4444;
+
+  background: var(--dark-bg);
+  color: var(--dark-text);
+  font-family: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Navbar */
+.ip-dark .idk-navbar {
+  background: #0d0d0d;
+  border-bottom: 1px solid var(--dark-border);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ip-dark .idk-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.ip-dark .idk-logo-text {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.ip-dark .idk-logo-text span:first-child {
+  color: #1e88e5;
+}
+
+.ip-dark .idk-logo-text span:last-child {
+  color: #ffffff;
+}
+
+/* Go back link */
+.ip-dark .idk-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark-text-secondary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 24px;
+  transition: color 0.15s;
+}
+
+.ip-dark .idk-back:hover {
+  color: var(--dark-text);
+}
+
+/* Cards */
+.ip-dark .idk-card {
+  background: var(--dark-bg-card);
+  border: 1px solid var(--dark-border);
+  border-radius: 16px;
+}
+
+/* Pill buttons */
+.ip-dark .idk-btn-blue {
+  background: var(--accent-blue);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 36px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.ip-dark .idk-btn-blue:hover:not(:disabled) {
+  background: var(--accent-blue-hover);
+  transform: translateY(-1px);
+}
+
+.ip-dark .idk-btn-blue:disabled {
+  background: #2e2e2e;
+  color: var(--dark-text-muted);
+  cursor: not-allowed;
+}
+
+.ip-dark .idk-btn-white {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.ip-dark .idk-btn-white:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.ip-dark .idk-btn-outline-white {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.ip-dark .idk-btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ip-dark .idk-btn-red {
+  background: var(--danger-red);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+
+.ip-dark .idk-btn-red:hover {
+  background: #dc2626;
+}
+
+.ip-dark .idk-btn-outline-dark {
+  background: transparent;
+  color: var(--dark-text);
+  border: 1.5px solid var(--dark-border);
+  border-radius: 10px;
+  padding: 11px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.ip-dark .idk-btn-outline-dark:hover {
+  border-color: #666;
+}
+
+/* Checklist row */
+.ip-dark .idk-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.ip-dark .idk-check-row:last-child {
+  border-bottom: none;
+}
+
+.ip-dark .idk-check-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--success-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ip-dark .idk-check-icon-active {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--dark-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ip-dark .idk-check-icon-spinner {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--dark-border);
+  border-top-color: var(--accent-blue);
+  flex-shrink: 0;
+  margin-top: 1px;
+  animation: idk-spin 0.8s linear infinite;
+}
+
+@keyframes idk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Name pill overlay */
+.ip-dark .idk-name-pill {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* Rec badge */
+.ip-dark .idk-rec-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.ip-dark .idk-rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger-red);
+  animation: idk-pulse-rec 1.4s ease-in-out infinite;
+}
+
+@keyframes idk-pulse-rec {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Active speaker ring on video panel */
+.ip-dark .idk-panel-active {
+  outline: 2.5px solid var(--accent-blue);
+  outline-offset: 0;
+}
+
+/* Transcription block */
+.ip-dark .idk-transcription {
+  background: var(--dark-bg-card);
+  border: 1px solid var(--dark-border);
+  border-radius: 14px;
+  padding: 20px 24px;
+}
+
+.ip-dark .idk-transcription-label {
+  display: inline-block;
+  background: var(--dark-bg-card-2);
+  border: 1px solid var(--dark-border);
+  color: var(--dark-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+/* Exit confirm modal overlay */
+.ip-dark .idk-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.ip-dark .idk-modal {
+  background: #2a2a2a;
+  border: 1px solid var(--dark-border);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+/* Spinner for loading states */
+.ip-dark .idk-spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--dark-border);
+  border-top-color: var(--accent-blue);
+  animation: idk-spin 0.8s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ip-dark .idk-two-col {
+    flex-direction: column !important;
+  }
+
+  .ip-dark .idk-two-col>* {
+    width: 100% !important;
+  }
+
+  .ip-dark .idk-video-panels {
+    flex-direction: column !important;
+  }
+}

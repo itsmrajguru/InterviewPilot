@@ -4,90 +4,28 @@ import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
 import { getStudentDashboard } from "../../services/interviewService";
 
-const IconArrow = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-  </svg>
-);
-const IconPlay = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-    <polygon points="5 3 19 12 5 21 5 3"/>
-  </svg>
-);
-const IconTrophy = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/>
-    <path d="M7 4H4a2 2 0 0 0-2 2v2c0 2.8 2.2 5 5 5"/><path d="M17 4h3a2 2 0 0 1 2 2v2c0 2.8-2.2 5-5 5"/>
-    <rect x="7" y="2" width="10" height="9" rx="2"/>
-  </svg>
-);
-const IconClock = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-  </svg>
-);
-const IconCheck = () => (
+import { IconArrowRight, IconClock, IconCheck, IconCircleCheck, IconTrendUp, IconStar } from "../../components/ui/icons";
+import Card from "../../components/ui/Card";
+import StatCard from "../../components/ui/StatCard";
+import Button from "../../components/ui/Button";
+import Badge from "../../components/ui/Badge";
+import PageHeader from "../../components/ui/PageHeader";
+import EmptyState from "../../components/ui/EmptyState";
+import Skeleton from "../../components/ui/Skeleton";
+
+const IconCalendar = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
   </svg>
 );
 
 const scoreColor = (s) => {
-  if (s >= 75) return { text: "var(--success-text)", bg: "var(--success-bg)", border: "var(--success-border)" };
-  if (s >= 50) return { text: "var(--text-secondary)", bg: "var(--bg-subtle)", border: "var(--border)" };
-  return { text: "var(--danger-text)", bg: "var(--danger-bg)", border: "var(--danger-border)" };
+  if (s >= 75) return "success";
+  if (s >= 50) return "neutral";
+  return "danger";
 };
 
-const ScoreBadge = ({ score }) => {
-  const c = scoreColor(score);
-  return (
-    <span style={{
-      fontSize: 13, fontWeight: 800, padding: "4px 10px", borderRadius: 20,
-      background: c.bg, color: c.text, border: `1px solid ${c.border}`,
-      letterSpacing: "-0.01em", whiteSpace: "nowrap"
-    }}>{score}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}>/100</span></span>
-  );
-};
-
-const DiffBadge = ({ diff }) => {
-  const map = {
-    easy:   { bg: "var(--success-bg)", color: "var(--success-text)", border: "var(--success-border)" },
-    medium: { bg: "var(--warning-bg)", color: "var(--warning-text)", border: "var(--warning-border)" },
-    hard:   { bg: "var(--danger-bg)", color: "var(--danger-text)", border: "var(--danger-border)" },
-  };
-  const s = map[diff] || map.medium;
-  return (
-    <span style={{
-      fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em",
-      padding: "2px 8px", borderRadius: 20,
-      background: s.bg, color: s.color, border: `1px solid ${s.border}`
-    }}>{diff || "medium"}</span>
-  );
-};
-
-const StatsBar = ({ pending, completed, total }) => {
-  const items = [
-    { label: "Action Required", value: pending, sub: "pending invites" },
-    { label: "Completed",       value: completed, sub: "sessions finished" },
-    { label: "Total Activity",  value: total,     sub: "all time interviews" },
-  ];
-  return (
-    <div className="ip-stats-row" style={{
-      display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12,
-      marginBottom: 32
-    }}>
-      {items.map(({ label, value, sub }) => (
-        <div key={label} style={{ background: "var(--bg-card)", border: "0.5px solid var(--border)", borderRadius: 12, padding: "18px 20px", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
-          <div style={{ fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 10 }}>{label}</div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-            <span style={{ fontSize: 28, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1 }}>{value}</span>
-            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{sub}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+const capitalize = str => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
 
 export default function StudentInterviews() {
   const navigate = useNavigate();
@@ -116,208 +54,204 @@ export default function StudentInterviews() {
   const pendingSessions = sessions.filter(s => s.status === "pending");
   const completedSessions = sessions.filter(s => s.status === "completed");
 
+  const completedWithScore = completedSessions.filter(s => s.report?.overallScore !== undefined);
+  const avgScore = completedWithScore.length > 0
+    ? Math.round(completedWithScore.reduce((acc, curr) => acc + (curr.report?.overallScore || 0), 0) / completedWithScore.length)
+    : null;
+
   return (
-    <>
-      <style>{`
-        @keyframes sr-spin { to { transform: rotate(360deg); } }
-        @keyframes sr-fade-up { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .sr-fade-up { animation: sr-fade-up 0.3s cubic-bezier(0.22,1,0.36,1) both; }
-        .ticket-card { transition: transform 0.2s, box-shadow 0.2s; }
-        .ticket-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }
-        .list-row { transition: background 0.15s; }
-        .list-row:hover { background: var(--bg-hover) !important; }
-        .sr-join-btn:hover { background: var(--accent-hover) !important; }
-      `}</style>
+    <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "#F8FAFC", overflow: "hidden", fontFamily: "var(--sans)", fontSize: 13 }}>
+      <Sidebar role="student" pendingCount={pendingSessions.length} />
 
-      <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <Sidebar role="student" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <StudentTopbar title="My Interviews" sub="" />
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-          <StudentTopbar title="My Interviews" sub="Manage invitations and review past sessions" />
+        <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
+          <div style={{ maxWidth: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
 
-          <main className="ip-main-container" style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
-
-            <div style={{ marginBottom: 24 }}>
-              <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-                Interview Dashboard
-              </h1>
-              <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
-                Keep track of your pending invitations and review your completed history
-              </p>
+            {/* Welcome banner */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", margin: "0 0 4px 0", letterSpacing: "-0.02em" }}>
+                  My Interviews 🎯
+                </h1>
+                <p style={{ fontSize: 13.5, color: "#64748B", margin: 0 }}>
+                  Track your pending invitations and review your completed session history.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/student/practice")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 8, padding: "9px 18px", borderRadius: 10,
+                  background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)", color: "#FFFFFF",
+                  border: "none", fontWeight: 600, fontSize: 13, cursor: "pointer",
+                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.25)", transition: "all 0.15s"
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 16px rgba(37, 99, 235, 0.35)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(37, 99, 235, 0.25)"; }}
+              >
+                <span>✨</span> Start Practice
+              </button>
             </div>
 
             {error && (
-              <div style={{
-                display: "flex", alignItems: "center", gap: 8,
-                padding: "12px 16px", borderRadius: 10, marginBottom: 20,
-                background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontSize: 13
-              }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }}/>
+              <div style={{ padding: "12px 16px", borderRadius: "10px", background: "var(--danger-bg)", color: "var(--danger-text)", fontSize: 13, border: "1px solid var(--danger-border)" }}>
                 {error}
               </div>
             )}
 
-            {loading ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0" }}>
-                <div style={{ width: 28, height: 28, border: "3px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "sr-spin 0.7s linear infinite" }}/>
-              </div>
+            {/* 4 Top Stat Cards Grid */}
+            <div className="ip-stat-cards-grid">
+              <StatCard 
+                label="Action Required" 
+                value={loading ? <Skeleton width={30} height={22} /> : pendingSessions.length} 
+                sub={pendingSessions.length > 0 ? "Action needed" : "All clear"} 
+                icon={IconClock}
+                hue="amber"
+              />
+              <StatCard 
+                label="Completed" 
+                value={loading ? <Skeleton width={30} height={22} /> : completedSessions.length} 
+                sub={completedSessions.length > 0 ? "Keep going!" : "No sessions"} 
+                icon={IconCircleCheck}
+                hue="emerald"
+              />
+              <StatCard 
+                label="Total Activity" 
+                value={loading ? <Skeleton width={30} height={22} /> : sessions.length} 
+                sub={sessions.length > 0 ? "All time total" : "No activity"} 
+                icon={IconCalendar}
+                hue="blue"
+              />
+              <StatCard 
+                label="Average Score" 
+                value={loading ? <Skeleton width={30} height={22} /> : (avgScore !== null ? avgScore : "—")} 
+                sub={avgScore !== null ? "out of 100" : "Keep going!"} 
+                icon={IconTrendUp}
+                hue="purple"
+              />
+            </div>
 
-            ) : sessions.length === 0 ? (
-              <div style={{
-                background: "var(--bg-card)", borderRadius: 16, border: "1px solid #e5e7eb",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                display: "flex", flexDirection: "column", alignItems: "center",
-                justifyContent: "center", padding: "72px 24px", textAlign: "center"
-              }}>
-                <div style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: "var(--accent-light)", border: "1px solid var(--accent-border)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: 16, color: "var(--accent)"
-                }}>
-                  <IconTrophy />
+            {/* Main 2-column Grid */}
+            <div className="ip-grid-main">
+
+              {/* Left Column: Pending Invitations Card */}
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", display: "flex", alignItems: "center", gap: 8 }}>
+                    <IconClock style={{ color: "#D97706", width: 18, height: 18 }} /> Pending Invitations
+                  </span>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: "#D97706", background: "#FEF3C7", padding: "2px 8px", borderRadius: 10 }}>
+                    {pendingSessions.length} pending
+                  </span>
                 </div>
-                <p style={{ fontSize: 16, fontWeight: 700, color: "var(--accent)", margin: "0 0 6px 0" }}>No interviews found</p>
-                <p style={{ fontSize: 13, color: "#6b7280", maxWidth: 300, margin: "0 0 20px 0", lineHeight: 1.6 }}>
-                  Start a practice interview or wait for a company invitation to see it here.
-                </p>
-                <button
-                  onClick={() => navigate("/student/practice")}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 8,
-                    padding: "8px 16px", borderRadius: 6, fontSize: 12,
-                    fontWeight: 600, border: "none", cursor: "pointer",
-                    background: "var(--accent)", color: "var(--bg-card)", whiteSpace: "nowrap"
-                  }}
-                >
-                  <IconPlay /> Start Practice Interview
-                </button>
-              </div>
 
-            ) : (
-              <>
-                <StatsBar 
-                  pending={pendingSessions.length} 
-                  completed={completedSessions.length} 
-                  total={sessions.length} 
-                />
-
-                <div className="ip-responsive-flex-col" style={{ display:"flex", gap:32, alignItems:"flex-start" }}>
-                  
-                  <div style={{ flex: "1 1 400px", minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: pendingSessions.length > 0 ? "var(--accent)" : "var(--text-muted)", boxShadow: pendingSessions.length > 0 ? "0 0 0 3px var(--accent-light)" : "none" }}/>
-                      <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)", margin: 0 }}>Action Required</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {loading ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {[1,2].map(i => <Skeleton key={i} height={56} />)}
                     </div>
-
-                    {pendingSessions.length === 0 ? (
-                      <div style={{ padding: "32px 24px", background: "var(--surface-1)", border: "1px dashed var(--border)", borderRadius: 12, textAlign: "center" }}>
-                        <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>You have no pending invitations. You're all caught up!</p>
-                      </div>
-                    ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                        {pendingSessions.map((session, idx) => (
-                          <div key={session._id} className="ticket-card sr-fade-up" style={{ animationDelay: `${idx * 0.05}s`, display: "flex", background: "var(--bg-card)", borderRadius: 12, border: "1px solid var(--border)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", overflow: "hidden" }}>
-                            
-                            <div style={{ flex: 1, padding: "20px 24px", position: "relative" }}>
-                              <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: "var(--accent)" }}/>
-                              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                                <DiffBadge diff={session.difficulty} />
-                                <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>•</span>
-                                <span style={{ fontSize: 12, color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 4 }}>
-                                  <IconClock /> {session.createdAt ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
-                                </span>
-                              </div>
-                              <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", margin: "0 0 4px 0" }}>
-                                {session.role || "Software Engineer"}
-                              </h3>
-                              <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>
-                                {session.companyName || "Practice Round"}
-                              </p>
-                            </div>
-
-                            <div style={{ width: 140, borderLeft: "2px dashed var(--border-input)", background: "var(--bg-hover)", padding: "20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 }}>
-                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-secondary)" }}>Pending</span>
-                              <button
-                                className="sr-join-btn"
-                                onClick={() => navigate(`/interview/${session._id}`, { state: { session } })}
-                                style={{
-                                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                                  width: "100%", padding: "8px 0", borderRadius: 8, fontSize: 13,
-                                  fontWeight: 600, border: "none", cursor: "pointer",
-                                  background: "var(--accent)", color: "var(--bg-card)",
-                                  transition: "background 0.15s", whiteSpace: "nowrap"
-                                }}
-                              >
-                                <IconPlay /> Join
-                              </button>
-                            </div>
-
+                  ) : pendingSessions.length === 0 ? (
+                    <EmptyState 
+                      title="No pending invitations"
+                      subtext="You're all caught up! Practice interviews will appear here."
+                    />
+                  ) : (
+                    pendingSessions.map(session => (
+                      <div key={session._id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 14px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                          background: "#FEF3C7", color: "#D97706", fontWeight: 700, fontSize: 14
+                        }}>
+                          {(session.role || "I").charAt(0).toUpperCase()}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {session.role || "Software Engineer"}
                           </div>
-                        ))}
+                          <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
+                            {session.companyName || "Practice Round"} · {capitalize(session.difficulty || "Medium")} · {session.createdAt ? new Date(session.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "—"}
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => navigate(`/interview/join/${session.inviteToken || session._id}`, { state: { session } })}
+                          style={{ padding: "6px 18px", borderRadius: 8, background: "#FFFFFF", color: "#2563EB", border: "1px solid #2563EB", fontWeight: 600, fontSize: 12.5, cursor: "pointer", transition: "all 0.15s", flexShrink: 0 }}
+                          onMouseEnter={e => { e.currentTarget.style.background = "#2563EB"; e.currentTarget.style.color = "#FFFFFF"; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = "#FFFFFF"; e.currentTarget.style.color = "#2563EB"; }}
+                        >
+                          Join
+                        </button>
                       </div>
-                    )}
-                  </div>
-
-                  <div style={{ flex: "1 1 400px", minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                      <IconCheck />
-                      <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)", margin: 0 }}>Recent History</h2>
-                    </div>
-
-                    {completedSessions.length === 0 ? (
-                      <div style={{ padding: "32px 24px", background: "var(--surface-1)", border: "1px dashed var(--border)", borderRadius: 12, textAlign: "center" }}>
-                        <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>No completed interviews yet.</p>
-                      </div>
-                    ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                        {completedSessions.map((session, idx) => {
-                          const score = session.report?.overallScore;
-                          return (
-                            <div key={session._id} className="list-row sr-fade-up" style={{ animationDelay: `${idx * 0.05}s`, display: "flex", alignItems: "center", padding: "16px 20px", background: "var(--bg-card)", borderRadius: 12, border: "1px solid var(--border)", gap: 16 }}>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", margin: "0 0 2px 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                  {session.role || "Software Engineer"}
-                                </h3>
-                                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                                  <span style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{session.companyName || "Practice Round"}</span>
-                                  <span style={{ fontSize: 10, color: "var(--border-strong)" }}>•</span>
-                                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{session.createdAt ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—"}</span>
-                                </div>
-                              </div>
-
-                              {score !== undefined ? (
-                                <ScoreBadge score={score} />
-                              ) : (
-                                <span style={{ fontSize: 11, color: "var(--text-muted)", fontStyle: "italic", whiteSpace: "nowrap" }}>No score</span>
-                              )}
-
-                              <button
-                                onClick={() => navigate(`/interview/${session._id}/report`, { state: { session } })}
-                                style={{
-                                  display: "flex", alignItems: "center", gap: 4,
-                                  padding: "6px 12px", borderRadius: 6, fontSize: 12,
-                                  fontWeight: 600, border: "1px solid var(--border-input)", background: "transparent",
-                                  color: "#0f172a", cursor: "pointer", transition: "background 0.15s", whiteSpace: "nowrap"
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = "#f1f5f9"}
-                                onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                              >
-                                View Report <IconArrow />
-                              </button>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-
+                    ))
+                  )}
                 </div>
-              </>
-            )}
-          </main>
-        </div>
+              </div>
+
+              {/* Right Column: Completed History Card */}
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", display: "flex", alignItems: "center", gap: 8 }}>
+                    <IconCircleCheck style={{ color: "#059669", width: 18, height: 18 }} /> Recent History
+                  </span>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: "#059669", background: "#ECFDF5", padding: "2px 8px", borderRadius: 10 }}>
+                    {completedSessions.length} finished
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {loading ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {[1,2].map(i => <Skeleton key={i} height={56} />)}
+                    </div>
+                  ) : completedSessions.length === 0 ? (
+                    <EmptyState 
+                      title="No completed interviews yet"
+                      subtext="Complete your first practice session to see detailed evaluations."
+                    />
+                  ) : (
+                    completedSessions.map(session => {
+                      const score = session.report?.overallScore;
+                      return (
+                        <div key={session._id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 14px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
+                          <div style={{
+                            width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                            background: "#EFF6FF", color: "#2563EB", fontWeight: 700, fontSize: 14
+                          }}>
+                            {(session.role || "I").charAt(0).toUpperCase()}
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              {session.role || "Software Engineer"}
+                            </div>
+                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
+                              {session.companyName || "Practice Round"} · {session.createdAt ? new Date(session.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "—"}
+                            </div>
+                          </div>
+
+                          {score !== undefined ? (
+                            <span style={{ fontSize: 12, fontWeight: 700, color: score >= 75 ? "#059669" : "#2563EB", background: score >= 75 ? "#ECFDF5" : "#EFF6FF", padding: "4px 8px", borderRadius: 8 }}>
+                              {score}/100
+                            </span>
+                          ) : null}
+
+                          <button 
+                            onClick={() => navigate(`/interview/${session._id}/report`, { state: { session } })}
+                            style={{ padding: "6px 16px", borderRadius: 8, background: "#F1F5F9", color: "#0F172A", border: "1px solid #E2E8F0", fontWeight: 600, fontSize: 12.5, cursor: "pointer", flexShrink: 0 }}
+                          >
+                            Report →
+                          </button>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </main>
       </div>
-    </>
+    </div>
   );
 }

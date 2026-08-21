@@ -1,209 +1,96 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
 import { getStudentDashboard } from "../../services/interviewService";
+import Skeleton from "../../components/ui/Skeleton";
 
-const S = {
-  metric: {
-    background: "var(--bg-card)",
-    border: "0.5px solid var(--border)",
-    borderRadius: 12,
-    padding: "18px 20px",
-    position: "relative",
-    overflow: "hidden",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-  },
-  metricLabel: {
-    fontSize: 11,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    color: "var(--text-muted)",
-    marginBottom: 10,
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-  },
-  metricValue: {
-    fontSize: 28,
-    fontWeight: 500,
-    color: "var(--text-primary)",
-    lineHeight: 1,
-  },
-  metricSub: {
-    fontSize: 12,
-    color: "var(--text-muted)",
-    marginTop: 6,
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  },
-  card: {
-    background: "var(--bg-card)",
-    border: "0.5px solid var(--border)",
-    borderRadius: 12,
-    overflow: "hidden",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-  },
-  cardHeader: {
-    padding: "16px 20px 14px",
-    borderBottom: "0.5px solid var(--border)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  cardTitle: {
-    fontSize: 13,
-    fontWeight: 500,
-    color: "var(--text-primary)",
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  },
-  cardBody: {
-    padding: "16px 20px",
-  },
+/*tiny helpers*/
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
+
+const scoreColor = score => {
+  if (score >= 75) return { pill: "#DCFCE7", text: "#15803D", bar: "#22C55E", badge: "#166534" };
+  if (score >= 50) return { pill: "#FEF9C3", text: "#A16207", bar: "#EAB308", badge: "#854D0E" };
+  return         { pill: "#FEE2E2", text: "#B91C1C", bar: "#EF4444", badge: "#991B1B" };
 };
 
-/* ─── icons ─── */
-const IconArrow = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-  </svg>
-);
-const IconReport = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-    <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-  </svg>
-);
-const IconPlay = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-    <polygon points="5 3 19 12 5 21 5 3"/>
-  </svg>
-);
-const IconTrophy = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/>
-    <path d="M7 4H4a2 2 0 0 0-2 2v2c0 2.8 2.2 5 5 5"/><path d="M17 4h3a2 2 0 0 1 2 2v2c0 2.8-2.2 5-5 5"/>
-    <rect x="7" y="2" width="10" height="9" rx="2"/>
-  </svg>
-);
-
-/* ─── score color ─── */
-const scoreColor = (s) => {
-  if (s >= 75) return { text: "var(--color-success-text)", bg: "var(--color-success-bg)", border: "var(--color-success-border)" };
-  if (s >= 50) return { text: "var(--text-secondary)", bg: "var(--bg-body)", border: "var(--border)" };
-  return { text: "var(--color-danger-text)", bg: "var(--color-danger-bg)", border: "var(--color-danger-border)" };
+const diffColor = d => {
+  if (d === "easy") return { bg: "#DCFCE7", text: "#15803D" };
+  if (d === "hard") return { bg: "#FEE2E2", text: "#B91C1C" };
+  return { bg: "#F1F5F9", text: "#475569" };
 };
 
-/* ─── score arc (SVG semi-circle) ─── */
-const ScoreArc = ({ score }) => {
-  const c = scoreColor(score);
-  const r = 28, cx = 36, cy = 36;
-  const circ = Math.PI * r; // semi-circle
-  const fill = (score / 100) * circ;
-  return (
-    <svg width="72" height="44" viewBox="0 0 72 44">
-      <path d={`M${cx - r},${cy} A${r},${r} 0 0,1 ${cx + r},${cy}`}
-        fill="none" stroke="#e5e7eb" strokeWidth="5" strokeLinecap="round"/>
-      <path d={`M${cx - r},${cy} A${r},${r} 0 0,1 ${cx + r},${cy}`}
-        fill="none" stroke={c.text} strokeWidth="5" strokeLinecap="round"
-        strokeDasharray={`${fill} ${circ}`}
-        style={{ transition: "stroke-dasharray 0.7s ease" }}/>
-      <text x={cx} y={cy - 2} textAnchor="middle" fontSize="13" fontWeight="800" fill={c.text}>{score}</text>
-      <text x={cx} y={cy + 10} textAnchor="middle" fontSize="8" fontWeight="600" fill="#9ca3af">/100</text>
-    </svg>
-  );
-};
-
-/* ─── ScoreBadge for inline use ─── */
-const ScoreBadge = ({ score }) => {
+/*ScoreBadge :matches the stat-card style*/
+function ScoreBadge({ score }) {
   const c = scoreColor(score);
   return (
-    <span style={{
-      fontSize: 13, fontWeight: 800, padding: "4px 10px", borderRadius: 20,
-      background: c.bg, color: c.text, border: `1px solid ${c.border}`,
-      letterSpacing: "-0.01em"
-    }}>{score}<span style={{ fontSize: 10, fontWeight: 600, opacity: 0.7 }}>/100</span></span>
-  );
-};
-
-/* ─── strength/weakness pills ─── */
-const StrengthPill = ({ text }) => (
-  <span style={{
-    fontSize: 11, fontWeight: 600, padding: "3px 9px", borderRadius: 20,
-    background: "var(--accent-light)", color: "var(--accent-hover)", border: "1px solid var(--accent-border)",
-    whiteSpace: "nowrap"
-  }}>+ {text}</span>
-);
-const WeaknessPill = ({ text }) => (
-  <span style={{
-    fontSize: 11, fontWeight: 600, padding: "3px 9px", borderRadius: 20,
-    background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca",
-    whiteSpace: "nowrap"
-  }}>− {text}</span>
-);
-
-/* ─── diff badge ─── */
-const DiffBadge = ({ diff }) => {
-  const map = {
-    easy:   { bg: "var(--color-success-bg)", color: "var(--color-success-text)", border: "var(--color-success-border)" },
-    medium: { bg: "var(--bg-body)", color: "var(--text-secondary)", border: "var(--border)" },
-    hard:   { bg: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "var(--color-danger-border)" },
-  };
-  const s = map[diff] || map.medium;
-  return (
-    <span style={{
-      fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em",
-      padding: "2px 8px", borderRadius: 20,
-      background: s.bg, color: s.color, border: `1px solid ${s.border}`
-    }}>{diff || "medium"}</span>
-  );
-};
-
-/* ─── stats summary bar ─── */
-const StatsBar = ({ reports }) => {
-  const avg = reports.length
-    ? Math.round(reports.reduce((a, r) => a + (r.report?.overallScore || 0), 0) / reports.length)
-    : 0;
-  const best = reports.length
-    ? Math.max(...reports.map(r => r.report?.overallScore || 0))
-    : 0;
-  const items = [
-    { label: "Total Reports",  value: reports.length,   sub: "completed" },
-    { label: "Avg Score",      value: avg,               sub: "/ 100" },
-    { label: "Best Score",     value: best,              sub: "/ 100" },
-  ];
-  return (
-    <div className="ip-stats-row" style={{
-      display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12,
-      margin: "0 0 28px 0"
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      minWidth: 64, height: 64, borderRadius: 16,
+      background: c.pill, border: `1.5px solid ${c.bar}30`,
+      flexShrink: 0,
     }}>
-      {items.map(({ label, value, sub }) => (
-        <div key={label} style={S.metric}>
-          <div style={S.metricLabel}>{label}</div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-            <span style={S.metricValue}>{value}</span>
-            <span style={S.metricSub}>{sub}</span>
-          </div>
-        </div>
-      ))}
+      <span style={{ fontSize: 22, fontWeight: 800, color: c.text, lineHeight: 1 }}>{score}</span>
+      <span style={{ fontSize: 10, fontWeight: 600, color: c.text, opacity: 0.7 }}>/100</span>
     </div>
   );
-};
+}
 
-/* ══════════════════════════════════════════════
-   MAIN PAGE
-══════════════════════════════════════════════ */
+/*ScoreBar*/
+function ScoreBar({ score }) {
+  const c = scoreColor(score);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4 }}>
+      <div style={{ flex: 1, height: 6, borderRadius: 99, background: "#F1F5F9", overflow: "hidden" }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${score}%` }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          style={{ height: "100%", borderRadius: 99, background: c.bar }}
+        />
+      </div>
+      <span style={{ fontSize: 12, fontWeight: 700, color: c.badge, minWidth: 36, textAlign: "right" }}>
+        {score}/100
+      </span>
+    </div>
+  );
+}
+
+
+function EmptyReports() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px", background: "#FFFFFF", borderRadius: 20, border: "1px solid #E2E8F0" }}>
+      <div style={{ width: 64, height: 64, borderRadius: 20, background: "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16, fontSize: 28 }}>🏆</div>
+      <p style={{ margin: "0 0 6px 0", fontSize: 17, fontWeight: 700, color: "#0F172A" }}>No reports yet</p>
+      <p style={{ margin: 0, fontSize: 14, color: "#64748B", textAlign: "center", maxWidth: 340, lineHeight: 1.6 }}>
+        Complete a practice session or a company interview to see your detailed AI evaluation here.
+      </p>
+    </div>
+  );
+}
+
+
+function TopStat({ icon, label, value, sub, color }) {
+  return (
+    <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: "20px 24px", display: "flex", alignItems: "center", gap: 16 }}>
+      <div style={{ width: 46, height: 46, borderRadius: 14, background: `${color}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>{icon}</div>
+      <div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>{value}</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginTop: 3 }}>{label}</div>
+        {sub && <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 1 }}>{sub}</div>}
+      </div>
+    </div>
+  );
+}
+
 export default function StudentReports() {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState("");
-  const [filter, setFilter]   = useState("all"); // all | high | low
+  const [filter, setFilter]   = useState("all");
 
   useEffect(() => {
     (async () => {
@@ -219,302 +106,266 @@ export default function StudentReports() {
   }, []);
 
   const filtered = reports.filter(r => {
-    const s = r.report?.overallScore || 0;
+    const s = r.report?.overallScore ?? 0;
     if (filter === "high") return s >= 70;
     if (filter === "low")  return s < 50;
     return true;
   });
 
+  const avgScore  = reports.length ? Math.round(reports.reduce((a, r) => a + (r.report?.overallScore ?? 0), 0) / reports.length) : 0;
+  const bestScore = reports.length ? Math.max(...reports.map(r => r.report?.overallScore ?? 0)) : 0;
+  const passRate  = reports.length ? Math.round((reports.filter(r => (r.report?.overallScore ?? 0) >= 50).length / reports.length) * 100) : 0;
+
+  const FILTERS = [
+    { key: "all",  label: "All" },
+    { key: "high", label: "≥ 70" },
+    { key: "low",  label: "< 50" },
+  ];
+
   return (
-    <>
-      <style>{`
-        @keyframes sr-spin { to { transform: rotate(360deg); } }
-        .sr-card { transition: box-shadow 0.18s, transform 0.18s; }
-        .sr-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important; transform: translateY(-2px); }
-        .sr-filter-btn:hover { background: #f1f4f7 !important; }
-        .sr-report-btn:hover { background: var(--accent-hover) !important; }
-      `}</style>
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      style={{ display: "flex", minHeight: "100vh", background: "#F8FAFC", overflow: "hidden", fontFamily: "Inter, system-ui, sans-serif" }}
+    >
+      <Sidebar role="student" />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
-        className="ip-app-wrapper"
-        style={{ display:"flex", minHeight:"100vh", background: "var(--bg)", overflow: "hidden", fontFamily: "var(--font-sans)", fontSize: 14 }}
-      >
-        <Sidebar role="student" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <StudentTopbar title="My Reports" sub="Review scores, feedback and improvement areas" />
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-          <StudentTopbar title="My Reports" sub="Review scores, feedback and improvement areas" />
+        <main className="ip-main-pad" style={{ flex: 1, overflowY: "auto" }}>
 
-          <main className="ip-main-container" style={{ flex: 1, padding: "28px 32px", overflowY: "auto" }}>
+      
+          <div style={{ marginBottom: 28 }}>
+            <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.02em" }}>Evaluation Reports</h1>
+            <p style={{ margin: "4px 0 0 0", fontSize: 14, color: "#64748B" }}>AI feedback, strengths, and weaknesses from all your completed interviews</p>
+          </div>
 
-            {/* ── PAGE HEADER ── */}
-            <div style={{ marginBottom: 24 }}>
-              <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-                Evaluation Reports
-              </h1>
-              <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
-                AI feedback, strengths, and weaknesses from all your completed interviews
-              </p>
+         
+          {error && (
+            <div style={{ padding: "12px 16px", borderRadius: 12, background: "#FEF2F2", color: "#B91C1C", fontSize: 13, border: "1px solid #FECACA", marginBottom: 24 }}>
+              {error}
             </div>
+          )}
 
-            {/* ── ERROR ── */}
-            {error && (
-              <div style={{
-                display: "flex", alignItems: "center", gap: 8,
-                padding: "12px 16px", borderRadius: 10, marginBottom: 20,
-                background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontSize: 13
-              }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }}/>
-                {error}
+          
+          {loading && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+                <Skeleton height={88} /><Skeleton height={88} /><Skeleton height={88} />
               </div>
-            )}
+              <Skeleton height={200} />
+              <Skeleton height={140} />
+              <Skeleton height={140} />
+            </div>
+          )}
 
-            {/* ── LOADING ── */}
-            {loading ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0" }}>
-                <div style={{ width: 28, height: 28, border: "3px solid var(--accent)", borderTopColor: "transparent", borderRadius: "50%", animation: "sr-spin 0.7s linear infinite" }}/>
+        
+          {!loading && reports.length === 0 && <EmptyReports />}
+
+    
+          {!loading && reports.length > 0 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+
+       
+              <div className="ip-stat-cards-grid">
+                <TopStat icon="📋" label="Total Reports" value={reports.length} sub="completed" color="#2563EB" />
+                <TopStat icon="📊" label="Average Score" value={`${avgScore}`} sub="out of 100" color="#D97706" />
+                <TopStat icon="🏆" label="Best Score"    value={`${bestScore}`} sub="out of 100" color="#16A34A" />
+                <TopStat icon="🎯" label="Pass Rate"     value={`${passRate}%`} sub="score ≥ 50" color="#7C3AED" />
               </div>
 
-            ) : reports.length === 0 ? (
-              /* ── EMPTY STATE ── */
-              <div style={{
-                background: "var(--bg-card)", borderRadius: 16, border: "1px solid #e5e7eb",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                display: "flex", flexDirection: "column", alignItems: "center",
-                justifyContent: "center", padding: "72px 24px", textAlign: "center"
-              }}>
-                <div style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: "var(--accent-light)", border: "1px solid var(--accent-border)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: 16, color: "var(--accent)"
-                }}>
-                  <IconTrophy />
+              {/* Chart */}
+              {reports.length > 1 && (
+                <div style={{ background: "#FFFFFF", borderRadius: 20, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: "24px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                    <div>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Score Trend</span>
+                      <span style={{ fontSize: 13, color: "#94A3B8", marginLeft: 8 }}>Last {Math.min(reports.length, 10)} sessions</span>
+                    </div>
+                  </div>
+                  <ResponsiveContainer width="100%" height={180}>
+                    <BarChart
+                      data={reports.slice(0, 10).reverse().map((r, i) => ({
+                        name: `#${i+1} ${r.role?.split(" ")[0] || ""}`,
+                        score: r.report?.overallScore ?? 0,
+                      }))}
+                      barSize={32}
+                      margin={{ top: 0, right: 0, left: -16, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#94A3B8" }} axisLine={false} tickLine={false} width={28} />
+                      <Tooltip
+                        formatter={v => [`${v}/100`, "Score"]}
+                        contentStyle={{ fontSize: 12, borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", boxShadow: "0 4px 12px rgba(15,23,42,0.1)" }}
+                      />
+                      <Bar dataKey="score" radius={[8, 8, 0, 0]}>
+                        {reports.slice(0, 10).reverse().map((r, i) => {
+                          const s = r.report?.overallScore ?? 0;
+                          return <Cell key={i} fill={s >= 75 ? "#22C55E" : s >= 50 ? "#EAB308" : "#EF4444"} />;
+                        })}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <p style={{ fontSize: 16, fontWeight: 700, color: "var(--accent)", margin: "0 0 6px 0" }}>No reports yet</p>
-                <p style={{ fontSize: 13, color: "#6b7280", maxWidth: 300, margin: "0 0 20px 0", lineHeight: 1.6 }}>
-                  Complete a practice session or a company interview to see your detailed AI evaluation here.
+              )}
+
+              {/* Filter row */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }} className="sr-filter-row">
+                <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#0F172A" }}>
+                  {filtered.length} report{filtered.length !== 1 ? "s" : ""}
+                  {filter !== "all" && <span style={{ color: "#94A3B8", fontWeight: 400, marginLeft: 6 }}>· filtered</span>}
                 </p>
-                <button
-                  onClick={() => navigate("/student/practice")}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 8,
-                    padding: "8px 16px", borderRadius: 6, fontSize: 12,
-                    fontWeight: 600, border: "none", cursor: "pointer",
-                    background: "var(--accent)", color: "var(--bg-card)"
-                  }}
-                >
-                  <IconPlay /> Start Practice Interview
-                </button>
+                <div style={{ display: "flex", gap: 4, background: "#E2E8F0", padding: 4, borderRadius: 12 }}>
+                  {FILTERS.map(({ key, label }) => (
+                    <button
+                      key={key}
+                      onClick={() => setFilter(key)}
+                      style={{
+                        padding: "6px 16px", borderRadius: 9, fontSize: 13, fontWeight: 600,
+                        border: "none", cursor: "pointer", transition: "all 0.15s",
+                        background: filter === key ? "#FFFFFF" : "transparent",
+                        color:      filter === key ? "#2563EB" : "#64748B",
+                        boxShadow:  filter === key ? "0 1px 4px rgba(15,23,42,0.08)" : "none",
+                      }}
+                    >{label}</button>
+                  ))}
+                </div>
               </div>
 
-            ) : (
-              <>
-                {/* ── STATS BAR ── */}
-                <StatsBar reports={reports} />
-
-                {/* ── SCORE TREND CHART ── */}
-                {reports.length > 1 && (
-                  <div style={{
-                    background: "var(--bg-card)", borderRadius: 14, border: "1px solid var(--border)",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)", marginBottom: 24, overflow: "hidden"
-                  }}>
-                    <div style={{ padding: "14px 20px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Score Trend</span>
-                      <span style={{ fontSize: 11, color: "var(--text-muted)" }}>across your last {Math.min(reports.length, 10)} interviews</span>
-                    </div>
-                    <div style={{ padding: "16px 12px 8px" }}>
-                      <ResponsiveContainer width="100%" height={180}>
-                        <BarChart data={reports.slice(0, 10).reverse().map((r, i) => ({ name: `#${i+1} ${r.role?.split(' ')[0] || ''}`, score: r.report?.overallScore || 0 }))} barSize={28}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                          <XAxis dataKey="name" tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
-                          <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} width={32} />
-                          <Tooltip
-                            formatter={(v) => [`${v}/100`, 'Score']}
-                            contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-card)' }}
-                          />
-                          <Bar dataKey="score" radius={[6, 6, 0, 0]}>
-                            {reports.slice(0, 10).reverse().map((r, i) => (
-                              <Cell key={i} fill={(r.report?.overallScore || 0) >= 75 ? '#047857' : (r.report?.overallScore || 0) >= 50 ? '#c8932a' : '#b91c1c'} />
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                )}
-
-                {/* ── FILTER ROW ── */}
-                <div style={{
-                  display: "flex", alignItems: "center", justifyContent: "space-between",
-                  marginBottom: 16
-                }}>
-                  <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#374151" }}>
-                    {filtered.length} report{filtered.length !== 1 ? "s" : ""}
-                    {filter !== "all" && <span style={{ color: "#9ca3af", fontWeight: 400 }}> · filtered</span>}
-                  </p>
-                  <div style={{ display: "flex", gap: 4, background: "#e5e7eb", padding: 3, borderRadius: 8 }}>
-                    {[
-                      { key: "all",  label: "All" },
-                      { key: "high", label: "≥ 70" },
-                      { key: "low",  label: "< 50" },
-                    ].map(({ key, label }) => (
-                      <button
-                        key={key}
-                        className="sr-filter-btn"
-                        onClick={() => setFilter(key)}
-                        style={{
-                          padding: "5px 14px", borderRadius: 6, fontSize: 12,
-                          fontWeight: 700, border: "none", cursor: "pointer",
-                          transition: "all 0.15s",
-                          background: filter === key ? "var(--bg-card)" : "transparent",
-                          color: filter === key ? "var(--accent)" : "#6b7280",
-                          boxShadow: filter === key ? "0 1px 3px rgba(0,0,0,0.1)" : "none"
-                        }}
-                      >{label}</button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ── REPORTS GRID ── */}
-                <div className="ip-stats-row" style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap: 16 }}>
+              {/* Report cards – 2 per row */}
+              <div className="ip-grid-2col-responsive">
+                <AnimatePresence>
                   {filtered.map((session, idx) => {
-                    const score    = session.report?.overallScore;
-                    const hasScore = score !== undefined;
-                    const sc       = hasScore ? scoreColor(score) : null;
-                    const strengths  = session.report?.strengths?.slice(0, 2) || [];
-                    const weaknesses = session.report?.weaknesses?.slice(0, 1) || [];
+                    const score     = session.report?.overallScore;
+                    const hasScore  = score !== undefined && score !== null;
+                    const sc        = hasScore ? scoreColor(score) : null;
+                    const strengths = session.report?.strengths?.slice(0, 2) || [];
+                    const weak      = session.report?.weaknesses?.slice(0, 1) || [];
+                    const summary   = session.report?.summary || "";
+                    const diff      = diffColor(session.difficulty);
 
                     return (
-                      <div
+                      <motion.div
                         key={session._id}
-                        className="sr-card sr-fade-up"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ delay: idx * 0.05, duration: 0.25 }}
                         style={{
-                          animationDelay: `${idx * 0.04}s`,
-                          ...S.card,
-                          display: "flex", flexDirection: "column"
+                          background: "#FFFFFF", borderRadius: 20,
+                          border: "1px solid #E2E8F0",
+                          boxShadow: "0 1px 4px rgba(15,23,42,0.04)",
+                          display: "flex", flexDirection: "column",
+                          overflow: "hidden",
                         }}
                       >
-                        {/* ── card top accent line ── */}
-                        <div style={{
-                          height: 3,
-                          background: hasScore
-                            ? `linear-gradient(90deg, ${sc.text}, ${sc.text}88)`
-                            : "#e5e7eb"
-                        }}/>
+                        {/* Colour top accent */}
+                        <div style={{ height: 4, background: hasScore ? sc.bar : "#E2E8F0" }} />
 
-                        <div style={{ padding: "18px 20px", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
+                        {/* Card body */}
+                        <div style={{ padding: "22px 24px", flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
 
-                          {/* ── header ── */}
-                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-                            <div style={{ minWidth: 0 }}>
-                              <p style={{
-                                margin: "0 0 5px 0", fontSize: 15, fontWeight: 600, color: "var(--text-primary)",
-                                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
-                              }}>
+                          {/* Header: role + score badge */}
+                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <p style={{ margin: "0 0 6px 0", fontSize: 17, fontWeight: 700, color: "#0F172A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>
                                 {session.role || "Software Engineer"}
                               </p>
-                              <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                                <span style={{ fontSize: 11, color: "#9ca3af" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                                <span style={{ fontSize: 12.5, fontWeight: 600, color: "#334155" }}>
                                   {session.companyName || "Practice Round"}
                                 </span>
-                                <span style={{ color: "#d1d5db", fontSize: 10 }}>·</span>
-                                <span style={{ fontSize: 11, color: "#9ca3af" }}>
+                                <span style={{ fontSize: 11, color: "#CBD5E1" }}>·</span>
+                                <span style={{ fontSize: 12.5, color: "#64748B" }}>
                                   {session.createdAt
-                                    ? new Date(session.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+                                    ? new Date(session.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
                                     : "—"}
                                 </span>
-                                <DiffBadge diff={session.difficulty} />
+                                <span style={{ fontSize: 11, color: "#CBD5E1" }}>·</span>
+                                <span style={{
+                                  fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                                  letterSpacing: "0.05em", padding: "2px 8px", borderRadius: 6,
+                                  background: diff.bg, color: diff.text
+                                }}>
+                                  {cap(session.difficulty) || "Medium"}
+                                </span>
                               </div>
                             </div>
-
-                            {/* score arc */}
-                            {hasScore && <ScoreArc score={score} />}
+                            {hasScore && <ScoreBadge score={score} />}
                           </div>
 
-                          {/* ── summary ── */}
-                          {session.report?.summary ? (
-                            <p style={{
-                              margin: 0, fontSize: 12, color: "#6b7280", lineHeight: 1.6,
-                              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden"
-                            }}>
-                              {session.report.summary}
+                          {/* Summary */}
+                          {summary ? (
+                            <p style={{ margin: 0, fontSize: 13.5, color: "#475569", lineHeight: 1.65,
+                              display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                              {summary}
                             </p>
                           ) : (
-                            <p style={{ margin: 0, fontSize: 12, color: "#9ca3af", fontStyle: "italic" }}>
-                              No summary available for this session.
+                            <p style={{ margin: 0, fontSize: 13, color: "#94A3B8", fontStyle: "italic" }}>
+                              No summary generated for this session.
                             </p>
                           )}
 
-                          {/* ── strength / weakness pills ── */}
-                          {(strengths.length > 0 || weaknesses.length > 0) && (
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                              {strengths.map((s, i) => <StrengthPill key={i} text={s} />)}
-                              {weaknesses.map((w, i) => <WeaknessPill key={i} text={w} />)}
+                          {/* Strengths & weaknesses pills */}
+                          {(strengths.length > 0 || weak.length > 0) && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                              {strengths.map((s, i) => (
+                                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 12px", borderRadius: 10, background: "#F0FDF4", border: "1px solid #BBF7D0" }}>
+                                  <span style={{ color: "#16A34A", fontWeight: 800, fontSize: 14, lineHeight: 1.4 }}>+</span>
+                                  <span style={{ fontSize: 12.5, fontWeight: 600, color: "#15803D", lineHeight: 1.4 }}>{s}</span>
+                                </div>
+                              ))}
+                              {weak.map((w, i) => (
+                                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 12px", borderRadius: 10, background: "#FFF1F2", border: "1px solid #FECDD3" }}>
+                                  <span style={{ color: "#DC2626", fontWeight: 800, fontSize: 14, lineHeight: 1.4 }}>−</span>
+                                  <span style={{ fontSize: 12.5, fontWeight: 600, color: "#B91C1C", lineHeight: 1.4 }}>{w}</span>
+                                </div>
+                              ))}
                             </div>
                           )}
 
-                          {/* ── score bar (visual) ── */}
+                          {/* Score bar */}
                           {hasScore && (
-                            <div>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#9ca3af" }}>Overall Score</span>
-                                <ScoreBadge score={score} />
-                              </div>
-                              <div style={{ height: 5, background: "#f1f4f7", borderRadius: 99, overflow: "hidden" }}>
-                                <div style={{
-                                  height: "100%", borderRadius: 99,
-                                  background: sc.text,
-                                  width: `${score}%`,
-                                  transition: "width 0.8s cubic-bezier(0.22,1,0.36,1)"
-                                }}/>
-                              </div>
+                            <div style={{ marginTop: "auto" }}>
+                              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#94A3B8", marginBottom: 6 }}>Overall Score</div>
+                              <ScoreBar score={score} />
                             </div>
                           )}
                         </div>
 
-                        {/* ── card footer ── */}
-                        <div style={{
-                          display: "flex", alignItems: "center", justifyContent: "space-between",
-                          padding: "12px 20px",
-                          borderTop: "1px solid #f1f4f7",
-                          background: "#fafafa"
-                        }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)" }}/>
-                            <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
-                              Completed
-                            </span>
+                        {/* Card footer */}
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px", borderTop: "1px solid #F1F5F9", background: "#FAFAFA" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#10B981" }} />
+                            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#475569" }}>Completed</span>
                           </div>
                           <button
-                            className="sr-report-btn"
                             onClick={() => navigate(`/interview/${session._id}/report`)}
                             style={{
-                              display: "flex", alignItems: "center", gap: 5,
-                              padding: "5px 12px", borderRadius: 6, fontSize: 11,
-                              fontWeight: 600, border: "none", cursor: "pointer",
-                              background: "var(--accent)", color: "var(--bg-card)",
-                              transition: "background 0.15s",
-                              whiteSpace: "nowrap"
+                              display: "flex", alignItems: "center", gap: 6,
+                              padding: "8px 18px", borderRadius: 10,
+                              background: "#EFF6FF", color: "#2563EB",
+                              border: "1px solid #BFDBFE", fontWeight: 700,
+                              fontSize: 13, cursor: "pointer", transition: "all 0.15s",
                             }}
+                            onMouseEnter={e => { e.currentTarget.style.background = "#2563EB"; e.currentTarget.style.color = "#FFFFFF"; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "#EFF6FF"; e.currentTarget.style.color = "#2563EB"; }}
                           >
-                            <IconReport />
-                            View Full Report
-                            <IconArrow />
+                            View Report →
                           </button>
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
-                </div>
-              </>
-            )}
-          </main>
-        </div>
-      </motion.div>
-    </>
+                </AnimatePresence>
+              </div>
+
+            </div>
+          )}
+        </main>
+      </div>
+    </motion.div>
   );
 }

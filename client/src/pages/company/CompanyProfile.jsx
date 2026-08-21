@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api";
 import Sidebar from "../../components/Sidebar";
-import StudentTopbar from "../../components/StudentTopbar";
+import CompanyTopbar from "../../components/CompanyTopbar";
+
+import { IconUsers, IconBriefcase, IconMail, IconCheckCircle, IconExternalLink } from "../../components/ui/icons";
+import Skeleton from "../../components/ui/Skeleton";
 
 export default function CompanyProfile() {
   const [profile, setProfile] = useState(null);
@@ -26,66 +29,106 @@ export default function CompanyProfile() {
   }, []);
 
   const handleRegister = () => {
-    window.open("https://careersync.onrender.com", "_blank"); // placeholder URL
+    window.open("https://careersync.onrender.com", "_blank");
   };
 
+  const companyInitial = profile?.name ? profile.name.charAt(0).toUpperCase() : "C";
+
   return (
-    <div className="ip-app-wrapper" style={{ display: "flex", height: "100vh", background: "var(--bg-body)" }}>
+    <div className="ip-app-wrapper" style={{ display: "flex", minHeight: "100vh", background: "#F8FAFC", overflow: "hidden", fontFamily: "var(--sans)", fontSize: 13 }}>
       <Sidebar role="company" />
+
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        <StudentTopbar title="Company Profile" />
         
-        <div style={{ padding: "32px", overflowY: "auto", flex: 1 }}>
-          <div style={{ maxWidth: 700, margin: "0 auto" }}>
+        <CompanyTopbar title="Company Profile" />
+
+        <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px 40px" }}>
+          <div style={{ maxWidth: 880, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
+
             {loading ? (
-              <p style={{ textAlign: "center", color: "var(--text-muted)", marginTop: 40 }}>Loading profile...</p>
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", padding: 32 }}>
+                <Skeleton height={220} />
+              </div>
             ) : error || !profile ? (
-              <div style={{ textAlign: "center", background: "#fff", padding: "48px 32px", borderRadius: 16, border: "1px solid var(--border)", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", marginTop: 40 }}>
-                <div style={{ width: 64, height: 64, background: "#fef2f2", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", padding: 40, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 54, height: 54, borderRadius: "50%", background: "#FEF2F2", color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>
+                  ⚠️
                 </div>
-                <h2 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", marginBottom: 12 }}>Profile Not Found</h2>
-                <p style={{ fontSize: 15, color: "var(--text-secondary)", marginBottom: 32, maxWidth: 400, margin: "0 auto 32px" }}>
-                  It looks like your company is not registered on CareerSync. You need a CareerSync account to view your full profile and recruit candidates.
+                <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0F172A", margin: 0 }}>CareerSync Profile Not Found</h2>
+                <p style={{ fontSize: 13.5, color: "#64748B", margin: 0, maxWidth: 420, lineHeight: 1.5 }}>
+                  It looks like your company account is not registered on CareerSync yet. Register on CareerSync to connect recruiter credentials.
                 </p>
-                <button 
+                <button
                   onClick={handleRegister}
-                  style={{ background: "var(--primary-color)", color: "#ffffff", border: "none", padding: "12px 24px", borderRadius: 8, fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all 0.2s" }}
-                  onMouseOver={e => e.currentTarget.style.transform = "translateY(-1px)"}
-                  onMouseOut={e => e.currentTarget.style.transform = "none"}
+                  style={{ marginTop: 8, padding: "10px 22px", borderRadius: 10, background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)", color: "#FFFFFF", border: "none", fontWeight: 600, fontSize: 13, cursor: "pointer" }}
                 >
-                  Register on CareerSync
+                  Register on CareerSync →
                 </button>
               </div>
             ) : (
-              <div style={{ background: "#fff", borderRadius: 16, border: "1px solid var(--border)", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-                <div style={{ height: 120, background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)" }}></div>
-                <div style={{ padding: "0 32px 32px", position: "relative" }}>
-                  <div style={{ width: 100, height: 100, borderRadius: 12, background: "#fff", border: "4px solid #fff", marginTop: -50, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, fontWeight: 600, color: "#1e293b", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", marginBottom: 16 }}>
-                    {profile.name?.charAt(0)?.toUpperCase() || "C"}
-                  </div>
-                  <h2 style={{ fontSize: 24, fontWeight: 600, color: "var(--text-primary)", margin: "0 0 4px" }}>
-                    {profile.name || "Company"}
-                  </h2>
-                  <p style={{ fontSize: 15, color: "var(--text-secondary)", margin: "0 0 24px" }}>
-                    {profile.email}
-                  </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                
+                {/* Profile Banner Card */}
+                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", overflow: "hidden" }}>
+                  <div style={{ height: 110, background: "linear-gradient(135deg, #1E293B 0%, #0F172A 100%)" }} />
                   
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24 }}>
-                    <div style={{ padding: 20, background: "var(--bg-body)", borderRadius: 12, border: "1px solid var(--border)" }}>
-                      <p style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)", margin: "0 0 8px", fontWeight: 600 }}>Role</p>
-                      <p style={{ fontSize: 15, color: "var(--text-primary)", margin: 0, fontWeight: 500 }}>{profile.role || "Recruiter / Company"}</p>
+                  <div style={{ padding: "0 24px 24px", position: "relative" }}>
+                    <div style={{
+                      width: 80, height: 80, borderRadius: 16, background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
+                      color: "#FFFFFF", border: "4px solid #FFFFFF", marginTop: -40, display: "flex", alignItems: "center",
+                      justifyContent: "center", fontSize: 32, fontWeight: 700, boxShadow: "0 4px 12px rgba(15,23,42,0.08)", marginBottom: 12
+                    }}>
+                      {companyInitial}
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                      <div>
+                        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", margin: "0 0 4px 0", letterSpacing: "-0.02em" }}>
+                          {profile.name || "Company Recruiter"}
+                        </h1>
+                        <p style={{ fontSize: 13, color: "#64748B", margin: 0, display: "flex", alignItems: "center", gap: 6 }}>
+                          <IconMail style={{ width: 14, height: 14, color: "#94A3B8" }} /> {profile.email}
+                        </p>
+                      </div>
+
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#059669", background: "#ECFDF5", padding: "4px 12px", borderRadius: 10, border: "1px solid #A7F3D0", display: "flex", alignItems: "center", gap: 6 }}>
+                        <IconCheckCircle style={{ width: 14, height: 14 }} /> Verified Recruiter
+                      </span>
                     </div>
                   </div>
                 </div>
+
+                {/* Details Section */}
+                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", margin: 0 }}>
+                    Organization Credentials
+                  </h3>
+
+                  <div className="ip-grid-sub" style={{ gap: 16 }}>
+                    <div style={{ padding: "14px 16px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#64748B" }}>
+                        Role
+                      </span>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", margin: "4px 0 0 0" }}>
+                        {profile.role || "Recruiter / Hiring Manager"}
+                      </p>
+                    </div>
+
+                    <div style={{ padding: "14px 16px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#64748B" }}>
+                        Account Source
+                      </span>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: "#2563EB", margin: "4px 0 0 0", display: "flex", alignItems: "center", gap: 6 }}>
+                        CareerSync Integration <IconExternalLink style={{ width: 13, height: 13 }} />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ const {
     joinSession,
     startSession,
     submitAnswer,
-    submitCode,
     completeSession,
     getReport,
     getCompanySessions,
@@ -58,17 +57,15 @@ interviewRouter.post('/text-practice/chat',  handleTextPracticeChat)
 /* student / public routes */
 interviewRouter.get('/student/dashboard', protect, getStudentDashboard)
 interviewRouter.get('/join/:token', joinSession)
-interviewRouter.post('/:id/start', startSession)
-interviewRouter.post('/:id/answer', submitAnswer)
+interviewRouter.post('/:id/start', protect, startSession)
+interviewRouter.post('/:id/answer', protect, submitAnswer)
 
 /* video answer routes */
-interviewRouter.get('/:id/video-upload-params', getVideoUploadParams)
-interviewRouter.post('/:id/video-answer', submitVideoAnswer)
+interviewRouter.get('/:id/video-upload-params', protect, getVideoUploadParams)
+interviewRouter.post('/:id/video-answer', protect, submitVideoAnswer)
 
-/* student submits code — Judge0 runs it, Gemini reviews quality */
-interviewRouter.post('/:id/code/submit', submitCode)
 /* student finishes all questions — Gemini writes the final report */
-interviewRouter.post('/:id/complete', completeSession)
+interviewRouter.post('/:id/complete', protect, completeSession)
 
 
 /* Report route */

@@ -1,33 +1,105 @@
 //creating JoinInterviewPage
+// Rebuilt dark-theme start screen — Start Card + Past Interviews list + Resume modal
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { joinSession, startSession } from "../../services/interviewService";
+import { motion, AnimatePresence } from "framer-motion";
+import { joinSession } from "../../services/interviewService";
+import "../../interview-dark.css";
+
+function Logo() {
+  return (
+    <div className="idk-logo" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+      <img src="/logo-dark-final.png" alt="InterviewPilot" style={{ height: 48, objectFit: "contain" }} />
+    </div>
+  );
+}
+
+// get relative time
+function relativeTime(dateStr) {
+  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 60)  return `${diff} seconds ago`;
+  if (diff < 3600) return `${Math.floor(diff/60)} minutes ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)} hours ago`;
+  return `${Math.floor(diff/86400)} days ago`;
+}
+
+// resume modal
+function ResumeModal({ onContinue, onClose }) {
+  const [resumeText, setResumeText] = useState("");
+  return (
+    <div className="idk-overlay ip-dark" onClick={onClose}>
+      <motion.div
+        className="idk-modal"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.2 }}
+        onClick={e => e.stopPropagation()}
+      >
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: "#ffffff", marginBottom: 8 }}>
+          Personalize your interview
+        </h2>
+        <p style={{ fontSize: 14, color: "#b0b0b0", marginBottom: 20, lineHeight: 1.6 }}>
+          Paste your resume or a brief summary of your experience. We'll use this to generate questions tailored to your background.
+        </p>
+        <textarea
+          value={resumeText}
+          onChange={e => setResumeText(e.target.value)}
+          placeholder="e.g. I have 2 years of experience in React and Node.js, built 3 full-stack projects..."
+          rows={6}
+          style={{
+            width: "100%", background: "#1c1c1c", border: "1px solid #2e2e2e",
+            borderRadius: 10, padding: "12px 14px", color: "#ffffff",
+            fontSize: 14, fontFamily: "inherit", resize: "vertical",
+            outline: "none", marginBottom: 20, lineHeight: 1.6,
+            boxSizing: "border-box"
+          }}
+        />
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+          <button className="idk-btn-outline-dark" onClick={onClose}>Cancel</button>
+          <button
+            className="idk-btn-blue"
+            onClick={() => onContinue(resumeText)}
+            disabled={!resumeText.trim()}
+          >
+            Continue →
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function JoinInterviewPage() {
   const { token } = useParams();
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
 
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [starting, setStarting] = useState(false);
-  const [resumeText, setResumeText] = useState("");
+  const [session,  setSession]  = useState(null);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState("");
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
-  /* step 1: on mount, validate the token and fetch session data */
+  // check token and get session data on mount
   useEffect(() => {
-    const fetchSession = async () => {
+    (async () => {
       try {
         const data = await joinSession(token);
         if (data.success) {
+          if (data.accessToken) {
+              localStorage.setItem('token', data.accessToken);
+              if (data.user) {
+                  localStorage.setItem('user', JSON.stringify(data.user));
+              }
+          }
           setSession(data.session);
         } else {
           setError(data.message || "Invalid interview link.");
         }
       } catch (e) {
-        /* inform to the developer */
+        // log error for developer
         console.error("joinSession error:", e);
-        /* inform to the user */
+        // show error to user
         setError(
           e.response?.data?.message ||
           "This link may be expired or invalid. Please contact your recruiter."
@@ -35,107 +107,55 @@ export default function JoinInterviewPage() {
       } finally {
         setLoading(false);
       }
-    };
-    fetchSession();
+    })();
   }, [token]);
 
-  /* step 2: when student clicks Start Interview, mark session active
-  and navigate to the interview room */
-  const handleStart = async () => {
-    if (!resumeText.trim()) {
-      setError("Please provide your resume summary to personalize your interview.");
-      return;
-    }
-    setStarting(true);
-    try {
-      const data = await startSession(session._id, resumeText);
-      if (data.success) {
-        /* navigate to the interview room, passing session data via state
-        so the room page does not need to re-fetch */
-        const activeSession = data.session;
-        sessionStorage.setItem(`interview_session_${session._id}`, JSON.stringify(activeSession));
-        navigate(`/interview/${session._id}`, { state: { session: activeSession } });
-      } else {
-        setError(data.message || "Could not start the interview.");
-        setStarting(false);
-      }
-    } catch (e) {
-      /* inform to the developer */
-      console.error("startSession error:", e);
-      /* inform to the user */
-      setError(e.response?.data?.message || "Could not start the interview. Please try again.");
-      setStarting(false);
-    }
+  /* step 2: when student confirms their resume, store it in sessionStorage
+  and navigate to the system check — startSession is called later from the guidelines page */
+  // note: guidelines page will read this resume text later
+  const handleResumeConfirm = (resumeText) => {
+    sessionStorage.setItem(`interview_resume_${session._id}`, resumeText);
+    setShowResumeModal(false);
+    navigate(`/interview/${session._id}/check`, { state: { session } });
   };
 
-  /* loading state */
+  // check if loading
   if (loading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div className="text-center">
-          <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="ip-text-secondary text-[14px]">Validating your interview link...</p>
+      <div className="ip-dark" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+          <div className="idk-spinner" />
+          <p style={{ color: "#b0b0b0", fontSize: 14 }}>Validating your interview link...</p>
         </div>
       </div>
     );
   }
 
-  /* error state — expired / invalid link */
+  // check if link is invalid or expired
   if (error) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div style={{
-          background: "var(--bg-card)",
-          border: "0.5px solid var(--border)",
-          borderRadius: 12,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-          padding: 40,
-          width: "100%",
-          maxWidth: 440,
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          alignItems: "center"
-        }}>
-          <div style={{ fontSize: 40 }}>⚠️</div>
-          <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-            Link Unavailable
-          </h1>
-          <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>{error}</p>
+      <div className="ip-dark" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1.5rem" }}>
+        <div className="idk-card" style={{ padding: 40, maxWidth: 440, width: "100%", textAlign: "center" }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>⚠️</div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>Link Unavailable</h1>
+          <p style={{ fontSize: 13, color: "#b0b0b0", lineHeight: 1.6 }}>{error}</p>
         </div>
       </div>
     );
   }
 
-  /* already completed */
+  // check if already completed
   if (session?.status === "completed") {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
-        <div style={{
-          background: "var(--bg-card)",
-          border: "0.5px solid var(--border)",
-          borderRadius: 12,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-          padding: 40,
-          width: "100%",
-          maxWidth: 440,
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          alignItems: "center"
-        }}>
-          <div style={{ fontSize: 40 }}>✅</div>
-          <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-            Interview Completed
-          </h1>
-          <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, marginBottom: 8 }}>
-            You have already completed this interview.
-          </p>
+      <div className="ip-dark" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem" }}>
+        <div className="idk-card" style={{ padding: 40, maxWidth: 440, width: "100%", textAlign: "center" }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>✅</div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>Interview Completed</h1>
+          <p style={{ fontSize: 13, color: "#b0b0b0", marginBottom: 20 }}>You have already completed this interview.</p>
           <button
+            className="idk-btn-blue"
+            style={{ width: "100%" }}
             onClick={() => navigate(`/interview/${session._id}/report`)}
-            style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "10px 16px", cursor: "pointer", fontWeight: 500, width: "100%" }}
           >
             View My Report
           </button>
@@ -144,86 +164,126 @@ export default function JoinInterviewPage() {
     );
   }
 
-  /* ready state — show session info and start button */
+  /* ready state — show the start card and past interviews list
+  note: pastSessions is only available if the backend populates it on the join response */
+  /* past sessions list (from session.pastsessions if provided) */
+  const pastSessions = session?.pastSessions || [];
+  const firstName = session?.candidateName?.split(" ")[0] || "there";
+
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "1rem", background: "var(--bg)", fontFamily: "var(--font-sans)", fontSize: 14 }}>
+    <div className="ip-dark" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      {/* header with logo */}
+      <nav className="idk-navbar">
+        <Logo />
+      </nav>
 
-      <div style={{ width: "100%", maxWidth: 500, display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* main content area */}
+      <div style={{ flex: 1, padding: "28px 24px", maxWidth: 800, margin: "0 auto", width: "100%" }}>
+        {/* Go back */}
+        <button className="idk-back" onClick={() => window.history.back()}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Go back
+        </button>
 
-        {/* header with logo */}
-        <div style={{ textAlign: "center" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 64, height: 64, borderRadius: "50%", background: "#fff", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", marginBottom: 16, overflow: "hidden" }}>
-            <img src="/logo.svg" alt="CareerSync" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          </div>
-          <h1 style={{ fontSize: 26, fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
-            Personalize Your Interview
-          </h1>
-          <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0, marginTop: 4 }}>
-            Provide your resume to generate 10 questions tailored exactly to your background.
+        {/* start card — shows what the student is about to walk into */}
+        <motion.div
+          className="idk-card"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          style={{ padding: "40px 32px", textAlign: "center", marginBottom: 24 }}
+        >
+          <p style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", marginBottom: 6 }}>
+            Hi {firstName}!
           </p>
-        </div>
-
-        {/* session info card — shows what the student is about to walk into */}
-        <div style={{
-          background: "var(--bg-card)",
-          border: "0.5px solid var(--border)",
-          borderRadius: 12,
-          boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-          padding: 32,
-          display: "flex",
-          flexDirection: "column",
-          gap: 20
-        }}>
-
-
-          {/* resume input */}
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", margin: 0, marginBottom: 8 }}>
-              Your Resume Summary
-            </p>
-            <p style={{ fontSize: 12, color: "var(--text-secondary)", margin: 0, marginBottom: 12 }}>
-              Paste your resume or a summary of your experience below. We will use this to generate personalized interview questions just for you.
-            </p>
-            <textarea
-              value={resumeText}
-              onChange={(e) => {
-                setResumeText(e.target.value);
-                setError("");
-              }}
-              placeholder="e.g. I have 3 years of experience in React and Node.js..."
-              style={{
-                width: "100%",
-                minHeight: 120,
-                padding: "12px",
-                borderRadius: 8,
-                border: "1px solid var(--border)",
-                fontSize: 13,
-                fontFamily: "var(--font-sans)",
-                resize: "vertical",
-                background: "var(--bg-hover)",
-                outline: "none"
-              }}
-            />
-          </div>
-
-          {/* divider */}
-          <div style={{ borderTop: "0.5px solid var(--border)" }} />
-
-          {/* submit button */}
+          <h1 style={{ fontSize: 30, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.03em", marginBottom: 12 }}>
+            Ready to ace your next Interview?
+          </h1>
+          <p style={{ fontSize: 14, color: "#b0b0b0", lineHeight: 1.65, marginBottom: 28, maxWidth: 540, margin: "0 auto 28px" }}>
+            Practice with our advanced AI Interviewer and{" "}
+            <span style={{ color: "#1e88e5" }}>get instant feedback</span>{" "}
+            and improve your confidence.
+          </p>
           <button
-            onClick={handleStart}
-            disabled={starting}
-            style={{ fontSize: 14, color: "#ffffff", background: "var(--accent)", border: "none", borderRadius: 8, padding: "12px 16px", cursor: starting ? "not-allowed" : "pointer", fontWeight: 500, width: "100%", marginTop: 4, opacity: starting ? 0.7 : 1 }}
+            className="idk-btn-blue"
+            style={{ minWidth: 220, fontSize: 16, padding: "14px 40px" }}
+            onClick={() => setShowResumeModal(true)}
           >
-            {starting ? "Generating your personalized interview..." : "Start Interview →"}
+            Start new interview
           </button>
-        </div>
+        </motion.div>
 
-        {/* footer info */}
-        <p style={{ textAlign: "center", fontSize: 11, color: "var(--text-muted)" }}>
-          © 2026 CareerSync · Powered by Gemini AI
-        </p>
+        {/* Past interviews */}
+        {pastSessions.length > 0 && (
+          <motion.div
+            className="idk-card"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            style={{ padding: "20px 24px" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6.5" stroke="#b0b0b0" strokeWidth="1.4"/>
+                <path d="M8 4.5V8L10.5 10" stroke="#b0b0b0" strokeWidth="1.4" strokeLinecap="round"/>
+              </svg>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>Your past Interviews</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {pastSessions.map((ps, i) => (
+                <div
+                  key={i}
+                  className="ip-flex-wrap"
+                  style={{
+                    background: "#232323", border: "1px solid #2e2e2e", borderRadius: 10,
+                    padding: "14px 18px",
+                    display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16
+                  }}
+                >
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "#ffffff" }}>{ps.role}</span>
+                      <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#8a8a8a", display: "inline-block" }} />
+                      <span style={{ fontSize: 14, color: "#b0b0b0", textTransform: "capitalize" }}>{ps.difficulty || "Fresher"}</span>
+                    </div>
+                    <span style={{ fontSize: 12, color: "#8a8a8a" }}>{relativeTime(ps.createdAt)}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+                    <span style={{ fontSize: 13, color: "#8a8a8a", textAlign: "right", maxWidth: 200 }}>
+                      {ps.status === "completed"
+                        ? "Interview completed."
+                        : ps.status === "active"
+                          ? "You've exited before completing your interview."
+                          : "Interview not completed."}
+                    </span>
+                    {ps.status !== "completed" && (
+                      <button
+                        className="idk-btn-outline-white"
+                        onClick={() => navigate(`/interview/join/${ps.inviteToken || token}`)}
+                        style={{ fontSize: 13, padding: "8px 16px", whiteSpace: "nowrap" }}
+                      >
+                        Retake Interview
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
+
+      {/* resume modal — shown when student clicks Start new interview */}
+      <AnimatePresence>
+        {showResumeModal && (
+          <ResumeModal
+            onContinue={handleResumeConfirm}
+            onClose={() => setShowResumeModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
