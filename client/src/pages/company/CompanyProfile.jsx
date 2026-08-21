@@ -29,7 +29,7 @@ export default function CompanyProfile() {
   }, []);
 
   const handleRegister = () => {
-    window.open("https://careersync.onrender.com", "_blank");
+    window.open("https://careersyncplatformmsr.vercel.app/", "_blank");
   };
 
   const companyInitial = profile?.name ? profile.name.charAt(0).toUpperCase() : "C";

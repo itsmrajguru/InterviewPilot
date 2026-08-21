@@ -75,8 +75,8 @@ export default function CompanyTopbar({ title, sub, action }) {
           <IconHamburger />
         </button>
 
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 500, color: "#94A3B8" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 500, color: "#94A3B8", minWidth: 0 }}>
             <span 
               onClick={() => navigate("/company/dashboard")}
               style={{ cursor: "pointer", transition: "color 0.15s" }}
@@ -86,7 +86,7 @@ export default function CompanyTopbar({ title, sub, action }) {
               Home
             </span>
             <span style={{ fontSize: 12 }}>/</span>
-            <span style={{ color: "#0F172A", fontWeight: 600 }}>
+            <span style={{ color: "#0F172A", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {title || "Dashboard"}
             </span>
           </div>
@@ -113,53 +113,7 @@ export default function CompanyTopbar({ title, sub, action }) {
           </div>
         )}
         
-        {/* Notification Bell */}
-        <button 
-          onClick={() => navigate("/company/interviews")}
-          style={{ 
-            position: "relative",
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "#F8FAFC",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#475569",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-            outline: "none"
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = "#F1F5F9"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "#F8FAFC"; }}
-          onFocus={e => { e.currentTarget.style.boxShadow = "0 0 0 2px #BFDBFE"; }}
-          onBlur={e => { e.currentTarget.style.boxShadow = "none"; }}
-          aria-label="Notifications"
-        >
-          <IconBell />
-          {/* Notification Badge */}
-          <span style={{
-            position: "absolute", 
-            top: -2, 
-            right: -2, 
-            background: "#EF4444", 
-            color: "#FFFFFF",
-            fontSize: 10, 
-            fontWeight: 700, 
-            minWidth: 16, 
-            height: 16, 
-            padding: "0 4px",
-            borderRadius: 8,
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center", 
-            border: "2px solid #FFFFFF",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.1)"
-          }}>
-            2
-          </span>
-        </button>
+
 
         {/* Profile Dropdown Trigger */}
         <button 

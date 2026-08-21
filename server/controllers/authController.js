@@ -511,4 +511,63 @@ const logout = (req, res) => {
     })
 }
 
-module.exports = { signup, login, verifySignupOtp, refreshToken, forgotPassword, resetPassword, logout }
+/* changePassword Controller — requires the user to supply their current password */
+const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    const schema = joi.object({
+        currentPassword: joi.string().min(6).required(),
+        newPassword: joi.string().min(6).required()
+    });
+    const { error } = schema.validate({ currentPassword, newPassword });
+    if (error) return res.status(400).json({ success: false, message: error.details[0].message });
+
+    try {
+        const user = await userModel.findById(req.user.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
+
+        const isMatch = await user.matchPassword(currentPassword);
+        if (!isMatch) return res.status(400).json({ success: false, message: 'Current password is incorrect.' });
+
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ success: false, message: 'New password must be different from current password.' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return res.status(200).json({ success: true, message: 'Password changed successfully.' });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+    }
+};
+
+/* deleteAccount Controller — requires password confirmation before deleting */
+const deleteAccount = async (req, res) => {
+    const { password } = req.body;
+
+    const schema = joi.object({ password: joi.string().min(6).required() });
+    const { error } = schema.validate({ password });
+    if (error) return res.status(400).json({ success: false, message: error.details[0].message });
+
+    try {
+        const user = await userModel.findById(req.user.id);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
+
+        const isMatch = await user.matchPassword(password);
+        if (!isMatch) return res.status(400).json({ success: false, message: 'Incorrect password. Account not deleted.' });
+
+        await userModel.findByIdAndDelete(req.user.id);
+
+        // Clear the refresh token cookie
+        res.clearCookie('refreshToken', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax' });
+
+        return res.status(200).json({ success: true, message: 'Account deleted successfully.' });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+    }
+};
+
+module.exports = { signup, login, verifySignupOtp, refreshToken, forgotPassword, resetPassword, logout, changePassword, deleteAccount }

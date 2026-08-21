@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
-import StudentTopbar from "../../components/StudentTopbar";
+import CompanyTopbar from "../../components/CompanyTopbar";
 import { changePassword, deleteAccount } from "../../services/authService";
 
 const IconLock    = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
@@ -133,14 +133,14 @@ function PasswordStrength({ password }) {
   );
 }
 
-export default function StudentSettings() {
+export default function CompanySettings() {
   const navigate = useNavigate();
   const userRaw = localStorage.getItem("user");
   const user    = userRaw ? JSON.parse(userRaw) : {};
 
-  const [cpForm, setCpForm]     = useState({ current: "", newPwd: "", confirm: "" });
+  const [cpForm, setCpForm]       = useState({ current: "", newPwd: "", confirm: "" });
   const [cpLoading, setCpLoading] = useState(false);
-  const [cpMsg, setCpMsg]       = useState(null); // { type, text }
+  const [cpMsg, setCpMsg]         = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePwd, setDeletePwd]             = useState("");
@@ -163,7 +163,6 @@ export default function StudentSettings() {
       await changePassword(cpForm.current, cpForm.newPwd);
       setCpMsg({ type: "success", text: "Password changed successfully! Please log in again for security." });
       setCpForm({ current: "", newPwd: "", confirm: "" });
-      // Log the user out after 2.5s so new password is required on next login
       setTimeout(() => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -200,14 +199,12 @@ export default function StudentSettings() {
     navigate("/login");
   };
 
-
-
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#F8FAFC", fontFamily: "var(--sans)", fontSize: 14 }}>
-      <Sidebar role="student" />
+      <Sidebar role="company" />
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        <StudentTopbar title="Settings" sub="Manage your account" />
+        <CompanyTopbar title="Settings" sub="Manage your account" />
 
         <main className="ip-main-pad" style={{ flex: 1, overflowY: "auto" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -225,124 +222,124 @@ export default function StudentSettings() {
             <div className="ip-grid-2col-responsive" style={{ alignItems: "start" }}>
 
               {/* LEFT column: Change Password */}
-            <SectionCard>
-              <SectionHeader
-                icon={<IconLock />}
-                title="Change Password"
-                subtitle="Update your login password"
-              />
-
-              <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <PasswordInput
-                  id="current-password"
-                  label="Current Password"
-                  value={cpForm.current}
-                  onChange={e => setCpForm(f => ({ ...f, current: e.target.value }))}
-                  placeholder="Enter current password"
-                />
-                <PasswordInput
-                  id="new-password"
-                  label="New Password"
-                  value={cpForm.newPwd}
-                  onChange={e => setCpForm(f => ({ ...f, newPwd: e.target.value }))}
-                  placeholder="At least 6 characters"
-                />
-                <PasswordStrength password={cpForm.newPwd} />
-                <PasswordInput
-                  id="confirm-password"
-                  label="Confirm New Password"
-                  value={cpForm.confirm}
-                  onChange={e => setCpForm(f => ({ ...f, confirm: e.target.value }))}
-                  placeholder="Repeat new password"
+              <SectionCard>
+                <SectionHeader
+                  icon={<IconLock />}
+                  title="Change Password"
+                  subtitle="Update your login password"
                 />
 
-                {cpMsg && <Alert type={cpMsg.type} message={cpMsg.text} />}
+                <form onSubmit={handleChangePassword} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  <PasswordInput
+                    id="cp-current-password"
+                    label="Current Password"
+                    value={cpForm.current}
+                    onChange={e => setCpForm(f => ({ ...f, current: e.target.value }))}
+                    placeholder="Enter current password"
+                  />
+                  <PasswordInput
+                    id="cp-new-password"
+                    label="New Password"
+                    value={cpForm.newPwd}
+                    onChange={e => setCpForm(f => ({ ...f, newPwd: e.target.value }))}
+                    placeholder="At least 6 characters"
+                  />
+                  <PasswordStrength password={cpForm.newPwd} />
+                  <PasswordInput
+                    id="cp-confirm-password"
+                    label="Confirm New Password"
+                    value={cpForm.confirm}
+                    onChange={e => setCpForm(f => ({ ...f, confirm: e.target.value }))}
+                    placeholder="Repeat new password"
+                  />
 
-                <button
-                  type="submit"
-                  disabled={cpLoading}
-                  style={{
-                    padding: "10px 20px", borderRadius: 10, alignSelf: "flex-start",
-                    background: cpLoading ? "#93C5FD" : "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
-                    color: "#FFFFFF", border: "none", fontWeight: 600, fontSize: 13.5,
-                    cursor: cpLoading ? "not-allowed" : "pointer",
-                    boxShadow: "0 4px 12px rgba(37,99,235,0.25)", transition: "all 0.15s",
-                    display: "flex", alignItems: "center", gap: 8
-                  }}
-                >
-                  {cpLoading ? (
-                    <><span className="ip-spinner" /> Changing...</>
-                  ) : (
-                    <><IconLock /> Update Password</>
-                  )}
-                </button>
-              </form>
-            </SectionCard>
+                  {cpMsg && <Alert type={cpMsg.type} message={cpMsg.text} />}
+
+                  <button
+                    type="submit"
+                    disabled={cpLoading}
+                    style={{
+                      padding: "10px 20px", borderRadius: 10, alignSelf: "flex-start",
+                      background: cpLoading ? "#93C5FD" : "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
+                      color: "#FFFFFF", border: "none", fontWeight: 600, fontSize: 13.5,
+                      cursor: cpLoading ? "not-allowed" : "pointer",
+                      boxShadow: "0 4px 12px rgba(37,99,235,0.25)", transition: "all 0.15s",
+                      display: "flex", alignItems: "center", gap: 8
+                    }}
+                  >
+                    {cpLoading ? (
+                      <><span className="ip-spinner" /> Changing...</>
+                    ) : (
+                      <><IconLock /> Update Password</>
+                    )}
+                  </button>
+                </form>
+              </SectionCard>
 
               {/* RIGHT column: Session + Danger Zone */}
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <SectionCard>
-              <SectionHeader
-                icon={<IconLogout />}
-                title="Session"
-                subtitle="Manage your active login session"
-              />
-              <div style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "14px 16px", borderRadius: 10, background: "#F8FAFC", border: "1px solid #F1F5F9",
-                flexWrap: "wrap", gap: 12
-              }}>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A" }}>Logged in as</div>
-                  <div style={{ fontSize: 13, color: "#64748B" }}>{user?.email || "Unknown"}</div>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 8,
-                    padding: "8px 16px", borderRadius: 10,
-                    background: "#FEF2F2", color: "#DC2626",
-                    border: "1px solid #FECACA", fontWeight: 600, fontSize: 13,
-                    cursor: "pointer", transition: "all 0.15s"
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "#DC2626"; e.currentTarget.style.color = "#FFF"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "#FEF2F2"; e.currentTarget.style.color = "#DC2626"; }}
-                >
-                  <IconLogout /> Log Out
-                </button>
-              </div>
-            </SectionCard>
+                <SectionCard>
+                  <SectionHeader
+                    icon={<IconLogout />}
+                    title="Session"
+                    subtitle="Manage your active login session"
+                  />
+                  <div style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "14px 16px", borderRadius: 10, background: "#F8FAFC", border: "1px solid #F1F5F9",
+                    flexWrap: "wrap", gap: 12
+                  }}>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A" }}>Logged in as</div>
+                      <div style={{ fontSize: 13, color: "#64748B" }}>{user?.email || "Unknown"}</div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        display: "flex", alignItems: "center", gap: 8,
+                        padding: "8px 16px", borderRadius: 10,
+                        background: "#FEF2F2", color: "#DC2626",
+                        border: "1px solid #FECACA", fontWeight: 600, fontSize: 13,
+                        cursor: "pointer", transition: "all 0.15s"
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#DC2626"; e.currentTarget.style.color = "#FFF"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "#FEF2F2"; e.currentTarget.style.color = "#DC2626"; }}
+                    >
+                      <IconLogout /> Log Out
+                    </button>
+                  </div>
+                </SectionCard>
 
-            <SectionCard style={{ border: "1px solid #FCA5A5" }}>
-              <SectionHeader
-                icon={<span style={{ color: "#DC2626" }}><IconTrash /></span>}
-                title="Danger Zone"
-                subtitle="Permanently delete your account and all data"
-              />
-              <div style={{
-                padding: "14px 16px", borderRadius: 10, background: "#FFF5F5", border: "1px solid #FED7D7"
-              }}>
-                <p style={{ margin: "0 0 12px 0", fontSize: 13, color: "#7F1D1D", lineHeight: 1.5 }}>
-                  Once you delete your account, <strong>all your interview sessions, reports, and data will be permanently removed</strong>. This action cannot be undone.
-                </p>
-                <button
-                  onClick={() => { setShowDeleteModal(true); setDeleteMsg(null); setDeletePwd(""); }}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 8,
-                    padding: "9px 18px", borderRadius: 10,
-                    background: "#DC2626", color: "#FFFFFF",
-                    border: "none", fontWeight: 600, fontSize: 13,
-                    cursor: "pointer", transition: "all 0.15s",
-                    boxShadow: "0 4px 12px rgba(220,38,38,0.25)"
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#B91C1C"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#DC2626"}
-                >
-                  <IconTrash /> Delete My Account
-                </button>
-              </div>
-            </SectionCard>
-
+                {/* Danger Zone */}
+                <SectionCard style={{ border: "1px solid #FCA5A5" }}>
+                  <SectionHeader
+                    icon={<span style={{ color: "#DC2626" }}><IconTrash /></span>}
+                    title="Danger Zone"
+                    subtitle="Permanently delete your account and all data"
+                  />
+                  <div style={{
+                    padding: "14px 16px", borderRadius: 10, background: "#FFF5F5", border: "1px solid #FED7D7"
+                  }}>
+                    <p style={{ margin: "0 0 12px 0", fontSize: 13, color: "#7F1D1D", lineHeight: 1.5 }}>
+                      Once you delete your account, <strong>all your company sessions, reports, and data will be permanently removed</strong>. This action cannot be undone.
+                    </p>
+                    <button
+                      onClick={() => { setShowDeleteModal(true); setDeleteMsg(null); setDeletePwd(""); }}
+                      style={{
+                        display: "flex", alignItems: "center", gap: 8,
+                        padding: "9px 18px", borderRadius: 10,
+                        background: "#DC2626", color: "#FFFFFF",
+                        border: "none", fontWeight: 600, fontSize: 13,
+                        cursor: "pointer", transition: "all 0.15s",
+                        boxShadow: "0 4px 12px rgba(220,38,38,0.25)"
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = "#B91C1C"}
+                      onMouseLeave={e => e.currentTarget.style.background = "#DC2626"}
+                    >
+                      <IconTrash /> Delete My Account
+                    </button>
+                  </div>
+                </SectionCard>
               </div>{/* end right column */}
             </div>{/* end 2-col grid */}
 
@@ -351,6 +348,7 @@ export default function StudentSettings() {
         </main>
       </div>
 
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 1000,
@@ -382,7 +380,7 @@ export default function StudentSettings() {
             </div>
 
             <PasswordInput
-              id="delete-password"
+              id="cp-delete-password"
               label="Your Password"
               value={deletePwd}
               onChange={e => setDeletePwd(e.target.value)}

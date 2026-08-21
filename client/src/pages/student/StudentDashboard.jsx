@@ -249,10 +249,10 @@ export default function StudentDashboard() {
                             {initial}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", lineHeight: 1.3 }}>
                               {iv.role || "Software Engineer Mock"}
                             </div>
-                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
+                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {capitalize(iv.difficulty || "Medium")} · {iv.createdAt ? new Date(iv.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "19 Aug 2026"} · 25 min
                             </div>
                           </div>
