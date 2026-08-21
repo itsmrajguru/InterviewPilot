@@ -6,18 +6,18 @@
    ========================================================= */
 
 .ip-dark {
-  --dark-bg:           #0d0d0d;
-  --dark-bg-card:      #1c1c1c;
-  --dark-bg-card-2:    #232323;
-  --dark-border:       #2e2e2e;
-  --dark-text:         #ffffff;
+  --dark-bg: #0d0d0d;
+  --dark-bg-card: #1c1c1c;
+  --dark-bg-card-2: #232323;
+  --dark-border: #2e2e2e;
+  --dark-text: #ffffff;
   --dark-text-secondary: #b0b0b0;
-  --dark-text-muted:   #8a8a8a;
-  --accent-blue:       #1e88e5;
+  --dark-text-muted: #8a8a8a;
+  --accent-blue: #1e88e5;
   --accent-blue-hover: #1670c2;
-  --success-green:     #22c55e;
-  --warning-yellow:    #facc15;
-  --danger-red:        #ef4444;
+  --success-green: #22c55e;
+  --warning-yellow: #facc15;
+  --danger-red: #ef4444;
 
   background: var(--dark-bg);
   color: var(--dark-text);
@@ -51,8 +51,13 @@
   letter-spacing: -0.04em;
 }
 
-.ip-dark .idk-logo-text span:first-child { color: #1e88e5; }
-.ip-dark .idk-logo-text span:last-child  { color: #ffffff; }
+.ip-dark .idk-logo-text span:first-child {
+  color: #1e88e5;
+}
+
+.ip-dark .idk-logo-text span:last-child {
+  color: #ffffff;
+}
 
 /* Go back link */
 .ip-dark .idk-back {
@@ -70,7 +75,9 @@
   transition: color 0.15s;
 }
 
-.ip-dark .idk-back:hover { color: var(--dark-text); }
+.ip-dark .idk-back:hover {
+  color: var(--dark-text);
+}
 
 /* Cards */
 .ip-dark .idk-card {
@@ -125,7 +132,10 @@
   font-family: inherit;
 }
 
-.ip-dark .idk-btn-white:hover { background: #f0f0f0; transform: translateY(-1px); }
+.ip-dark .idk-btn-white:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
 
 .ip-dark .idk-btn-outline-white {
   background: transparent;
@@ -144,7 +154,9 @@
   font-family: inherit;
 }
 
-.ip-dark .idk-btn-outline-white:hover { background: rgba(255,255,255,0.08); }
+.ip-dark .idk-btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 
 .ip-dark .idk-btn-red {
   background: var(--danger-red);
@@ -163,7 +175,9 @@
   font-family: inherit;
 }
 
-.ip-dark .idk-btn-red:hover { background: #dc2626; }
+.ip-dark .idk-btn-red:hover {
+  background: #dc2626;
+}
 
 .ip-dark .idk-btn-outline-dark {
   background: transparent;
@@ -182,7 +196,9 @@
   font-family: inherit;
 }
 
-.ip-dark .idk-btn-outline-dark:hover { border-color: #666; }
+.ip-dark .idk-btn-outline-dark:hover {
+  border-color: #666;
+}
 
 /* Checklist row */
 .ip-dark .idk-check-row {
@@ -193,7 +209,9 @@
   border-bottom: 1px solid var(--dark-border);
 }
 
-.ip-dark .idk-check-row:last-child { border-bottom: none; }
+.ip-dark .idk-check-row:last-child {
+  border-bottom: none;
+}
 
 .ip-dark .idk-check-icon {
   width: 24px;
@@ -233,7 +251,9 @@
 }
 
 @keyframes idk-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Name pill overlay */
@@ -241,7 +261,7 @@
   position: absolute;
   bottom: 14px;
   left: 14px;
-  background: rgba(0,0,0,0.72);
+  background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(4px);
   color: #ffffff;
   font-size: 13px;
@@ -256,7 +276,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(0,0,0,0.72);
+  background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(4px);
   color: #ffffff;
   font-size: 13px;
@@ -278,8 +298,15 @@
 }
 
 @keyframes idk-pulse-rec {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.35; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
 }
 
 /* Active speaker ring on video panel */
@@ -312,7 +339,7 @@
 .ip-dark .idk-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(3px);
   z-index: 200;
   display: flex;
@@ -328,7 +355,7 @@
   padding: 32px;
   max-width: 480px;
   width: 100%;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 
 /* Spinner for loading states */
@@ -346,9 +373,11 @@
   .ip-dark .idk-two-col {
     flex-direction: column !important;
   }
-  .ip-dark .idk-two-col > * {
+
+  .ip-dark .idk-two-col>* {
     width: 100% !important;
   }
+
   .ip-dark .idk-video-panels {
     flex-direction: column !important;
   }

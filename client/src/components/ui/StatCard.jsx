@@ -19,6 +19,7 @@ export default function StatCard({ label, value, sub, icon: Icon, hue = "brand",
 
   return (
     <div 
+      className="ip-stat-card"
       onClick={onClick}
       style={{ 
         background: "#FFFFFF",
@@ -37,7 +38,7 @@ export default function StatCard({ label, value, sub, icon: Icon, hue = "brand",
       onMouseLeave={e => { if (onClick) { e.currentTarget.style.boxShadow = "0 1px 3px rgba(15, 23, 42, 0.03)"; e.currentTarget.style.borderColor = "#E2E8F0"; } }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "14px", flex: 1, minWidth: 0 }}>
-        <div style={{ 
+        <div className="ip-stat-card-icon" style={{ 
           width: 40, height: 40, borderRadius: 12, 
           background: color.bg, color: color.iconColor, 
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 
@@ -60,7 +61,7 @@ export default function StatCard({ label, value, sub, icon: Icon, hue = "brand",
       </div>
 
       {/* Right Arrow Action Circle */}
-      <div style={{
+      <div className="ip-stat-card-arrow" style={{
         width: 24, height: 24, borderRadius: "50%", background: "#F8FAFC", border: "1px solid #E2E8F0",
         display: "flex", alignItems: "center", justifyContent: "center", color: "#64748B", flexShrink: 0
       }}>

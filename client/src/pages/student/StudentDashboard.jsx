@@ -208,7 +208,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Main 2-column Section (50% / 50% matching 2 stat cards each) */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
+            <div className="ip-grid-main">
 
               {/* Left Column: Recent Interviews Card */}
               <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
@@ -310,7 +310,7 @@ export default function StudentDashboard() {
                       <IconBolt style={{ color: "#2563EB", width: 18, height: 18 }} /> Quick Actions
                     </span>
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div className="ip-grid-2col" style={{ gap: 12 }}>
                     {qaActions.map((a) => (
                       <div
                         key={a.label}
@@ -362,7 +362,7 @@ export default function StudentDashboard() {
                 <IconStar style={{ color: "#F59E0B", width: 18, height: 18 }} />
                 <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Recommended for you</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div className="ip-grid-sub" style={{ gap: 14 }}>
                 <div
                   onClick={() => navigate("/student/practice")}
                   style={{

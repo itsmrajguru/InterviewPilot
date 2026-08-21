@@ -45,7 +45,7 @@ export default function SignupPage() {
         {/* logo and header */}
         <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-card)", cursor: "pointer", marginBottom: 16 }} onClick={() => navigate("/")}>
-            <img src="/logo.svg" alt="CareerSync" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/logo-light.png" alt="InterviewPilot" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
             Create Account

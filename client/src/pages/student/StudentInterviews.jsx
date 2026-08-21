@@ -79,7 +79,6 @@ export default function StudentInterviews() {
                   Track your pending invitations and review your completed session history.
                 </p>
               </div>
-
               <button
                 onClick={() => navigate("/student/practice")}
                 style={{
@@ -133,8 +132,8 @@ export default function StudentInterviews() {
               />
             </div>
 
-            {/* Main 2-column Section (50% / 50% matching 2 stat cards each) */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
+            {/* Main 2-column Grid */}
+            <div className="ip-grid-main">
 
               {/* Left Column: Pending Invitations Card */}
               <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>

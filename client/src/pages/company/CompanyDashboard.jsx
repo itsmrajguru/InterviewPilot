@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
 import Sidebar from "../../components/Sidebar";
+import CompanyTopbar from "../../components/CompanyTopbar";
 import { createInterviewSession, getCompanySessions } from "../../services/interviewService";
 
 import { IconPlus, IconUsers, IconClock, IconCheck, IconArrowRight, IconStar, IconSend, IconCircleCheck } from "../../components/ui/icons";
@@ -164,32 +165,7 @@ export default function CompanyDashboard() {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         
-        {/* Recruiter Topbar */}
-        <div style={{
-          padding: "0 20px", height: 60, borderBottom: "1px solid #E2E8F0",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "#FFFFFF", flexShrink: 0, position: "sticky", top: 0, zIndex: 50
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Dashboard</span>
-            <span style={{ fontSize: 14, color: "#94A3B8" }}>|</span>
-            <span style={{ fontSize: 11.5, color: "#64748B", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>
-              Recruiter workspace
-            </span>
-          </div>
-
-          <button
-            onClick={() => setShowCreateModal(true)}
-            style={{
-              display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 10,
-              background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)", color: "#FFFFFF",
-              border: "none", fontWeight: 600, fontSize: 13, cursor: "pointer",
-              boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)"
-            }}
-          >
-            <IconPlus style={{ width: 14, height: 14 }} /> Create Interview
-          </button>
-        </div>
+        <CompanyTopbar title="Dashboard" />
 
         <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px 40px" }}>
           <div style={{ maxWidth: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -229,7 +205,7 @@ export default function CompanyDashboard() {
             </div>
 
             {/* Main 2-Column Grid (50% / 50% matching 2 stat cards each) */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
+            <div className="ip-grid-main">
               
               {/* Left Column: Recent Candidates Pipeline */}
               <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
@@ -270,7 +246,7 @@ export default function CompanyDashboard() {
                     </span>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div className="ip-grid-2col" style={{ gap: 12 }}>
                     <div
                       onClick={() => setShowCreateModal(true)}
                       style={{

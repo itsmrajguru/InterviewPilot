@@ -86,7 +86,7 @@ function EndedEarlyScreen({ sessionId, navigate }) {
       <div style={{ width: 48, height: 48, borderRadius: "50%", background: "#1c1c1c", border: "1px solid #2e2e2e", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
         onClick={() => navigate("/student/dashboard")}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M2 2l12 12M14 2L2 14" stroke="#b0b0b0" strokeWidth="1.8" strokeLinecap="round"/>
+          <path d="M2 2l12 12M14 2L2 14" stroke="#b0b0b0" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
       </div>
 
@@ -114,7 +114,7 @@ function EndedEarlyScreen({ sessionId, navigate }) {
 /* video recorder stream management — inline equivalent of VideoRecorder.jsx's
    getUserMedia logic. UI is handled by the interview room panels directly */
 function useCameraStream() {
-  const videoRef  = useRef(null);
+  const videoRef = useRef(null);
   const streamRef = useRef(null);
 
   const start = async () => {
@@ -139,41 +139,41 @@ function useCameraStream() {
 }
 
 export default function InterviewRoomPage() {
-  const { id }   = useParams();
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const sessionData  = location.state?.session;
+  const sessionData = location.state?.session;
   const savedSession = sessionData || JSON.parse(sessionStorage.getItem(`interview_session_${id}`) || "null");
-  const [session]    = useState(savedSession);
+  const [session] = useState(savedSession);
 
-  const [currentIndex,  setCurrentIndex]  = useState(session?.currentQuestionIndex || 0);
-  const [answered,      setAnswered]      = useState(
+  const [currentIndex, setCurrentIndex] = useState(session?.currentQuestionIndex || 0);
+  const [answered, setAnswered] = useState(
     JSON.parse(sessionStorage.getItem(`interview_answered_${id}`) || "{}")
   );
-  const [transcript,    setTranscript]    = useState("");
-  const [feedback,      setFeedback]      = useState(null);
-  const [showExit,      setShowExit]      = useState(false);
-  const [exitedEarly,   setExitedEarly]   = useState(false);
-  const [completing,    setCompleting]    = useState(false);
-  const [error,         setError]         = useState("");
+  const [transcript, setTranscript] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const [showExit, setShowExit] = useState(false);
+  const [exitedEarly, setExitedEarly] = useState(false);
+  const [completing, setCompleting] = useState(false);
+  const [error, setError] = useState("");
 
   /* Coding state */
-  const [showCodeDrawer,  setShowCodeDrawer]  = useState(false);
-  const [code,            setCode]            = useState("// Write your solution here\n\n");
-  const [language,        setLanguage]        = useState("javascript");
-  const [submitting,      setSubmitting]      = useState(false);
-  const [codeResults,     setCodeResults]     = useState(null);
+  const [showCodeDrawer, setShowCodeDrawer] = useState(false);
+  const [code, setCode] = useState("// Write your solution here\n\n");
+  const [language, setLanguage] = useState("javascript");
+  const [submitting, setSubmitting] = useState(false);
+  const [codeResults, setCodeResults] = useState(null);
 
   /* Recording state */
-  const [recPhase,      setRecPhase]      = useState("idle"); // idle|ready|recording|uploading|evaluating
-  const [elapsed,       setElapsed]       = useState(0);
+  const [recPhase, setRecPhase] = useState("idle"); // idle|ready|recording|uploading|evaluating
+  const [elapsed, setElapsed] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { videoRef, streamRef, start: startCamera, stop: stopCamera } = useCameraStream();
   const recorderRef = useRef(null);
-  const chunksRef   = useRef([]);
-  const timerRef    = useRef(null);
+  const chunksRef = useRef([]);
+  const timerRef = useRef(null);
 
   useEffect(() => { if (!session) navigate("/login"); }, [session, navigate]);
   useEffect(() => { if (session) sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(session)); }, [id, session]);
@@ -203,13 +203,13 @@ export default function InterviewRoomPage() {
 
   if (!session) return null;
 
-  const questions       = session.questions || [];
+  const questions = session.questions || [];
   const currentQuestion = questions[currentIndex];
-  const isLastQuestion  = currentIndex === questions.length - 1;
-  const isCoding        = currentQuestion?.type === "coding";
-  const allAnswered     = questions.length > 0 && Object.keys(answered).length >= questions.length;
-  const fullName        = session.candidateName || "Candidate";
-  const firstName       = fullName.split(" ")[0];
+  const isLastQuestion = currentIndex === questions.length - 1;
+  const isCoding = currentQuestion?.type === "coding";
+  const allAnswered = questions.length > 0 && Object.keys(answered).length >= questions.length;
+  const fullName = session.candidateName || "Candidate";
+  const firstName = fullName.split(" ")[0];
 
   // start recording
   const startRecording = async () => {
@@ -255,11 +255,11 @@ export default function InterviewRoomPage() {
       const { uploadParams } = paramsRes;
       // build form data
       const form = new FormData();
-      form.append("file",      blob);
+      form.append("file", blob);
       form.append("public_id", uploadParams.publicId);
       form.append("timestamp", uploadParams.timestamp);
       form.append("signature", uploadParams.signature);
-      form.append("api_key",   uploadParams.apiKey);
+      form.append("api_key", uploadParams.apiKey);
 
       // upload to cloudinary
       const cloudUrl = await new Promise((resolve, reject) => {
@@ -343,7 +343,7 @@ export default function InterviewRoomPage() {
     return <EndedEarlyScreen sessionId={id} navigate={navigate} />;
   }
 
-  const isRecording     = recPhase === "recording";
+  const isRecording = recPhase === "recording";
   const candidateActive = recPhase === "recording" || recPhase === "ready";
 
   return (
@@ -354,14 +354,8 @@ export default function InterviewRoomPage() {
           className="idk-navbar"
           style={{ justifyContent: "space-between" }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M3 17L9 11L13 15L21 7" stroke="#1e88e5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M17 7H21V11" stroke="#1e88e5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.04em" }}>
-              <span style={{ color: "#1e88e5" }}>INTERVIEW</span><span style={{ color: "#ffffff" }}>PILOT</span>
-            </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <img src="/logo-dark-final.png" alt="InterviewPilot" style={{ height: 48, objectFit: "contain" }} />
           </div>
           <button
             className="idk-btn-outline-white"
@@ -369,7 +363,7 @@ export default function InterviewRoomPage() {
             style={{ padding: "8px 18px", fontSize: 14 }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
             </svg>
             Exit
           </button>
@@ -453,11 +447,11 @@ export default function InterviewRoomPage() {
             {!transcript && (
               <p style={{ fontSize: 13, color: "#8a8a8a", marginTop: 6 }}>
                 {recPhase === "recording" ? "Listening to your answer…" :
-                 recPhase === "uploading" ? `Uploading… ${uploadProgress}%` :
-                 recPhase === "evaluating" ? "Evaluating your answer…" :
-                 recPhase === "done" ? "Answer submitted." :
-                 isCoding ? "Open the code editor below to write your solution." :
-                 "Click 'Start Recording' to answer."}
+                  recPhase === "uploading" ? `Uploading… ${uploadProgress}%` :
+                    recPhase === "evaluating" ? "Evaluating your answer…" :
+                      recPhase === "done" ? "Answer submitted." :
+                        isCoding ? "Open the code editor below to write your solution." :
+                          "Click 'Start Recording' to answer."}
               </p>
             )}
           </div>
@@ -564,16 +558,16 @@ export default function InterviewRoomPage() {
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                       {codeResults.map((r, i) => (
-                        <div key={i} style={{
-                          display: "grid", gridTemplateColumns: "24px 1fr 1fr 1fr", gap: 10,
+                        <div key={i} className="ip-flex-wrap" style={{
+                          display: "flex", gap: 10, alignItems: "center",
                           padding: "10px 14px", borderRadius: 8, fontFamily: "var(--mono)", fontSize: 12,
                           background: r.passed ? "#0d1f12" : "#1f0d0d",
                           border: `1px solid ${r.passed ? "#22c55e" : "#ef4444"}`
                         }}>
-                          <span style={{ color: r.passed ? "#22c55e" : "#ef4444", fontWeight: 700, fontSize: 16 }}>{r.passed ? "✓" : "✗"}</span>
-                          <div><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Input</div>{r.input || "—"}</div>
-                          <div><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Expected</div>{r.expectedOutput}</div>
-                          <div><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Got</div><span style={{ color: r.passed ? "#22c55e" : "#ef4444" }}>{r.actualOutput || r.error || "—"}</span></div>
+                          <span style={{ color: r.passed ? "#22c55e" : "#ef4444", fontWeight: 700, fontSize: 16, width: 24, flexShrink: 0 }}>{r.passed ? "✓" : "✗"}</span>
+                          <div style={{ flex: 1, minWidth: 100 }}><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Input</div>{r.input || "—"}</div>
+                          <div style={{ flex: 1, minWidth: 100 }}><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Expected</div>{r.expectedOutput}</div>
+                          <div style={{ flex: 1, minWidth: 100 }}><div style={{ fontSize: 9, color: "#8a8a8a", textTransform: "uppercase", marginBottom: 2 }}>Got</div><span style={{ color: r.passed ? "#22c55e" : "#ef4444" }}>{r.actualOutput || r.error || "—"}</span></div>
                         </div>
                       ))}
                     </div>
@@ -639,94 +633,95 @@ export default function InterviewRoomPage() {
             </button>
           </div>
         )}
-      </div>
 
-      {/* code drawer (slide up) */}
-      <AnimatePresence>
-        {showCodeDrawer && (
-          <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            style={{
-              position: "fixed", bottom: 0, left: 0, right: 0,
-              height: "55vh", zIndex: 150,
-              background: "#111", border: "1px solid #2e2e2e",
-              borderRadius: "16px 16px 0 0",
-              display: "flex", flexDirection: "column",
-              boxShadow: "0 -8px 40px rgba(0,0,0,0.6)"
-            }}
-          >
-            {/* Drawer header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: "1px solid #2e2e2e" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>💻 Code Editor</span>
-                <span style={{ fontSize: 11, color: "#8a8a8a" }}>Monaco · Judge0 execution</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {/* Language selector */}
-                <div style={{ display: "flex", gap: 2, background: "#1c1c1c", borderRadius: 8, padding: 3 }}>
-                  {["javascript", "python", "cpp", "java"].map(lang => (
-                    <button
-                      key={lang}
-                      onClick={() => setLanguage(lang)}
-                      disabled={submitting}
-                      style={{
-                        padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700,
-                        border: "none", cursor: submitting ? "not-allowed" : "pointer", transition: "all 0.15s",
-                        background: language === lang ? "#1e88e5" : "transparent",
-                        color: language === lang ? "#fff" : "#8a8a8a",
-                        fontFamily: "inherit"
-                      }}
-                    >{lang}</button>
-                  ))}
+
+        {/* code drawer (slide up) */}
+        <AnimatePresence>
+          {showCodeDrawer && (
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              style={{
+                position: "fixed", bottom: 0, left: 0, right: 0,
+                height: "55vh", zIndex: 150,
+                background: "#111", border: "1px solid #2e2e2e",
+                borderRadius: "16px 16px 0 0",
+                display: "flex", flexDirection: "column",
+                boxShadow: "0 -8px 40px rgba(0,0,0,0.6)"
+              }}
+            >
+              {/* Drawer header */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderBottom: "1px solid #2e2e2e" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>💻 Code Editor</span>
+                  <span style={{ fontSize: 11, color: "#8a8a8a" }}>Monaco · Judge0 execution</span>
                 </div>
-                {/* Run button */}
-                <button
-                  className="idk-btn-blue"
-                  onClick={handleSubmitCode}
-                  disabled={submitting || !code.trim()}
-                  style={{ padding: "7px 18px", fontSize: 13 }}
-                >
-                  {submitting ? <><Spinner size={14} color="#fff" /> Running…</> : "Run & Submit →"}
-                </button>
-                {/* Close */}
-                <button onClick={() => setShowCodeDrawer(false)} style={{ background: "transparent", border: "none", color: "#8a8a8a", cursor: "pointer", padding: 4 }}>
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {/* Language selector */}
+                  <div style={{ display: "flex", gap: 2, background: "#1c1c1c", borderRadius: 8, padding: 3 }}>
+                    {["javascript", "python", "cpp", "java"].map(lang => (
+                      <button
+                        key={lang}
+                        onClick={() => setLanguage(lang)}
+                        disabled={submitting}
+                        style={{
+                          padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700,
+                          border: "none", cursor: submitting ? "not-allowed" : "pointer", transition: "all 0.15s",
+                          background: language === lang ? "#1e88e5" : "transparent",
+                          color: language === lang ? "#fff" : "#8a8a8a",
+                          fontFamily: "inherit"
+                        }}
+                      >{lang}</button>
+                    ))}
+                  </div>
+                  {/* Run button */}
+                  <button
+                    className="idk-btn-blue"
+                    onClick={handleSubmitCode}
+                    disabled={submitting || !code.trim()}
+                    style={{ padding: "7px 18px", fontSize: 13 }}
+                  >
+                    {submitting ? <><Spinner size={14} color="#fff" /> Running…</> : "Run & Submit →"}
+                  </button>
+                  {/* Close */}
+                  <button onClick={() => setShowCodeDrawer(false)} style={{ background: "transparent", border: "none", color: "#8a8a8a", cursor: "pointer", padding: 4 }}>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+                  </button>
+                </div>
               </div>
-            </div>
-            {/* Monaco editor */}
-            <div style={{ flex: 1, overflow: "hidden" }}>
-              <Editor
-                height="100%"
-                language={LANG_MONACO_MAP[language]}
-                value={code}
-                onChange={val => setCode(val || "")}
-                theme="vs-dark"
-                options={{
-                  fontSize: 13, lineHeight: 22, minimap: { enabled: false },
-                  scrollBeyondLastLine: false, wordWrap: "on", automaticLayout: true,
-                  readOnly: submitting, fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                  padding: { top: 14, bottom: 14 }, renderLineHighlight: "all",
-                  smoothScrolling: true, cursorBlinking: "smooth",
-                }}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {/* Monaco editor */}
+              <div style={{ flex: 1, overflow: "hidden" }}>
+                <Editor
+                  height="100%"
+                  language={LANG_MONACO_MAP[language]}
+                  value={code}
+                  onChange={val => setCode(val || "")}
+                  theme="vs-dark"
+                  options={{
+                    fontSize: 13, lineHeight: 22, minimap: { enabled: false },
+                    scrollBeyondLastLine: false, wordWrap: "on", automaticLayout: true,
+                    readOnly: submitting, fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                    padding: { top: 14, bottom: 14 }, renderLineHighlight: "all",
+                    smoothScrolling: true, cursorBlinking: "smooth",
+                  }}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {/* exit modal */}
-      <AnimatePresence>
-        {showExit && (
-          <ExitModal
-            onCancel={() => setShowExit(false)}
-            onExit={handleExitConfirm}
-          />
-        )}
-      </AnimatePresence>
+        {/* exit modal */}
+        <AnimatePresence>
+          {showExit && (
+            <ExitModal
+              onCancel={() => setShowExit(false)}
+              onExit={handleExitConfirm}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 }

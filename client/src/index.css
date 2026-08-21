@@ -239,17 +239,93 @@ body {
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .ip-stat-cards-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .ip-stat-cards-grid {
+  .ip-stat-card {
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+  .ip-stat-card-icon {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .ip-stat-card-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .ip-stat-card-arrow {
+    display: none !important;
+  }
+}
+
+/* Dashboard Responsive Layout Grids */
+.ip-grid-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.ip-grid-sub {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 1024px) {
+  .ip-grid-main {
     grid-template-columns: 1fr;
-    gap: 8px;
+  }
+}
+
+/* Application Responsive Layout Wrappers */
+@media (max-width: 600px) {
+  .ip-grid-sub {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ip-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 1024px) {
+  .ip-app-wrapper {
+    flex-direction: column !important;
+  }
+  .ip-sidebar-container {
+    display: none !important;
+  }
+  .ip-mobile-header {
+    display: flex !important;
+  }
+  .ip-hidden-mobile {
+    display: none !important;
+  }
+}
+
+.ip-main-pad {
+  padding: 32px 32px 64px;
+}
+
+@media (max-width: 600px) {
+  .ip-main-pad {
+    padding: 24px 16px 40px;
+  }
+  .ip-flex-wrap {
+    flex-wrap: wrap !important;
+  }
+  .ip-desktop-only {
+    display: none !important;
+  }
+  .ip-mobile-hamburger {
+    display: flex !important;
   }
 }
 
@@ -1321,7 +1397,6 @@ select {
   /* Forms & Inputs */
   .ip-auth-box {
     width: 100% !important;
-    margin: 16px !important;
     padding: 24px !important;
     box-sizing: border-box !important;
   }

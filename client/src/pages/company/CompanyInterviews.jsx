@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
+import CompanyTopbar from "../../components/CompanyTopbar";
 import { getCompanySessions } from "../../services/interviewService";
 
 import { IconClock, IconCheck, IconArrowRight, IconStar, IconSearch, IconDownload, IconUsers, IconCircleCheck, IconTrendUp } from "../../components/ui/icons";
@@ -77,33 +78,23 @@ export default function CompanyInterviews() {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        {/* Topbar */}
-        <div style={{
-          padding: "0 20px", height: 60, borderBottom: "1px solid #E2E8F0",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "#FFFFFF", flexShrink: 0, position: "sticky", top: 0, zIndex: 50
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Candidate Pipeline</span>
-            <span style={{ fontSize: 14, color: "#94A3B8" }}>|</span>
-            <span style={{ fontSize: 11.5, color: "#64748B", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>
-              Recruiter workspace
-            </span>
-          </div>
-
-          <button
-            onClick={handleExportCSV}
-            disabled={filteredSessions.length === 0}
-            style={{
-              display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 8,
-              background: "#FFFFFF", color: "#0F172A", border: "1px solid #E2E8F0",
-              fontWeight: 600, fontSize: 12.5, cursor: filteredSessions.length > 0 ? "pointer" : "not-allowed",
-              opacity: filteredSessions.length > 0 ? 1 : 0.6
-            }}
-          >
-            <IconDownload style={{ width: 14, height: 14 }} /> Export CSV
-          </button>
-        </div>
+        <CompanyTopbar 
+          title="Candidate Pipeline"
+          action={
+            <button
+              onClick={handleExportCSV}
+              disabled={filteredSessions.length === 0}
+              style={{
+                display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 8,
+                background: "#FFFFFF", color: "#0F172A", border: "1px solid #E2E8F0",
+                fontWeight: 600, fontSize: 12.5, cursor: filteredSessions.length > 0 ? "pointer" : "not-allowed",
+                opacity: filteredSessions.length > 0 ? 1 : 0.6
+              }}
+            >
+              <IconDownload style={{ width: 14, height: 14 }} /> Export CSV
+            </button>
+          }
+        />
 
         <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px 40px" }}>
           <div style={{ maxWidth: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -142,7 +133,7 @@ export default function CompanyInterviews() {
 
             {/* Search and Filters Bar */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <div style={{ flex: 1, minWidth: 260, position: "relative" }}>
+              <div style={{ flex: 1, minWidth: 200, position: "relative" }}>
                 <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94A3B8", display: "flex" }}>
                   <IconSearch style={{ width: 15, height: 15 }} />
                 </span>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import StudentTopbar from "../../components/StudentTopbar";
+import CompanyTopbar from "../../components/CompanyTopbar";
 import { getCompanySessions } from "../../services/interviewService";
 
 import { IconStar, IconArrowRight, IconUsers, IconCheck } from "../../components/ui/icons";
@@ -44,20 +45,7 @@ export default function CompanyCompare() {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        {/* Topbar */}
-        <div style={{
-          padding: "0 20px", height: 60, borderBottom: "1px solid #E2E8F0",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "#FFFFFF", flexShrink: 0, position: "sticky", top: 0, zIndex: 50
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Compare Candidates</span>
-            <span style={{ fontSize: 14, color: "#94A3B8" }}>|</span>
-            <span style={{ fontSize: 11.5, color: "#64748B", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>
-              Recruiter workspace
-            </span>
-          </div>
-        </div>
+        <CompanyTopbar title="Compare Candidates" />
 
         <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px 40px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -88,7 +76,7 @@ export default function CompanyCompare() {
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 
                 {/* Slot Selectors Panel */}
-                <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <div className="ip-grid-main" style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, gap: 16 }}>
                   
                   {/* Slot 1 Selector */}
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -131,7 +119,7 @@ export default function CompanyCompare() {
 
                 {/* Comparison Metrics Grid */}
                 {candidate1 || candidate2 ? (
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 16 }}>
+                  <div className="ip-grid-main" style={{ gap: 16 }}>
                     
                     {/* Candidate A Card */}
                     <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>

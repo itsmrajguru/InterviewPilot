@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api";
 import Sidebar from "../../components/Sidebar";
+import CompanyTopbar from "../../components/CompanyTopbar";
 
 import { IconUsers, IconBriefcase, IconMail, IconCheckCircle, IconExternalLink } from "../../components/ui/icons";
 import Skeleton from "../../components/ui/Skeleton";
@@ -39,20 +40,7 @@ export default function CompanyProfile() {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         
-        {/* Topbar */}
-        <div style={{
-          padding: "0 20px", height: 60, borderBottom: "1px solid #E2E8F0",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "#FFFFFF", flexShrink: 0, position: "sticky", top: 0, zIndex: 50
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#0F172A" }}>Company Profile</span>
-            <span style={{ fontSize: 14, color: "#94A3B8" }}>|</span>
-            <span style={{ fontSize: 11.5, color: "#64748B", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em" }}>
-              Recruiter workspace
-            </span>
-          </div>
-        </div>
+        <CompanyTopbar title="Company Profile" />
 
         <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px 40px" }}>
           <div style={{ maxWidth: 880, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -116,7 +104,7 @@ export default function CompanyProfile() {
                     Organization Credentials
                   </h3>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                  <div className="ip-grid-sub" style={{ gap: 16 }}>
                     <div style={{ padding: "14px 16px", borderRadius: 12, background: "#F8FAFC", border: "1px solid #F1F5F9" }}>
                       <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#64748B" }}>
                         Role

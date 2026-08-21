@@ -23,7 +23,7 @@ const IconChevronDown = () => (
 );
 
 /* modern top bar component */
-export default function StudentTopbar({ title, sub }) {
+export default function CompanyTopbar({ title, sub, action }) {
   const navigate = useNavigate();
 
   const user = (() => {
@@ -78,7 +78,7 @@ export default function StudentTopbar({ title, sub }) {
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 500, color: "#94A3B8" }}>
             <span 
-              onClick={() => navigate("/student/dashboard")}
+              onClick={() => navigate("/company/dashboard")}
               style={{ cursor: "pointer", transition: "color 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.color = "#0F172A"}
               onMouseLeave={e => e.currentTarget.style.color = "#94A3B8"}
@@ -107,10 +107,15 @@ export default function StudentTopbar({ title, sub }) {
 
       {/* RIGHT: Notifications & Profile */}
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        {action && (
+          <div style={{ marginRight: 8 }}>
+            {action}
+          </div>
+        )}
         
         {/* Notification Bell */}
         <button 
-          onClick={() => navigate("/student/interviews")}
+          onClick={() => navigate("/company/interviews")}
           style={{ 
             position: "relative",
             width: 40,
@@ -158,7 +163,7 @@ export default function StudentTopbar({ title, sub }) {
 
         {/* Profile Dropdown Trigger */}
         <button 
-          onClick={() => navigate("/student/profile")}
+          onClick={() => navigate("/company/profile")}
           style={{ 
             display: "flex", 
             alignItems: "center", 

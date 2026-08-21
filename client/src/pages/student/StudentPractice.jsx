@@ -7,15 +7,26 @@ import { createInterviewSession } from "../../services/interviewService";
 import { IconBriefcase, IconCheck, IconFile, IconArrowRight } from "../../components/ui/icons";
 import Skeleton from "../../components/ui/Skeleton";
 
-const TRENDING_ROLES = [
-  "Full Stack Development",
-  "Frontend React Developer",
-  "Backend Node.js Developer",
-  "Human Resources (HR)",
-  "Data Science & AI",
+const POPULAR_ROLES = [
+  "Software Engineer",
+  "Product Manager",
+  "Data Scientist",
+  "Frontend Developer",
+  "Backend Engineer",
+  "Marketing Manager",
+  "Financial Analyst",
+  "UX/UI Designer",
+];
+
+const POPULAR_SKILLS = [
+  "React.js",
+  "Python",
   "System Design",
-  "DevOps & Cloud",
-  "Product Management",
+  "Node.js",
+  "SQL",
+  "Machine Learning",
+  "AWS / Cloud",
+  "Java",
 ];
 
 const EXPERIENCE_OPTIONS = [
@@ -107,10 +118,10 @@ export default function StudentPractice() {
     <div className="ip-app-wrapper" style={{ display:"flex", minHeight:"100vh", background: "#F8FAFC", overflow: "hidden", fontFamily: "var(--sans)", fontSize: 13 }}>
       <Sidebar role="student" />
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflowY: "auto" }}>
         <StudentTopbar title="Practice Arena" sub="" />
 
-        <main style={{ flex: 1, overflowY: "auto", padding: "24px 28px 40px" }}>
+        <main className="ip-main-pad" style={{ maxWidth: 1040, margin: "0 auto", width: "100%" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", flexDirection: "column", gap: 24 }}>
 
             {/* Header Banner */}
@@ -145,7 +156,7 @@ export default function StudentPractice() {
                 <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
                   
                   {/* Mode Tabs */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 24, borderBottom: "1px solid #E2E8F0", paddingBottom: 12 }}>
+                  <div className="ip-flex-wrap" style={{ display: "flex", gap: 16, alignItems: "center", borderBottom: "1px solid #E2E8F0", paddingBottom: 12 }}>
                     {[
                       { id: "role", label: "Select a Role" },
                       { id: "skill", label: "Select a Skill" },
@@ -202,42 +213,44 @@ export default function StudentPractice() {
                   )}
 
                   {/* Trending Pills */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#64748B", display: "flex", alignItems: "center", gap: 6 }}>
-                      <span>📈</span> Trending roles on CareerSync
-                    </span>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      {TRENDING_ROLES.map(role => {
-                        const isSelected = jobRole === role;
-                        return (
-                          <button
-                            key={role}
-                            type="button"
-                            onClick={() => setJobRole(role)}
-                            style={{
-                              padding: "7px 14px", borderRadius: 99,
-                              background: isSelected ? "#EEF2FF" : "#F8FAFC",
-                              border: isSelected ? "1px solid #2563EB" : "1px solid #E2E8F0",
-                              color: isSelected ? "#2563EB" : "#475569",
-                              fontSize: 12.5, fontWeight: isSelected ? 600 : 500,
-                              cursor: "pointer", transition: "all 0.15s"
-                            }}
-                            onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor = "#CBD5E1"; e.currentTarget.style.background = "#FFFFFF"; } }}
-                            onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.background = "#F8FAFC"; } }}
-                          >
-                            {role}
-                          </button>
-                        );
-                      })}
+                  {tabMode !== "jd" && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: "#64748B", display: "flex", alignItems: "center", gap: 6 }}>
+                        <span>💡</span> {tabMode === "role" ? "Popular roles to practice" : "Popular skills to practice"}
+                      </span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {(tabMode === "role" ? POPULAR_ROLES : POPULAR_SKILLS).map(item => {
+                          const isSelected = jobRole === item;
+                          return (
+                            <button
+                              key={item}
+                              type="button"
+                              onClick={() => setJobRole(item)}
+                              style={{
+                                padding: "7px 14px", borderRadius: 99,
+                                background: isSelected ? "#EEF2FF" : "#F8FAFC",
+                                border: isSelected ? "1px solid #2563EB" : "1px solid #E2E8F0",
+                                color: isSelected ? "#2563EB" : "#475569",
+                                fontSize: 12.5, fontWeight: isSelected ? 600 : 500,
+                                cursor: "pointer", transition: "all 0.15s"
+                              }}
+                              onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor = "#CBD5E1"; e.currentTarget.style.background = "#FFFFFF"; } }}
+                              onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.background = "#F8FAFC"; } }}
+                            >
+                              {item}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                 </div>
 
                 {/* ══ CARD 2: Experience Level ══ */}
                 <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 24, display: "flex", flexDirection: "column", gap: 14 }}>
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", margin: 0 }}>Experience level</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+                  <div className="ip-flex-col-mobile" style={{ display: "flex", gap: 14 }}>
                     {EXPERIENCE_OPTIONS.map(exp => {
                       const active = selectedExp === exp.id;
                       return (
@@ -245,6 +258,7 @@ export default function StudentPractice() {
                           key={exp.id}
                           onClick={() => setSelectedExp(exp.id)}
                           style={{
+                            flex: 1, minWidth: 0,
                             padding: "16px", borderRadius: 12,
                             background: active ? "#EEF2FF" : "#F8FAFC",
                             border: active ? "1.5px solid #2563EB" : "1px solid #E2E8F0",
@@ -271,7 +285,7 @@ export default function StudentPractice() {
                 {/* ══ CARD 3: Duration ══ */}
                 <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid #E2E8F0", boxShadow: "0 1px 3px rgba(15,23,42,0.03)", padding: 24, display: "flex", flexDirection: "column", gap: 14 }}>
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0F172A", margin: 0 }}>Duration</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                  <div className="ip-grid-2col" style={{ gap: 14 }}>
                     {DURATION_OPTIONS.map(dur => {
                       const active = selectedDuration === dur.id;
                       return (

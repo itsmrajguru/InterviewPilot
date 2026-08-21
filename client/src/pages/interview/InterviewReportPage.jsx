@@ -214,7 +214,7 @@ export default function InterviewReportPage() {
           boxShadow:"0 1px 0 0 rgba(0,0,0,0.04)"
         }}>
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <img src="/logo.svg" alt="InterviewPilot" style={{ height: 28 }} />
+            <img src="/logo-new.png" alt="InterviewPilot" style={{ height: 28, objectFit: "contain" }} />
             <div>
               <span style={{ fontWeight:700, fontSize:13, color:"var(--text-primary)" }}>Interview Report</span>
               {session?.role && (

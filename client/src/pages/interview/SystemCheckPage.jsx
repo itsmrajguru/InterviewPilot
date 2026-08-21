@@ -8,14 +8,8 @@ import "../../interview-dark.css";
 
 function Logo() {
   return (
-    <div className="idk-logo" style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}>
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <path d="M3 17L9 11L13 15L21 7" stroke="#1e88e5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M17 7H21V11" stroke="#1e88e5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.04em" }}>
-        <span style={{ color: "#1e88e5" }}>INTERVIEW</span><span style={{ color: "#ffffff" }}>PILOT</span>
-      </div>
+    <div className="idk-logo" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+      <img src="/logo-dark-final.png" alt="InterviewPilot" style={{ height: 48, objectFit: "contain" }} />
     </div>
   );
 }
@@ -304,11 +298,11 @@ export default function SystemCheckPage() {
 
       {/* Two-column body */}
       <div
-        className="idk-two-col"
+        className="idk-two-col ip-flex-wrap"
         style={{ display: "flex", gap: 24, padding: "24px 32px 100px", maxWidth: 1100, margin: "0 auto", width: "100%", flex: 1 }}
       >
         {/* Left — checklist */}
-        <div className="idk-card" style={{ flex: "0 0 480px", padding: "8px 24px" }}>
+        <div className="idk-card" style={{ flex: "1 1 400px", minWidth: 0, padding: "8px 24px" }}>
           {STEPS.map(step => {
             const status   = statuses[step.id];
             const isActive = activeStep === step.id;

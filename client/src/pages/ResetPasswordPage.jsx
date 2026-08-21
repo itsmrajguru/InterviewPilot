@@ -52,8 +52,8 @@ export default function ResetPasswordPage() {
                 
                 {/* logo and header */}
                 <div style={{ textAlign: "center", marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <Link to="/" style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%)", boxShadow: "0 4px 12px rgba(13, 116, 206, 0.3)" }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-bg-panel)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <Link to="/" style={{ cursor: "pointer", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <img src="/logo-light.png" alt="InterviewPilot" style={{ height: 48, objectFit: "contain" }} />
                     </Link>
                     <h1 style={{ fontSize: 22, fontWeight: 500, color: "var(--text-primary)", margin: 0, marginBottom: 4 }}>
                         Reset Password

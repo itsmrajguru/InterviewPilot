@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
 export default function Sidebar({ role = "student", pendingCount = 0 }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("openSidebar", handleOpen);
+    return () => window.removeEventListener("openSidebar", handleOpen);
+  }, []);
 
   const user = (() => {
     try { return JSON.parse(localStorage.getItem("user") || "{}"); }
@@ -37,7 +43,6 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
     {
       name: "My interviews",
       path: "/student/interviews",
-      badge: pendingCount > 0 ? pendingCount : null,
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -168,22 +173,18 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
       >
         <div
           style={{
-            padding: "20px 20px 16px",
-            borderBottom: "1px solid #F1F5F9",
+            height: 68,
+            boxSizing: "border-box",
+            padding: "0 14px",
+            borderBottom: "1px solid #E2E8F0",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: 10,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => navigate("/")}>
-            <div style={{ width: 34, height: 34, borderRadius: 10, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #2563EB 0%, #3B82F6 100%)", color: "#fff", flexShrink: 0, boxShadow: "0 2px 6px rgba(37, 99, 235, 0.3)" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ color: "#0F172A", fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em" }}>CareerSync</span>
-              <span style={{ color: "#94A3B8", fontSize: 9.5, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600, marginTop: 1 }}>AI Interviews</span>
-            </div>
+          <div style={{ display: "flex", alignItems: "center", cursor: "pointer", width: "100%" }} onClick={() => navigate("/")}>
+            <img src="/logo-light.png" alt="InterviewPilot" style={{ width: "100%", maxWidth: 155, objectFit: "contain" }} />
           </div>
           <button
             className="ip-hamburger-btn"
@@ -258,38 +259,7 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
             </>
           )}
 
-          {/* Bottom Upgrade to Pro Card */}
-          <div style={{ marginTop: "auto", paddingTop: 16 }}>
-            <div style={{
-              background: "linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%)",
-              borderRadius: 14,
-              border: "1px solid #E0E7FF",
-              padding: "14px 14px 12px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 8
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 14 }}>👑</span>
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: "#2563EB" }}>Upgrade to Pro</span>
-              </div>
-              <p style={{ fontSize: 11, color: "#64748B", margin: 0, lineHeight: 1.4 }}>
-                Unlock advanced analytics, mock evaluations & more.
-              </p>
-              <button 
-                onClick={() => navigate("/student/practice")}
-                style={{
-                  marginTop: 2, padding: "6px 12px", borderRadius: 8, background: "#EEF2FF", border: "1px solid #C7D2FE",
-                  color: "#2563EB", fontWeight: 600, fontSize: 11.5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
-                  transition: "all 0.15s"
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "#2563EB"; e.currentTarget.style.color = "#FFFFFF"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "#EEF2FF"; e.currentTarget.style.color = "#2563EB"; }}
-              >
-                Upgrade Now →
-              </button>
-            </div>
-          </div>
+
         </nav>
 
         {/* Sidebar collapse button */}
@@ -310,11 +280,8 @@ export default function Sidebar({ role = "student", pendingCount = 0 }) {
         }}>
           {/* Header */}
           <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--color-border-subtle)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--color-bg-panel)", flexShrink: 0 }}>
-                <img src="/logo.svg" alt="CareerSync" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </div>
-              <span style={{ color: "var(--text-primary)", fontSize: 18, fontWeight: 600, letterSpacing: "-0.01em" }}>CareerSync</span>
+            <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+              <img src="/logo-light.png" alt="InterviewPilot" style={{ width: "100%", maxWidth: 130, objectFit: "contain" }} />
             </div>
             <button onClick={() => setIsOpen(false)} style={{ background: "transparent", border: "none", color: "var(--text-primary)", cursor: "pointer", padding: 4 }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

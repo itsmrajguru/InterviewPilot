@@ -9,14 +9,8 @@ import "../../interview-dark.css";
 
 function Logo() {
   return (
-    <div className="idk-logo">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-        <path d="M3 17L9 11L13 15L21 7" stroke="#1e88e5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M17 7H21V11" stroke="#1e88e5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      <div className="idk-logo-text">
-        <span>INTERVIEW</span><span>PILOT</span>
-      </div>
+    <div className="idk-logo" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+      <img src="/logo-dark-final.png" alt="InterviewPilot" style={{ height: 48, objectFit: "contain" }} />
     </div>
   );
 }
@@ -241,6 +235,7 @@ export default function JoinInterviewPage() {
               {pastSessions.map((ps, i) => (
                 <div
                   key={i}
+                  className="ip-flex-wrap"
                   style={{
                     background: "#232323", border: "1px solid #2e2e2e", borderRadius: 10,
                     padding: "14px 18px",
