@@ -14,11 +14,11 @@ const createSession = async (req, res) => {
     const {
         studentEmail,
         role,
-        difficulty      = 'medium',
-        resumeText      = '',
+        difficulty = 'medium',
+        resumeText = '',
         csApplicationId = '',
-        candidateName   = '',
-        companyEmail    = ''
+        candidateName = '',
+        companyEmail = ''
     } = req.body
 
     /* condition :If we did not get any of them,simply return a json reply*/
@@ -28,7 +28,7 @@ const createSession = async (req, res) => {
 
     try {
         /* step 2 :Generate a secure random invite token and set it to expire in 48 hours */
-        const inviteToken  = crypto.randomBytes(32).toString('hex')
+        const inviteToken = crypto.randomBytes(32).toString('hex')
         const inviteExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000)
 
         /* step 2.5: find or auto-create company user by email from CareerSync */
@@ -43,9 +43,9 @@ const createSession = async (req, res) => {
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = await bcrypt.hash(defaultPassword, salt);
                 companyUser = await User.create({
-                    email:      companyEmail,
-                    password:   hashedPassword,
-                    role:       'company',
+                    email: companyEmail,
+                    password: hashedPassword,
+                    role: 'company',
                     isVerified: true
                 });
                 console.log(`Auto-created company account for CareerSync user: ${companyEmail}`);
@@ -57,16 +57,16 @@ const createSession = async (req, res) => {
         and set isVerified=true via invite-link verification for report/history access. */
         let studentTempPassword = null;
         {
-            const User   = require('../models/AuthModel/UserModel');
+            const User = require('../models/AuthModel/UserModel');
             const bcrypt = require('bcryptjs');
             let studentUser = await User.findOne({ email: studentEmail });
             if (!studentUser) {
                 /* generate a readable temp password: 8 random hex chars + @IP */
                 studentTempPassword = crypto.randomBytes(4).toString('hex').toUpperCase() + '@IP';
                 studentUser = await User.create({
-                    email:      studentEmail,
-                    password:   studentTempPassword,  /* pre-save hook hashes this */
-                    role:       'student',
+                    email: studentEmail,
+                    password: studentTempPassword,  /* pre-save hook hashes this */
+                    role: 'student',
                     isVerified: true   /* pre-verified — identity confirmed via email invite link */
                 });
                 console.log(`Auto-created student account for candidate: ${studentEmail}`);
@@ -76,7 +76,7 @@ const createSession = async (req, res) => {
 
         /* step 3 :Create the session document — status starts as pending */
         const session = await InterviewSession.create({
-            companyId:       assignedCompanyId,
+            companyId: assignedCompanyId,
             studentEmail,
             role,
             difficulty,
@@ -87,8 +87,8 @@ const createSession = async (req, res) => {
         })
 
         /* step 4 :Build the invite link and send the email to the candidate via Resend */
-        const joinURL      = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/join/${inviteToken}`
-        const loginURL     = `${process.env.CLIENT_URL || 'http://localhost:5175'}/login`
+        const joinURL = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/join/${inviteToken}`
+        const loginURL = `${process.env.CLIENT_URL || 'http://localhost:5175'}/login`
         const dashboardURL = `${process.env.CLIENT_URL || 'http://localhost:5175'}/student/dashboard`
 
         /* credentials block — only shown the first time (when account was just created) */
@@ -132,27 +132,27 @@ const createSession = async (req, res) => {
             </div>
         `
 
-        /* send the invite email without blocking the response */
-        ;(async () => {
-            try {
-                const plainText = studentTempPassword
-                    ? `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nYour InterviewPilot account:\nEmail: ${studentEmail}\nTemporary Password: ${studentTempPassword}\n\nLog in after the interview to view your report: ${loginURL}`
-                    : `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nView your dashboard: ${dashboardURL}`
+            /* send the invite email without blocking the response */
+            ; (async () => {
+                try {
+                    const plainText = studentTempPassword
+                        ? `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nYour InterviewPilot account:\nEmail: ${studentEmail}\nTemporary Password: ${studentTempPassword}\n\nLog in after the interview to view your report: ${loginURL}`
+                        : `You have been invited to interview for ${role}. Join here: ${joinURL}\n\nView your dashboard: ${dashboardURL}`
 
-                const emailSent = await sendEmail({
-                    to: studentEmail,
-                    subject: `InterviewPilot — Interview Invitation for ${role}`,
-                    text: plainText,
-                    html
-                })
-                if (!emailSent) {
-                    console.log(`Invite Email send failed...`);
+                    const emailSent = await sendEmail({
+                        to: studentEmail,
+                        subject: `InterviewPilot — Interview Invitation for ${role}`,
+                        text: plainText,
+                        html
+                    })
+                    if (!emailSent) {
+                        console.log(`Invite Email send failed...`);
+                    }
+                    console.log("Email Sent Successfully")
+                } catch (e) {
+                    console.log('Email Send Error :', e);
                 }
-                console.log("Email Sent Successfully")
-            } catch (e) {
-                console.log('Email Send Error :', e);
-            }
-        })()
+            })()
 
         return res.status(201).json({
             success: true,
@@ -206,7 +206,7 @@ const joinSession = async (req, res) => {
         const User = require('../models/AuthModel/UserModel')
         const jwt = require('jsonwebtoken')
         const user = await User.findOne({ email: session.studentEmail })
-        
+
         let accessToken = null
         if (user) {
             accessToken = jwt.sign({ id: user._id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '15m' })
@@ -280,7 +280,7 @@ const startSession = async (req, res) => {
         if (resumeText !== undefined) {
             session.resumeText = resumeText;
         }
-        
+
         /* step 4 :generate questions with Gemini if they have not been generated yet */
         if (!session.questions || session.questions.length === 0) {
             console.log('Generating interview questions via Gemini...')
@@ -448,16 +448,16 @@ const completeSession = async (req, res) => {
         }
 
         /* step 5 :save the report and mark session completed in the db */
-        session.report      = reportData
-        session.status      = 'completed'
+        session.report = reportData
+        session.status = 'completed'
         session.completedAt = new Date()
         await session.save()
 
-        /* step 4.5: send an email to the candidate that their interview is completed */
-        ;(async () => {
-            try {
-                const reportUrl = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/${session._id}/report`
-                const html = `
+            /* step 4.5: send an email to the candidate that their interview is completed */
+            ; (async () => {
+                try {
+                    const reportUrl = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/${session._id}/report`
+                    const html = `
                     <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px;background:#f9f9ff;border-radius:16px;">
                         <h2 style="color:#5b21b6;">Interview Completed!</h2>
                         <p style="color:#444;font-size:15px;">
@@ -474,31 +474,31 @@ const completeSession = async (req, res) => {
                         </a>
                     </div>
                 `
-                await sendEmail({
-                    to: session.studentEmail,
-                    subject: `InterviewPilot — Interview Completed for ${session.role}`,
-                    text: `You have completed your interview for ${session.role}. Your score is ${reportData.overallScore}/100. We will contact you further about hiring.`,
-                    html
-                })
-                console.log("Completion Email Sent Successfully")
-            } catch (e) {
-                console.log('Completion Email Send Error :', e);
-            }
-        })()
+                    await sendEmail({
+                        to: session.studentEmail,
+                        subject: `InterviewPilot — Interview Completed for ${session.role}`,
+                        text: `You have completed your interview for ${session.role}. Your score is ${reportData.overallScore}/100. We will contact you further about hiring.`,
+                        html
+                    })
+                    console.log("Completion Email Sent Successfully")
+                } catch (e) {
+                    console.log('Completion Email Send Error :', e);
+                }
+            })()
 
         /* step 5 :if this session was triggered by CareerSync, send results back (non-blocking) */
         if (session.csApplicationId) {
             try {
-                const axios     = require('axios')
+                const axios = require('axios')
                 const reportUrl = `${process.env.CLIENT_URL || 'http://localhost:5175'}/interview/${session._id}/report`
 
                 await axios.post(
                     `${process.env.CAREERSYNC_BACKEND_URL}/api/v1/integration/interview-result`,
                     {
                         csApplicationId: session.csApplicationId,
-                        overallScore:    session.report.overallScore,
+                        overallScore: session.report.overallScore,
                         reportUrl,
-                        completedAt:     new Date()
+                        completedAt: new Date()
                     },
                     {
                         headers: {
@@ -526,7 +526,7 @@ const completeSession = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Interview completed. Report generated.',
-            report:  reportData
+            report: reportData
         })
     } catch (e) {
         console.log(e);
@@ -576,11 +576,11 @@ const getCompanySessions = async (req, res) => {
         const mongoose = require('mongoose');
         /* convert string id to ObjectId for querying, since DB might store it as ObjectId */
         const objId = new mongoose.Types.ObjectId(req.user.id);
-        
+
         /* step 1 :find all sessions belonging to this company from db, newest first */
-        const sessions = await InterviewSession.find({ 
+        const sessions = await InterviewSession.find({
             $or: [
-                { companyId: req.user.id }, 
+                { companyId: req.user.id },
                 { companyId: objId }
             ]
         })
@@ -636,7 +636,7 @@ const getStudentDashboard = async (req, res) => {
 
 /* getVideoUploadParams controller */
 const getVideoUploadParams = async (req, res) => {
-    const { id }            = req.params
+    const { id } = req.params
     const { questionIndex } = req.query
 
     /* condition :questionIndex must be provided */
@@ -665,7 +665,7 @@ const getVideoUploadParams = async (req, res) => {
 
 /* submitVideoAnswer controller */
 const submitVideoAnswer = async (req, res) => {
-    const { id }                      = req.params
+    const { id } = req.params
     const { questionIndex, videoUrl } = req.body
 
     /* condition :both fields are required */
@@ -696,18 +696,18 @@ const submitVideoAnswer = async (req, res) => {
 
         /* step 2 :transcribe the video using assemblyai */
         console.log(`Transcribing video for session ${id} question ${questionIndex}...`)
-        const { transcribeVideo }       = require('../services/assemblyService')
-        const transcript                = await transcribeVideo(videoUrl)
+        const { transcribeVideo } = require('../services/assemblyService')
+        const transcript = await transcribeVideo(videoUrl)
 
         /* step 3 :build the answer document */
         const answerDoc = {
             questionIndex,
-            question:           question.question,
-            type:               question.type,
-            answer:             transcript,
+            question: question.question,
+            type: question.type,
+            answer: transcript,
             videoUrl,
             transcript,
-            submittedAt:        new Date()
+            submittedAt: new Date()
         }
 
         /* step 4 :replace existing answer or push new one */
@@ -730,8 +730,8 @@ const submitVideoAnswer = async (req, res) => {
         })
 
         return res.status(200).json({
-            success:    true,
-            message:    'Video answer transcribed and saved.',
+            success: true,
+            message: 'Video answer transcribed and saved.',
             transcript
         })
 
@@ -752,7 +752,7 @@ const handleTextPracticeStart = async (req, res) => {
 
     try {
         /* step 1 :generate questions and pick the first one */
-        const questions    = await generateInterviewQuestions(role, 'medium', '')
+        const questions = await generateInterviewQuestions(role, 'medium', '')
         const firstQuestion = questions[0]?.question || `Tell me about yourself as a ${role}.`
 
         return res.status(200).json({ success: true, firstQuestion })
@@ -778,7 +778,7 @@ const handleTextPracticeChat = async (req, res) => {
 
         /* step 2 :if this was the last question, return a summary */
         if (questionNumber >= 5) {
-            const allQA   = [...previousQA, { question, answer, score, feedback }]
+            const allQA = [...previousQA, { question, answer, score, feedback }]
             const avgScore = Math.round(
                 allQA.reduce((sum, qa) => sum + (qa.score || 0), 0) / allQA.length
             )
@@ -796,8 +796,8 @@ const handleTextPracticeChat = async (req, res) => {
         }
 
         /* step 3 :generate next question using a fresh pool from gemini */
-        const allAsked     = [...previousQA.map(qa => qa.question), question]
-        const pool         = await generateInterviewQuestions(role, 'medium', '')
+        const allAsked = [...previousQA.map(qa => qa.question), question]
+        const pool = await generateInterviewQuestions(role, 'medium', '')
         const nextQuestion = pool.find(q => !allAsked.includes(q.question))?.question
             || pool[questionNumber]?.question
             || `Tell me more about your experience with ${role}.`

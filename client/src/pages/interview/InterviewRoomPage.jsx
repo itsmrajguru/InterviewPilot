@@ -157,10 +157,37 @@ export default function InterviewRoomPage() {
   const [elapsed, setElapsed] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [activeUploads, setActiveUploads] = useState(0);
+  const [isFinishing, setIsFinishing] = useState(false);
+
   const { videoRef, streamRef, start: startCamera, stop: stopCamera } = useCameraStream();
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
+
+  // Watch for completion of all uploads when finishing
+  useEffect(() => {
+    if (isFinishing && activeUploads === 0 && !completing) {
+      setCompleting(true);
+      setError("");
+      (async () => {
+        try {
+          const data = await completeSession(id);
+          if (data.success) {
+            const completedSession = { ...session, status: "completed", report: data.report };
+            sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(completedSession));
+            navigate(`/interview/${id}/report`, { state: { session: completedSession, report: data.report } });
+          } else {
+            setError(data.message || "Could not complete interview.");
+            setCompleting(false);
+          }
+        } catch (e) {
+          setError(e.response?.data?.message || "Connection error. Please try again.");
+          setCompleting(false);
+        }
+      })();
+    }
+  }, [isFinishing, activeUploads, completing, id, session, navigate]);
 
   useEffect(() => { if (!session) navigate("/login"); }, [session, navigate]);
   useEffect(() => { if (session) sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(session)); }, [id, session]);
@@ -181,10 +208,8 @@ export default function InterviewRoomPage() {
 
   // clean up camera stream when question changes
   useEffect(() => {
-    setFeedback(null); setCodeResults(null); setError("");
+    setFeedback(null); setError("");
     setTranscript("");
-    setCode("// Write your solution here\n\n");
-    setShowCodeDrawer(false);
 
     // Calculate dynamic prep time
     const qText = session?.questions?.[currentIndex]?.text || "";
@@ -230,10 +255,15 @@ export default function InterviewRoomPage() {
     const recorder = new MediaRecorder(streamRef.current, options);
     recorderRef.current = recorder;
     recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+
+    // Capture the current index for this specific recording closure
+    const captureIndex = currentIndex;
+
     recorder.onstop = async () => {
       const blob = new Blob(chunksRef.current, { type: "video/webm" });
-      await uploadAndSubmit(blob);
+      startBackgroundUpload(blob, captureIndex);
     };
+
     recorder.start(250);
     setRecPhase("recording");
     timerRef.current = setInterval(() => {
@@ -244,23 +274,28 @@ export default function InterviewRoomPage() {
     }, 1000);
   };
 
-  // stop recording
+  // stop recording and INSTANTLY transition UI
   const stopRecording = () => {
     clearInterval(timerRef.current);
     if (recorderRef.current && recorderRef.current.state !== "inactive") {
-      recorderRef.current.stop();
+      recorderRef.current.stop(); // This triggers recorder.onstop asynchronously
     }
-    setRecPhase("uploading");
+
+    if (currentIndex === session.questions.length - 1) {
+      setRecPhase("done");
+      setIsFinishing(true);
+    } else {
+      setCurrentIndex(prev => prev + 1);
+    }
   };
 
-  // upload video to cloudinary
-  const uploadAndSubmit = async (blob) => {
-    setError("");
+  // background upload process (detached from UI blocking)
+  const startBackgroundUpload = async (blob, qIndex) => {
+    setActiveUploads(prev => prev + 1);
     try {
-      // get upload params from backend
-      const paramsRes = await getVideoUploadParams(id, currentIndex);
+      const paramsRes = await getVideoUploadParams(id, qIndex);
       const { uploadParams } = paramsRes;
-      // build form data
+
       const form = new FormData();
       form.append("file", blob);
       form.append("public_id", uploadParams.publicId);
@@ -268,13 +303,9 @@ export default function InterviewRoomPage() {
       form.append("signature", uploadParams.signature);
       form.append("api_key", uploadParams.apiKey);
 
-      // upload to cloudinary
       const cloudUrl = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", uploadParams.uploadUrl);
-        xhr.upload.onprogress = e => {
-          if (e.lengthComputable) setUploadProgress(Math.round((e.loaded / e.total) * 100));
-        };
         xhr.onload = () => {
           try { resolve(JSON.parse(xhr.responseText).secure_url); }
           catch { reject(new Error("cloudinary response parse error")); }
@@ -283,35 +314,14 @@ export default function InterviewRoomPage() {
         xhr.send(form);
       });
 
-      // submit video url to backend
-      setRecPhase("evaluating");
-      await submitVideoAnswer({ sessionId: id, questionIndex: currentIndex, videoUrl: cloudUrl });
-      
-      setAnswered(prev => ({ ...prev, [currentIndex]: true }));
-      setRecPhase("done");
+      await submitVideoAnswer({ sessionId: id, questionIndex: qIndex, videoUrl: cloudUrl });
+      setAnswered(prev => ({ ...prev, [qIndex]: true }));
 
-      // Auto-navigate to next question or complete
-      if (currentIndex === session.questions.length - 1) {
-        setCompleting(true); setError("");
-        try {
-          const data = await completeSession(id);
-          if (data.success) {
-            const completedSession = { ...session, status: "completed", report: data.report };
-            sessionStorage.setItem(`interview_session_${id}`, JSON.stringify(completedSession));
-            navigate(`/interview/${id}/report`, { state: { session: completedSession, report: data.report } });
-          } else { setError(data.message || "Could not complete interview."); setCompleting(false); }
-        } catch (e) {
-          setError(e.response?.data?.message || "Connection error. Please try again.");
-          setCompleting(false);
-        }
-      } else {
-        setCurrentIndex(prev => prev + 1);
-      }
     } catch (e) {
-      // log error for developer
-      console.error("VideoRecorder upload error :", e);
-      setError(`Upload failed: ${e.message}`);
-      setRecPhase("ready");
+      console.error(`Background upload error for Q${qIndex}:`, e);
+      // Optionally could show a non-blocking toast notification here
+    } finally {
+      setActiveUploads(prev => prev - 1);
     }
   };
 
@@ -348,6 +358,21 @@ export default function InterviewRoomPage() {
   // check if exited early
   if (exitedEarly) {
     return <EndedEarlyScreen sessionId={id} navigate={navigate} />;
+  }
+
+  if (isFinishing) {
+    return (
+      <div className="ip-dark" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", alignItems: "center", justifyContent: "center", background: "#0a0a0a" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
+          <Spinner size={40} color="#1e88e5" />
+          <h2 style={{ color: "#ffffff", margin: 0, fontSize: 24, fontWeight: 700 }}>Completing Interview...</h2>
+          <p style={{ color: "#b0b0b0", margin: 0, fontSize: 15 }}>Please wait while we finalize your responses and generate your report.</p>
+          <div style={{ color: "#1e88e5", fontWeight: 700, marginTop: 10, fontSize: 14 }}>
+            {activeUploads > 0 ? `${activeUploads} background task(s) remaining...` : "Finishing up..."}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const isRecording = recPhase === "recording";
@@ -455,9 +480,9 @@ export default function InterviewRoomPage() {
               <p style={{ fontSize: 13, color: "#8a8a8a", marginTop: 6 }}>
                 {recPhase === "prep" ? `Get ready... recording starts in ${prepCountdown}s` :
                   recPhase === "recording" ? "Listening to your answer…" :
-                  recPhase === "uploading" ? `Uploading… ${uploadProgress}%` :
-                  recPhase === "evaluating" ? "Saving your answer…" :
-                  recPhase === "done" ? "Answer submitted." : ""}
+                    recPhase === "uploading" ? `Uploading… ${uploadProgress}%` :
+                      recPhase === "evaluating" ? "Saving your answer…" :
+                        recPhase === "done" ? "Answer submitted." : ""}
               </p>
             )}
           </div>
@@ -500,73 +525,8 @@ export default function InterviewRoomPage() {
           </div>
         )}
 
-        {/* ai feedback panel */}
-        <AnimatePresence>
-          {feedback && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              style={{ margin: "0 16px 16px", background: "#1c1c1c", border: "1px solid #2e2e2e", borderRadius: 14, overflow: "hidden" }}
-            >
-              <div style={{ padding: "14px 20px", borderBottom: "1px solid #2e2e2e", display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#1e88e5" }} />
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>AI Evaluation</span>
-                <span style={{ fontSize: 12, color: "#8a8a8a", marginLeft: "auto" }}>Powered by Gemini</span>
-              </div>
-              <div style={{ padding: 20 }}>
-                {/* Scores */}
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-                  {[
-                    feedback.contentScore !== undefined && { label: "Content", score: feedback.contentScore },
-                    feedback.communicationScore !== undefined && { label: "Communication", score: feedback.communicationScore },
-                    feedback.clarityScore !== undefined && { label: "Clarity", score: feedback.clarityScore },
-                    feedback.vocabularyScore !== undefined && { label: "Vocabulary", score: feedback.vocabularyScore },
-                    feedback.structureScore !== undefined && { label: "Structure", score: feedback.structureScore },
-                    feedback.score !== undefined && feedback.contentScore === undefined && { label: "Score", score: feedback.score },
-                  ].filter(Boolean).map((m, i) => (
-                    <div key={i} style={{ background: "#232323", border: "1px solid #2e2e2e", borderRadius: 10, padding: "10px 14px", textAlign: "center", minWidth: 80 }}>
-                      <div style={{ fontSize: 20, fontWeight: 800, color: "#1e88e5", marginBottom: 4 }}>{m.score}<span style={{ fontSize: 11, color: "#8a8a8a" }}>/10</span></div>
-                      <div style={{ fontSize: 11, color: "#b0b0b0", fontWeight: 600 }}>{m.label}</div>
-                    </div>
-                  ))}
-                </div>
-                {feedback.feedback && (
-                  <div style={{ background: "#232323", border: "1px solid #2e2e2e", borderRadius: 10, padding: "14px 18px" }}>
-                    <p style={{ margin: 0, fontSize: 14, color: "#b0b0b0", lineHeight: 1.7 }}>{feedback.feedback}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Next / Finish buttons */}
-              <div style={{ padding: "14px 20px", borderTop: "1px solid #2e2e2e", display: "flex", justifyContent: "flex-end", gap: 10 }}>
-                {!isLastQuestion ? (
-                  <button
-                    className="idk-btn-blue"
-                    onClick={handleNext}
-                  >
-                    Next Question →
-                  </button>
-                ) : (
-                  allAnswered ? (
-                    <button
-                      className="idk-btn-blue"
-                      disabled={completing}
-                      onClick={handleComplete}
-                    >
-                      {completing ? <><Spinner size={16} color="#fff" /> Generating Report…</> : "Finish Interview & Get Report →"}
-                    </button>
-                  ) : (
-                    <span style={{ fontSize: 13, color: "#8a8a8a" }}>Answer all questions to finish.</span>
-                  )
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* skip button */}
-        {!feedback && recPhase === "idle" && !isLastQuestion && (
+        {recPhase === "idle" && !isLastQuestion && (
           <div style={{ padding: "0 16px 24px", display: "flex", justifyContent: "flex-end" }}>
             <button
               onClick={handleNext}
@@ -583,8 +543,8 @@ export default function InterviewRoomPage() {
           </div>
         )}
 
-        {/* finish when all answered (no feedback yet) */}
-        {!feedback && isLastQuestion && allAnswered && (
+        {/* finish when all answered */}
+        {isLastQuestion && allAnswered && (
           <div style={{ padding: "0 16px 24px", display: "flex", justifyContent: "center" }}>
             <button
               className="idk-btn-blue"

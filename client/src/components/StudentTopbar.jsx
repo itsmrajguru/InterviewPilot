@@ -23,7 +23,7 @@ const IconChevronDown = () => (
 );
 
 /* modern top bar component */
-export default function StudentTopbar({ title, sub }) {
+export default function StudentTopbar({ title, sub, rightContent }) {
   const navigate = useNavigate();
 
   const user = (() => {
@@ -107,6 +107,12 @@ export default function StudentTopbar({ title, sub }) {
 
       {/* RIGHT: Notifications & Profile */}
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        
+        {rightContent && (
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginRight: 8, paddingRight: 16, borderRight: "1px solid #E2E8F0" }}>
+            {rightContent}
+          </div>
+        )}
         
         {/* Notification Bell */}
         <button 
